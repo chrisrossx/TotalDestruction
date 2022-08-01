@@ -126,6 +126,13 @@ class NeverEndingLevel:
         self.ship = Ship(size)
 
 
+
+
+        # self.T8 = pygame.image.load()
+        self.T8 = pygame.image.load(Path("assets/TD T-8.png"))
+        self.T8.convert()
+        self.CX5 = pygame.image.load(Path("assets/TD CX-5.png"))
+        self.CX5.convert()
         # self.pos = (0, 0)
 
     def tick(self, elapsed):
@@ -144,8 +151,11 @@ class NeverEndingLevel:
 
         #fill background with Sky Texture
         self.sky.draw(elapsed, self.surface)
+        self.surface.blit(self.T8, (400,200))
+        self.surface.blit(self.CX5, (400,280))
         self.ship.draw(elapsed, self.surface)
        
+
         
 
         # rect = pygame.Rect(self.pos[0]-25, self.pos[1]-25, 50, 50)

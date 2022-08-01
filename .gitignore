@@ -1,5 +1,6 @@
-# My stuff
+# My Development Environment
 launch.json
+.goproject.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
