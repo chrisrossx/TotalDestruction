@@ -1,6 +1,7 @@
 # My Development Environment
 launch.json
 .goproject.py
+line_editor.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
