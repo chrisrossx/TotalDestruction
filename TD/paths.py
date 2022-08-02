@@ -2,7 +2,10 @@ from pathlib import Path
 import json
 import math
 
-from config import PATHS_FILENAME
+import blinker
+import pygame
+
+from TD.config import PATHS_FILENAME
 
 class PathItem:
     def __init__(self, name=None, data=None):
@@ -106,3 +109,54 @@ class PathData:
             for i, item_data in enumerate(data):
                 item = PathItem(data=item_data)
                 self._items.append(item)
+
+class PathFollower:
+    def __init__(self, index, offset=(0,0)):
+        self.x = 0
+        self.y = 0
+        self.offset = offset
+
+        # data = PathData()
+        # data.load()
+
+        self.data = path_data[index]
+
+        self.velocity = 0.1
+        self.distance = 0
+        self.on_path = False
+        self.on_end_of_path = blinker.Signal()
+
+    @property
+    def pos(self):
+        return self.x, self.y
+
+    def draw(self, elapsed, surface):
+        pygame.draw.lines(surface,(255,0,0), False, self.data.points)
+        if self.on_path:
+            pygame.draw.circle(surface, (255, 0, 255), (self.x - self.offset[0], self.y - self.offset[1]), 5)
+
+    def tick(self, elapsed):
+        pass
+        self.distance += elapsed * self.velocity
+        self.on_path = False
+        for i in range(len(self.data.points)-1):
+            start = self.data.start[i]
+            end = self.data.end[i]
+            if self.distance >= start and self.distance < end:
+                d = self.data.length[i]
+                p1 = self.data.points[i]
+                p2 = self.data.points[i+1]
+                t = (self.distance - start) / d
+                self.x = ((1-t) * p1[0])  + (t * p2[0])
+                self.y = ((1-t) * p1[1])  + (t * p2[1])
+                self.x += self.offset[0]
+                self.y += self.offset[1]
+                self.on_path = True
+                break
+        
+        if self.on_path == False:
+            self.on_end_of_path.send()
+
+# Singleton Pattern - Stinky, but practical for a game environment
+path_data = PathData()
+path_data.load()

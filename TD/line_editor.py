@@ -4,7 +4,8 @@ import json
 
 import pygame
 from blinker import signal
-from path_data import PathData
+# from paths import PathData
+import paths
 
 COLORS = [
     (230, 25, 75),
@@ -78,8 +79,9 @@ class LineEditor:
         self.surface = pygame.Surface(size)
         self.cursor = (0, 0)
 
-        self.data = PathData()
-        self.data.load()
+        # self.data = PathData()
+        # self.data.load()
+        self.data = paths.path_data
        
         self.index = 0  # Selected Line
         self.page = 0   # Which Lines to Show
