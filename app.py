@@ -1,8 +1,10 @@
 from pathlib import Path
 import math
+from time import time_ns
 
 import pygame
 from blinker import signal
+from path_follower import PathFollower
 
 class Background:
     def __init__(self, size, velocity=[-0.1, 0.0]):
@@ -34,7 +36,6 @@ class Background:
                 self.offset[i] -= self.rect[i+2]
             if self.offset[i] < -self.rect[i+2]:
                 self.offset[i] += self.rect[i+2]
-
 
 class Ship:
     def __init__(self, screen_size) -> None:
@@ -118,78 +119,6 @@ class Ship:
             # self.pos[0] = 200
 
 
-class PathFollower:
-    def __init__(self, waypoints=None):
-        self.x = 0
-        self.y = 0
-
-        self.waypoints = waypoints if waypoints else []
-        self._start = []
-        self._end = []
-        self._length = []
-
-        self.velocity = 0.1
-        self.distance = 0
-
-        self._calculated = False 
-        self.calculate()
-        self.on_path = False
-
-    def calculate(self):
-        self._start = []
-        self._end = []
-        self._length = []
-        self._calculated = True 
-
-        start = 0
-        end = 0
-        for i in range(len(self.waypoints)-1):
-            p1 = self.waypoints[i]
-            p2 = self.waypoints[i + 1]
-            d = math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
-            start = end 
-            end = end + d
-            self._start.append(start)
-            self._end.append(end)
-            self._length.append(d) 
-
-    def add_waypoint(self, waypoint):
-        self.waypoints.append(waypoint)
-        self._calculated = False
-
-    @property
-    def pos(self):
-        return self.x, self.y
-
-    def draw(self, elapsed, surface):
-        pygame.draw.lines(surface,(255,0,0),False, self.waypoints)
-        if self.on_path:
-            pygame.draw.circle(surface, (255, 0, 255), (self.x, self.y), 5)
-
-    def tick(self, elapsed):
-
-        self.distance += elapsed * self.velocity
-        self.on_path = False
-        for i in range(len(self.waypoints)-1):
-            start = self._start[i]
-            end = self._end[i]
-            if self.distance >= start and self.distance < end:
-                d = self._length[i]
-                p1 = self.waypoints[i]
-                p2 = self.waypoints[i+1]
-                t = (self.distance - start) / d
-                self.x = ((1-t) * p1[0])  + (t * p2[0])
-                self.y = ((1-t) * p1[1])  + (t * p2[1])
-                self.on_path = True
-                break
-        
-        if self.on_path == False:
-            self.on_end_of_path()
-
-    def on_end_of_path(self):
-        self.velocity *= -1
-
-
 class EnemyPlaneT8:
     def __init__(self, pos):
         source = pygame.image.load(Path("assets/TD T-8.png"))
@@ -204,8 +133,12 @@ class EnemyPlaneT8:
         self.frame_index = 0
         self.frame_elapsed = 0
 
-        self.x, self.y = pos
-        self.velocity = -0.1
+        self.velocity = -0.4
+
+        self.path = PathFollower(0, (-32, -32))
+        self.path.on_end_of_path.connect(self.on_end_of_path)
+        self.path.velocity = 0.25
+        self.deleted = False
 
     def draw(self, elapsed, surface):
         self.frame_elapsed += elapsed
@@ -214,47 +147,71 @@ class EnemyPlaneT8:
             self.frame_index += 1
             if self.frame_index == 4:
                 self.frame_index = 0
-        self.x += elapsed * self.velocity
-        if self.x <= 100 or self.x >= 924:
-            self.velocity *= -1
-            for i in range(4):
-                self.frames[i] = pygame.transform.flip(self.frames[i], True, False)
-        surface.blit(self.frames[self.frame_index], (self.x, self.y))
+        self.path.draw(elapsed, surface)
+        surface.blit(self.frames[self.frame_index], (self.path.x, self.path.y))
 
+    def tick(self, elapsed):
+        self.path.tick(elapsed)
+
+    def delete(self):
+        self.deleted = True 
+        signal("scene.delete_enemy").send(self)
+
+    def on_end_of_path(self, sender):
+        self.delete()
 
 
 class NeverEndingLevel:
 
     def __init__(self, size):
+
+        self.font = pygame.font.SysFont(None, 24)
+
         self.surface = pygame.Surface(size)
         self.sky = Background(size)
         
+        self.enemies = []
         self.signal_add_enemy = signal("scene.add_enemy")
         self.signal_add_enemy.connect(self.on_add_enemey)
-        self.enemies = []
+        self.signal_delete_enemy = signal("scene.delete_enemy")
+        self.signal_delete_enemy.connect(self.on_delete_enemey)
 
         self.ship = Ship(size)
-
-
-        self.signal_add_enemy.send(EnemyPlaneT8((500, 100)))
-        self.signal_add_enemy.send(EnemyPlaneT8((570, 140)))
-        self.signal_add_enemy.send(EnemyPlaneT8((640, 180)))
 
         # self.CX5 = pygame.image.load(Path("assets/TD CX-5.png"))
         # self.CX5.convert()
 
-        waypoints = [100,400], [200, 300], [300, 400]
-        self.pf1 = PathFollower(waypoints)
-                
+        self.timed_add = []
+        self.timed_add.append((500, EnemyPlaneT8((500, 100))))
+        self.timed_add.append((1000, EnemyPlaneT8((500, 100))))
+        self.timed_add.append((1500, EnemyPlaneT8((500, 100))))
+
+        self.runtime = 0.0
 
     def on_add_enemey(self, entity):
-        print("what what", entity)
         self.enemies.append(entity)
 
-    def tick(self, elapsed):
-        self.sky.tick(elapsed)
-        self.pf1.tick(elapsed)
+    def on_delete_enemey(self, entity):
+        enemies = []
+        for enemy in self.enemies:
+            if entity != enemy:
+                enemies.append(enemy)
+        self.enemies = enemies
 
+    def tick(self, elapsed):
+        self.runtime += elapsed
+        self.sky.tick(elapsed)
+
+        for enemy in self.enemies:
+            enemy.tick(elapsed)
+
+        timed_add = []
+        for time_to_add, entity in self.timed_add:
+            if time_to_add <= self.runtime:
+                self.signal_add_enemy.send(entity)
+            else:
+                timed_add.append((time_to_add, entity))
+        self.timed_add = timed_add
 
     def pressed(self, pressed, elapsed):
         self.ship.pressed(pressed, elapsed)
@@ -275,44 +232,12 @@ class NeverEndingLevel:
             enemy.draw(elapsed, self.surface)
         
         self.ship.draw(elapsed, self.surface)
-        self.pf1.draw(elapsed, self.surface)
 
-       
-
-
-        #draw waypoints
-        # self.waypoints = [100, 100], [150, 150], [200, 100], [400,100], [300,150]
-        # #for i in range(len(self.waypoints)-1):
-        # pygame.draw.lines(self.surface,(255,0,0),False, self.waypoints)
-        # print("*"*40)
-        # print("Waypoint Segments:",range(len(self.waypoints)-1))
-
-        # start = 0
-        # end = 0
-        # running = 0
-        # self.p += elapsed * 0.05
-        # for i in range(len(self.waypoints)-1):
-        #     p1 = self.waypoints[i]
-        #     p2 = self.waypoints[i + 1]
-        #     d = math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
-        #     start = end 
-        #     end = end + d
-        #     print("segment", i, p1, p2,"length:", d, start, end)
-        #     if self.p >= start and self.p < end:
-        #         print("FOUND")
-        #         t = (self.p - start) / d
-        #         print("t", t)
-        #         x = ((1-t) * p1[0])  + (t * p2[0])
-        #         y = ((1-t) * p1[1])  + (t * p2[1])
-        #         print("x, y", x, y)
-        #         pygame.draw.circle(self.surface, (255, 0, 255), (x, y), 5)
-                
-            
-        #find where 40 is along the path 
-        
-
-        # rect = pygame.Rect(self.pos[0]-25, self.pos[1]-25, 50, 50)
-        # pygame.draw.rect(self.surface, (80, 80, 80), rect)
+        #Debug Runtime
+        line = self.font.render("Runtime: {}".format(str(round(self.runtime/1000, 1))), True, (255, 255, 0))
+        self.surface.blit(line, (20, 40))
+        line = self.font.render("Enemies: {}".format(str(len(self.enemies))), True, (255, 255, 0))
+        self.surface.blit(line, (20, 60))
 
 
 class TD:
@@ -337,7 +262,6 @@ class TD:
         frame_count = 0
         frame_count_elapsed = 0
         frame_count_surface = self.font.render("---", True, (255, 255, 0))
-
 
         while running:
             elapsed = self.clock.tick()
@@ -365,7 +289,6 @@ class TD:
                     frame_count_surface = self.font.render(str(frame_count), True, (255, 255, 0))
                     frame_count = 0
                     frame_count_elapsed = 0.0
-
                 
                 if frame_count_surface:
                     self.screen.blit(frame_count_surface, (20, 20))
