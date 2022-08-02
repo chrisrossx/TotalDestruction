@@ -35,9 +35,9 @@ class PathFollower:
         self.offset = offset
 
         self._waypoints = lines.waypoints[index]
-        self._start = []
-        self._end = []
-        self._length = []
+        self._start = [] #Start Distance
+        self._end = [] #End Distance (Start + length)
+        self._length = [] #Length of Segment
 
         self.velocity = 0.1
         self.distance = 0

@@ -1,257 +1,1300 @@
-{
-"waypoint_0": ["Path 0xxx", [1075, -7], [789, 180], [526, 181], [354, 163], [217, -20]],
-"waypoint_1": ["Path 1", [895, 406], [789, 519], [673, 555]],
-"waypoint_2": ["Path 2", [1005, 63], [836, 45], [672, 48]],
-"waypoint_3": ["Path 3xxx", [559, 167], [562, 258], [522, 382]],
-"waypoint_4": ["Path 4"],
-"waypoint_5": ["Path 5"],
-"waypoint_6": ["Path 6"],
-"waypoint_7": ["Path 7"],
-"waypoint_8": ["Path 8"],
-"waypoint_9": ["Path 9"],
-"waypoint_10": ["Path 10"],
-"waypoint_11": ["Path 11"],
-"waypoint_12": ["Path 12"],
-"waypoint_13": ["Path 13"],
-"waypoint_14": ["Path 14"],
-"waypoint_15": ["Path 15"],
-"waypoint_16": ["Path 16"],
-"waypoint_17": ["Path 17"],
-"waypoint_18": ["Path 18"],
-"waypoint_19": ["Path 19"],
-"waypoint_20": ["Path 20"],
-"waypoint_21": ["Path 21"],
-"waypoint_22": ["Path 22"],
-"waypoint_23": ["Path 23"],
-"waypoint_24": ["Path 24"],
-"waypoint_25": ["Path 25"],
-"waypoint_26": ["Path 26"],
-"waypoint_27": ["Path 27"],
-"waypoint_28": ["Path 28"],
-"waypoint_29": ["Path 29"],
-"waypoint_30": ["Path 30"],
-"waypoint_31": ["Path 31"],
-"waypoint_32": ["Path 32"],
-"waypoint_33": ["Path 33"],
-"waypoint_34": ["Path 34"],
-"waypoint_35": ["Path 35"],
-"waypoint_36": ["Path 36"],
-"waypoint_37": ["Path 37"],
-"waypoint_38": ["Path 38"],
-"waypoint_39": ["Path 39"],
-"waypoint_40": ["Path 40"],
-"waypoint_41": ["Path 41"],
-"waypoint_42": ["Path 42"],
-"waypoint_43": ["Path 43"],
-"waypoint_44": ["Path 44"],
-"waypoint_45": ["Path 45"],
-"waypoint_46": ["Path 46"],
-"waypoint_47": ["Path 47"],
-"waypoint_48": ["Path 48"],
-"waypoint_49": ["Path 49"],
-"waypoint_50": ["Path 50"],
-"waypoint_51": ["Path 51"],
-"waypoint_52": ["Path 52"],
-"waypoint_53": ["Path 53"],
-"waypoint_54": ["Path 54"],
-"waypoint_55": ["Path 55"],
-"waypoint_56": ["Path 56"],
-"waypoint_57": ["Path 57"],
-"waypoint_58": ["Path 58"],
-"waypoint_59": ["Path 59"],
-"waypoint_60": ["Path 60"],
-"waypoint_61": ["Path 61"],
-"waypoint_62": ["Path 62"],
-"waypoint_63": ["Path 63"],
-"waypoint_64": ["Path 64"],
-"waypoint_65": ["Path 65"],
-"waypoint_66": ["Path 66"],
-"waypoint_67": ["Path 67"],
-"waypoint_68": ["Path 68"],
-"waypoint_69": ["Path 69"],
-"waypoint_70": ["Path 70"],
-"waypoint_71": ["Path 71"],
-"waypoint_72": ["Path 72"],
-"waypoint_73": ["Path 73"],
-"waypoint_74": ["Path 74"],
-"waypoint_75": ["Path 75"],
-"waypoint_76": ["Path 76"],
-"waypoint_77": ["Path 77"],
-"waypoint_78": ["Path 78"],
-"waypoint_79": ["Path 79"],
-"waypoint_80": ["Path 80"],
-"waypoint_81": ["Path 81"],
-"waypoint_82": ["Path 82"],
-"waypoint_83": ["Path 83"],
-"waypoint_84": ["Path 84"],
-"waypoint_85": ["Path 85"],
-"waypoint_86": ["Path 86"],
-"waypoint_87": ["Path 87"],
-"waypoint_88": ["Path 88"],
-"waypoint_89": ["Path 89"],
-"waypoint_90": ["Path 90"],
-"waypoint_91": ["Path 91"],
-"waypoint_92": ["Path 92"],
-"waypoint_93": ["Path 93"],
-"waypoint_94": ["Path 94"],
-"waypoint_95": ["Path 95"],
-"waypoint_96": ["Path 96"],
-"waypoint_97": ["Path 97"],
-"waypoint_98": ["Path 98"],
-"waypoint_99": ["Path 99"],
-"waypoint_100": ["Path 100"],
-"waypoint_101": ["Path 101"],
-"waypoint_102": ["Path 102"],
-"waypoint_103": ["Path 103"],
-"waypoint_104": ["Path 104"],
-"waypoint_105": ["Path 105"],
-"waypoint_106": ["Path 106"],
-"waypoint_107": ["Path 107"],
-"waypoint_108": ["Path 108"],
-"waypoint_109": ["Path 109"],
-"waypoint_110": ["Path 110"],
-"waypoint_111": ["Path 111"],
-"waypoint_112": ["Path 112"],
-"waypoint_113": ["Path 113"],
-"waypoint_114": ["Path 114"],
-"waypoint_115": ["Path 115"],
-"waypoint_116": ["Path 116"],
-"waypoint_117": ["Path 117"],
-"waypoint_118": ["Path 118"],
-"waypoint_119": ["Path 119"],
-"waypoint_120": ["Path 120"],
-"waypoint_121": ["Path 121"],
-"waypoint_122": ["Path 122"],
-"waypoint_123": ["Path 123"],
-"waypoint_124": ["Path 124"],
-"waypoint_125": ["Path 125"],
-"waypoint_126": ["Path 126"],
-"waypoint_127": ["Path 127"],
-"waypoint_128": ["Path 128"],
-"waypoint_129": ["Path 129"],
-"waypoint_130": ["Path 130"],
-"waypoint_131": ["Path 131"],
-"waypoint_132": ["Path 132"],
-"waypoint_133": ["Path 133"],
-"waypoint_134": ["Path 134"],
-"waypoint_135": ["Path 135"],
-"waypoint_136": ["Path 136"],
-"waypoint_137": ["Path 137"],
-"waypoint_138": ["Path 138"],
-"waypoint_139": ["Path 139"],
-"waypoint_140": ["Path 140"],
-"waypoint_141": ["Path 141"],
-"waypoint_142": ["Path 142"],
-"waypoint_143": ["Path 143"],
-"waypoint_144": ["Path 144"],
-"waypoint_145": ["Path 145"],
-"waypoint_146": ["Path 146"],
-"waypoint_147": ["Path 147"],
-"waypoint_148": ["Path 148"],
-"waypoint_149": ["Path 149"],
-"waypoint_150": ["Path 150"],
-"waypoint_151": ["Path 151"],
-"waypoint_152": ["Path 152"],
-"waypoint_153": ["Path 153"],
-"waypoint_154": ["Path 154"],
-"waypoint_155": ["Path 155"],
-"waypoint_156": ["Path 156"],
-"waypoint_157": ["Path 157"],
-"waypoint_158": ["Path 158"],
-"waypoint_159": ["Path 159"],
-"waypoint_160": ["Path 160"],
-"waypoint_161": ["Path 161"],
-"waypoint_162": ["Path 162"],
-"waypoint_163": ["Path 163"],
-"waypoint_164": ["Path 164"],
-"waypoint_165": ["Path 165"],
-"waypoint_166": ["Path 166"],
-"waypoint_167": ["Path 167"],
-"waypoint_168": ["Path 168"],
-"waypoint_169": ["Path 169"],
-"waypoint_170": ["Path 170"],
-"waypoint_171": ["Path 171"],
-"waypoint_172": ["Path 172"],
-"waypoint_173": ["Path 173"],
-"waypoint_174": ["Path 174"],
-"waypoint_175": ["Path 175"],
-"waypoint_176": ["Path 176"],
-"waypoint_177": ["Path 177"],
-"waypoint_178": ["Path 178"],
-"waypoint_179": ["Path 179"],
-"waypoint_180": ["Path 180"],
-"waypoint_181": ["Path 181"],
-"waypoint_182": ["Path 182"],
-"waypoint_183": ["Path 183"],
-"waypoint_184": ["Path 184"],
-"waypoint_185": ["Path 185"],
-"waypoint_186": ["Path 186"],
-"waypoint_187": ["Path 187"],
-"waypoint_188": ["Path 188"],
-"waypoint_189": ["Path 189"],
-"waypoint_190": ["Path 190"],
-"waypoint_191": ["Path 191"],
-"waypoint_192": ["Path 192"],
-"waypoint_193": ["Path 193"],
-"waypoint_194": ["Path 194"],
-"waypoint_195": ["Path 195"],
-"waypoint_196": ["Path 196"],
-"waypoint_197": ["Path 197"],
-"waypoint_198": ["Path 198"],
-"waypoint_199": ["Path 199"],
-"waypoint_200": ["Path 200"],
-"waypoint_201": ["Path 201"],
-"waypoint_202": ["Path 202"],
-"waypoint_203": ["Path 203"],
-"waypoint_204": ["Path 204"],
-"waypoint_205": ["Path 205"],
-"waypoint_206": ["Path 206"],
-"waypoint_207": ["Path 207"],
-"waypoint_208": ["Path 208"],
-"waypoint_209": ["Path 209"],
-"waypoint_210": ["Path 210"],
-"waypoint_211": ["Path 211"],
-"waypoint_212": ["Path 212"],
-"waypoint_213": ["Path 213"],
-"waypoint_214": ["Path 214"],
-"waypoint_215": ["Path 215"],
-"waypoint_216": ["Path 216"],
-"waypoint_217": ["Path 217"],
-"waypoint_218": ["Path 218"],
-"waypoint_219": ["Path 219"],
-"waypoint_220": ["Path 220"],
-"waypoint_221": ["Path 221"],
-"waypoint_222": ["Path 222"],
-"waypoint_223": ["Path 223"],
-"waypoint_224": ["Path 224"],
-"waypoint_225": ["Path 225"],
-"waypoint_226": ["Path 226"],
-"waypoint_227": ["Path 227"],
-"waypoint_228": ["Path 228"],
-"waypoint_229": ["Path 229"],
-"waypoint_230": ["Path 230"],
-"waypoint_231": ["Path 231"],
-"waypoint_232": ["Path 232"],
-"waypoint_233": ["Path 233"],
-"waypoint_234": ["Path 234"],
-"waypoint_235": ["Path 235"],
-"waypoint_236": ["Path 236"],
-"waypoint_237": ["Path 237"],
-"waypoint_238": ["Path 238"],
-"waypoint_239": ["Path 239"],
-"waypoint_240": ["Path 240"],
-"waypoint_241": ["Path 241"],
-"waypoint_242": ["Path 242"],
-"waypoint_243": ["Path 243"],
-"waypoint_244": ["Path 244"],
-"waypoint_245": ["Path 245"],
-"waypoint_246": ["Path 246"],
-"waypoint_247": ["Path 247"],
-"waypoint_248": ["Path 248"],
-"waypoint_249": ["Path 249"],
-"waypoint_250": ["Path 250"],
-"waypoint_251": ["Path 251"],
-"waypoint_252": ["Path 252"],
-"waypoint_253": ["Path 253"],
-"waypoint_254": ["Path 254"]
-}
+[
+  {
+    "name": "ABCDEF",
+    "path": [
+      [
+        1072,
+        137
+      ],
+      [
+        -46,
+        129
+      ]
+    ],
+    "hidden": false
+  },
+  {
+    "name": "ABCDEF (COPY)",
+    "path": [
+      [
+        1072,
+        233
+      ],
+      [
+        -46,
+        225
+      ]
+    ],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 2",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 3",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 4",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 5",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 6",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 7",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 8",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 9",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 10",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 11",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 12",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 13",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 14",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 15",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 16",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 17",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 18",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 19",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 20",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 21",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 22",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 23",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 24",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 25",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 26",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 27",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 28",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 29",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 30",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 31",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 32",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 33",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 34",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 35",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 36",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 37",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 38",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 39",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 40",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 41",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 42",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 43",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 44",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 45",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 46",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 47",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 48",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 49",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 50",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 51",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 52",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 53",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 54",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 55",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 56",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 57",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 58",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 59",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 60",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 61",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 62",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 63",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 64",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 65",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 66",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 67",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 68",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 69",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 70",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 71",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 72",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 73",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 74",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 75",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 76",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 77",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 78",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 79",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 80",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 81",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 82",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 83",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 84",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 85",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 86",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 87",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 88",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 89",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 90",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 91",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 92",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 93",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 94",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 95",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 96",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 97",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 98",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 99",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 100",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 101",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 102",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 103",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 104",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 105",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 106",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 107",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 108",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 109",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 110",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 111",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 112",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 113",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 114",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 115",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 116",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 117",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 118",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 119",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 120",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 121",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 122",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 123",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 124",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 125",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 126",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 127",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 128",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 129",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 130",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 131",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 132",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 133",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 134",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 135",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 136",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 137",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 138",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 139",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 140",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 141",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 142",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 143",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 144",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 145",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 146",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 147",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 148",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 149",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 150",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 151",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 152",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 153",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 154",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 155",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 156",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 157",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 158",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 159",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 160",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 161",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 162",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 163",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 164",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 165",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 166",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 167",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 168",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 169",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 170",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 171",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 172",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 173",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 174",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 175",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 176",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 177",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 178",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 179",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 180",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 181",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 182",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 183",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 184",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 185",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 186",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 187",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 188",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 189",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 190",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 191",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 192",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 193",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 194",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 195",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 196",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 197",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 198",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 199",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 200",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 201",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 202",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 203",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 204",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 205",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 206",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 207",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 208",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 209",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 210",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 211",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 212",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 213",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 214",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 215",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 216",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 217",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 218",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 219",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 220",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 221",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 222",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 223",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 224",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 225",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 226",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 227",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 228",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 229",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 230",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 231",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 232",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 233",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 234",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 235",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 236",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 237",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 238",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 239",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 240",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 241",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 242",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 243",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 244",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 245",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 246",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 247",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 248",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 249",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 250",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 251",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 252",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 253",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 254",
+    "path": [],
+    "hidden": false
+  },
+  {
+    "name": "PATHITEM 255",
+    "path": [],
+    "hidden": false
+  }
+]
