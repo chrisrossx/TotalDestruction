@@ -5,7 +5,7 @@ import json
 import pygame
 from blinker import signal
 # from paths import PathData
-import paths
+from . import paths
 
 COLORS = [
     (230, 25, 75),

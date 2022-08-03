@@ -1,7 +1,7 @@
 import math 
 
 from TD.assetmanager import asset_manager
-
+from TD.debuging import game_debugger
 
 class Sky:
     def __init__(self, size, velocity=[-0.1, 0.0]):
@@ -16,6 +16,8 @@ class Sky:
         self.velocity = velocity
 
     def draw(self, elapsed, surface):
+        if not game_debugger.show_sky:
+            return
         x_count = math.ceil((self.size[0] - self.offset[0]) / self.rect.w)
         y_count = math.ceil((self.size[1] - self.offset[1]) / self.rect.h)
         for x in range(x_count):
