@@ -1,3 +1,4 @@
+from blinker import signal
 import pygame 
 
 class GameDebugger:
@@ -12,8 +13,8 @@ class GameDebugger:
 
         self.show_panel = True 
 
-        self.show_sky = False
-        self.show_hitboxs = True
+        self.show_sky = True
+        self.show_hitboxs = not True
         self.show_paths = not True
 
     def load(self):
@@ -49,6 +50,11 @@ class GameDebugger:
             if event.key == pygame.K_p:
                 if self.show_panel:
                     self.show_paths = not self.show_paths
+
+            if event.key == pygame.K_e:
+                if self.show_panel:
+                    from TD.particles.explosions import ExplosionMedium
+                    signal("scene.add_particle").send(ExplosionMedium([800,300]))
 
     def draw(self, elapsed):
 

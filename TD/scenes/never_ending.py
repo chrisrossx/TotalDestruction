@@ -7,6 +7,8 @@ from TD.player import PlayerShip
 from TD.enemies.PlaneT8 import EnemyPlaneT8
 from TD.backgrounds import Sky
 from TD.debuging import game_debugger
+from TD.pickups import PickupHeart
+from TD.particles.explosions import ExplosionMedium
 
 from TD.states import State
 
@@ -30,27 +32,62 @@ class NeverEndingLevel:
         self.enemies = []
         self.player_bullets = []
         self.enemy_bullets = []
+        self.particles = []
+        self.pickups = []
 
         self.signal_add_enemy = signal("scene.add_enemy")
         self.signal_add_enemy.connect(self.on_add_enemey)
         self.signal_delete_enemy = signal("scene.delete_enemy")
         self.signal_delete_enemy.connect(self.on_delete_enemey)
-        
         self.signal_add_player_bullet = signal("scene.add_player_bullet")
         self.signal_add_player_bullet.connect(self.on_add_player_bullet)
-
         self.signal_add_enemy_bullet = signal("scene.add_enemy_bullet")
         self.signal_add_enemy_bullet.connect(self.on_add_enemy_bullet)
+        self.signal_add_particle = signal("scene.add_particle")
+        self.signal_add_particle.connect(self.on_add_particle)
+        self.signal_delete_particle = signal("scene.delete_particle")
+        self.signal_delete_particle.connect(self.on_delete_particle)
+        self.signal_add_pickup = signal("scene.add_pickup")
+        self.signal_add_pickup.connect(self.on_add_pickup)
+        self.signal_delete_pickup = signal("scene.delete_pickup")
+        self.signal_delete_pickup.connect(self.on_delete_pickup)
 
         self.ship = PlayerShip(size)
 
         self.timed_add = []
-        self.timed_add.append((500, "enemy", EnemyPlaneT8((500, 100))))
-        self.timed_add.append((1000, "enemy", EnemyPlaneT8((500, 100))))
-        self.timed_add.append((1500, "enemy", EnemyPlaneT8((500, 100))))
+        self.timed_add.append((0, "enemy", EnemyPlaneT8(0)))
+        self.timed_add.append((0, "enemy", EnemyPlaneT8(1)))
+        self.timed_add.append((0, "enemy", EnemyPlaneT8("T8 Charlie")))
+        self.timed_add.append((400, "enemy", EnemyPlaneT8("T8 Delta")))
+        self.timed_add.append((400, "enemy", EnemyPlaneT8("T8 Echo")))
+        # self.timed_add.append((500, "enemy", EnemyPlaneT8((500, 100))))
+        # self.timed_add.append((1000, "enemy", EnemyPlaneT8((500, 100))))
+        # self.timed_add.append((1500, "enemy", EnemyPlaneT8((500, 100))))
+
+        self.timed_add.append((0, "pickup", PickupHeart([500, 100])))
+        self.timed_add.append((0, "particle", ExplosionMedium([1000, 100])))
 
         self.runtime = 0.0
 
+    def on_add_particle(self, entity):
+        self.particles.append(entity)
+
+    def on_delete_particle(self, entity):
+        particles = []
+        for particle in self.particles:
+            if entity != particle:
+                particles.append(particle)
+        self.particles = particles
+
+    def on_add_pickup(self, entity):
+        self.pickups.append(entity)
+
+    def on_delete_pickup(self, entity):
+        pickups = []
+        for pickup in self.pickups:
+            if entity != pickup:
+                pickups.append(pickup)
+        self.pickups = pickups
 
     def on_add_player_bullet(self, entity):
         self.player_bullets.append(entity)
@@ -74,12 +111,13 @@ class NeverEndingLevel:
             self.ship.input_enabled = True
 
     def tick_starting(self, elapsed):
-        #Skip for now
+        # Skip for now
         self.change_state(State.PLAYING)
         self.ship.pos[0] = 200
 
         if self.starting_step == 0:
             self.ship.pos[0] += elapsed * 0.12
+            print(self.ship.pos[0])
             if self.ship.pos[0] > 200: 
                 self.starting_step = 1
                 self.starting_elapsed = 0.0
@@ -96,13 +134,21 @@ class NeverEndingLevel:
         for enemy in [e for e in self.enemies]:
             enemy.tick(elapsed)
 
+        for particle in [e for e in self.particles]:
+            particle.tick(elapsed)
+
+        for pickup in [e for e in self.pickups]:
+            pickup.tick(elapsed)
+
         for pbullet in [e for e in self.player_bullets]:
             pbullet.tick(elapsed)
+            #TODO consider moving this to the bullet itself, like the end of path for enemies PathFollower
             if pbullet.pos[0] > 1024:
                 self.player_bullets.remove(pbullet)
 
         for ebullet in [e for e in self.enemy_bullets]:
             ebullet.tick(elapsed)
+            #TODO consider moving this to the bullet itself, like the end of path for enemies PathFollower
             if ebullet.pos[0] < 20:
                 self.enemy_bullets.remove(ebullet)
 
@@ -134,7 +180,7 @@ class NeverEndingLevel:
                     hits = enemy_hitbox.collidelistall(pbullet_hitboxs)
                     if len(hits) > 0:
                         print("ENEMY HIT")
-                        enemy.delete()
+                        enemy.killed()
                         bullets = [self.player_bullets[i] for i in hits]
                         for b in bullets:
                             self.player_bullets.remove(b)
@@ -145,6 +191,10 @@ class NeverEndingLevel:
             if time_to_add <= self.runtime:
                 if entity_type == "enemy":
                     self.signal_add_enemy.send(entity)
+                if entity_type == "pickup":
+                    self.signal_add_pickup.send(entity)
+                if entity_type == "particle":
+                    self.signal_add_particle.send(entity)
             else:
                 timed_add.append((time_to_add, entity_type, entity))
         self.timed_add = timed_add
@@ -181,18 +231,27 @@ class NeverEndingLevel:
         self.sky.draw(elapsed, self.surface)
         if self.state == State.PLAYING:
 
-            self.ship.draw(elapsed, self.surface)
         
             for enemy in self.enemies:
                 enemy.draw(elapsed, self.surface)
+
+            for pickup in self.pickups:
+                pickup.draw(elapsed, self.surface)
 
             for pbullet in [e for e in self.player_bullets]:
                 pbullet.draw(elapsed, self.surface)
 
             for ebullet in [e for e in self.enemy_bullets]:
                 ebullet.draw(elapsed, self.surface)
+
+            for particle in self.particles:
+                particle.draw(elapsed, self.surface)
+
+
         elif self.state == State.STARTING:
             self.draw_starting(elapsed)
+
+        self.ship.draw(elapsed, self.surface)
         
 
         #Debug Runtime
@@ -200,3 +259,5 @@ class NeverEndingLevel:
         game_debugger.lines[1] = "Enemies: {}".format(str(len(self.enemies)))
         game_debugger.lines[2] = "Player bullets: {}".format(str(len(self.player_bullets)))
         game_debugger.lines[3] = "Enemy billets: {}".format(str(len(self.enemy_bullets)))
+        game_debugger.lines[4] = "Pickups: {}".format(str(len(self.pickups)))
+        game_debugger.lines[5] = "Particles: {}".format(str(len(self.particles)))

@@ -6,6 +6,8 @@ import blinker
 import pygame
 
 from TD.config import PATHS_FILENAME
+from TD.utils import fast_round 
+
 
 class PathItem:
     def __init__(self, name=None, data=None):
@@ -112,6 +114,9 @@ class PathData:
 
 class PathFollower:
     def __init__(self, index, offset=(0,0)):
+        """
+        @param index can by int or str: list index or path.name
+        """
         self.x = 0
         self.y = 0
         self.offset = offset
@@ -119,7 +124,14 @@ class PathFollower:
         # data = PathData()
         # data.load()
 
-        self.data = path_data[index]
+        if type(index) == int:
+            self.data = path_data[index]
+        if type(index) == str:
+            for path in path_data:
+                if path.name == index:
+                    self.data = path
+                    break
+
 
         self.velocity = 0.1
         self.distance = 0
@@ -149,6 +161,8 @@ class PathFollower:
                 t = (self.distance - start) / d
                 self.x = ((1-t) * p1[0])  + (t * p2[0])
                 self.y = ((1-t) * p1[1])  + (t * p2[1])
+                self.y = fast_round(self.y)
+                self.x = fast_round(self.x)
                 self.x += self.offset[0]
                 self.y += self.offset[1]
                 self.on_path = True
