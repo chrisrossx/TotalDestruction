@@ -9,16 +9,16 @@ class GameDebugger:
         self.frame_count = 0
         self.frame_count_elapsed = 0
         self.frame_count_surface = None
-        self.lines = [None for i in range(10)]
+        self.lines = [None for i in range(20)]
 
         self.show_panel = True 
 
-        self.show_sky = True
+        self.show_sky = not True
         self.show_hitboxs = not True
         self.show_paths = not True
 
     def load(self):
-        self.surface = pygame.Surface((200,200), pygame.SRCALPHA, 32)
+        self.surface = pygame.Surface((200,300), pygame.SRCALPHA, 32)
         self.font = pygame.font.SysFont("consolas", 12)
         self.frame_count = 0
         self.frame_count_elapsed = 0
@@ -62,7 +62,7 @@ class GameDebugger:
         if self.show_panel:
             if self.frame_count_surface:
                 self.surface.blit(self.frame_count_surface, (10, 10))
-            for i in range(10):
+            for i in range(len(self.lines)):
                 line = self.lines[i]
                 if line:
                     #TODO Could optomize this by cacheing rendered text, only update when set
