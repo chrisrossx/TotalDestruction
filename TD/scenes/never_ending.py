@@ -32,7 +32,7 @@ class NeverEndingLevel:
         
         #Playing State Information
         signal("scene.delete_entity").connect(self.em.delete)
-        signal("scene.on_entity").connect(self.em.add)
+        signal("scene.add_entity").connect(self.em.add)
 
         # self.ship = PlayerShip(size)
         self.ship = PlayerShip(size)
@@ -115,15 +115,6 @@ class NeverEndingLevel:
         self.runtime += elapsed
         self.ship.tick(elapsed)
 
-        #TODO: Is this caching unneceesary optimationz?
-        # for enemy in [e for e in self.enemies]:
-        #     enemy.tick(elapsed)
-
-        # for particle in [e for e in self.particles]:
-        #     particle.tick(elapsed)
-
-        # for pickup in [e for e in self.pickups]:
-        #     pickup.tick(elapsed)
 
         #TODO How to bullets delete themselves
         # for pbullet in [e for e in self.player_bullets]:
@@ -140,12 +131,14 @@ class NeverEndingLevel:
         #         self.enemy_bullets.remove(ebullet)
 
         #Check if Player is hitting any enemies. 
-        # for enemy in [e for e in self.enemies]:
-        #     if not enemy.deleted:
-        #         for ship_hitbox in self.ship.hitboxs:
-        #             if ship_hitbox.collidelist(enemy.hitboxs) != -1:
-        #                 #TODO Player Damage!
-        #                 enemy.delete()
+        for enemy in [e for e in self.em.entities_by_type[EntityType.ENEMY]]:
+            if not enemy.deleted:
+                for ship_hitbox in self.ship.hitboxes:
+                    if ship_hitbox.collidelist(enemy.hitboxes) != -1:
+    #                   #TODO Player Damage!
+                        enemy.killed()
+                        # enemy.delete()
+
 
         # #check if player bullets are hitting any enemies
         # ebullet_hitboxs = [b.hitbox for b in self.enemy_bullets]
@@ -244,9 +237,15 @@ class NeverEndingLevel:
 
         elif self.state == State.STARTING:
             self.draw_starting(elapsed)
-
-        self.ship.draw(elapsed, self.surface)
-        self.em.draw(elapsed, self.surface)
+        # self.em.draw(elapsed, self.surface)
+        # self.ship.draw(elapsed, self.surface)
+        self.em.draw(elapsed, self.surface, EntityType.ENEMY)
+        self.em.draw(elapsed, self.surface, EntityType.PARTICLE)
+        self.em.draw(elapsed, self.surface, EntityType.PICKUP)
+        self.em.draw(elapsed, self.surface, EntityType.ENEMYBULLET)
+        self.em.draw(elapsed, self.surface, EntityType.PLAYERBULLET)
+        self.em.draw(elapsed, self.surface, EntityType.PLAYER)
+        self.em.draw(elapsed, self.surface, EntityType.ENEMY)
 
         #Debug Runtime
         game_debugger.lines[0] = "Runtime: {}".format(str(round(self.runtime/1000, 1)))

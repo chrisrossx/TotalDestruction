@@ -92,6 +92,8 @@ class Entity:
         self.frame_elapsed = 0 # Amount of time the frame has been displayed
         self.frame_duration = -1 # Amount of time to display each frame in milliseconds. If less than 0, animation will stop
         self.frame_loop_start = 0 # Frame to loop back to when frame_count loops back, normally zero
+        self.frame_loop_count = 0
+        self.frame_loop_end = -1 # If greater than 0 delete self after that many loop
 
         # Position
         self.sprite_offset = [0, 0] # When drawing animation frame, where
@@ -105,7 +107,7 @@ class Entity:
         # Hit Boxes
         self._hitbox_x = None # Compare Last self.x to last _hitbox_x to see if needs to update hitbox. avoid update every tick
         self._hitbox_y = None  # Compare Last self.x to last _hitbox_x to see if needs to update hitbox. avoid update every tick
-        self.hitboxs = []
+        self.hitboxes = []
         self.hitbox_offsets = []
 
     @property
@@ -117,9 +119,9 @@ class Entity:
         if self._hitbox_x != self.x or self._hitbox_y != self.y:
             self._hitbox_x = self.x 
             self._hitbox_y = self.y
-            for i in range(len(self.hitboxs)):
-                self.hitboxs[i].x = self.x + self.hitbox_offsets[i][0]
-                self.hitboxs[i].y = self.y + self.hitbox_offsets[i][1]
+            for i in range(len(self.hitboxes)):
+                self.hitboxes[i].x = self.x + self.hitbox_offsets[i][0]
+                self.hitboxes[i].y = self.y + self.hitbox_offsets[i][1]
 
     def draw(self, elapsed, surface):
         #Should this be in draw or in tick... 
@@ -131,6 +133,9 @@ class Entity:
                 self.frame_index += 1
                 if self.frame_index == len(self.frames):
                     self.frame_index = self.frame_loop_start
+                    self.frame_loop_count += 1
+                    if self.frame_loop_end >= 0 and self.frame_loop_count >= self.frame_loop_end:
+                        self.delete()
        
         if len(self.frames) > 0:
             x = fast_round(self.x + self.sprite_offset[0])
@@ -138,8 +143,8 @@ class Entity:
             surface.blit(self.frames[self.frame_index], (x, y))
 
         if game_debugger.show_hitboxs:
-            for i in range(len(self.hitboxs)):
-                pygame.draw.rect(surface, (255,0,0), self.hitboxs[i], 1)
+            for i in range(len(self.hitboxes)):
+                pygame.draw.rect(surface, (255,0,0), self.hitboxes[i], 1)
 
 
     def delete(self):
@@ -147,7 +152,7 @@ class Entity:
         signal("scene.delete_entity").send(self)
 
     def add_hitbox(self, rect, offset):
-        self.hitboxs.append(pygame.Rect(rect))
+        self.hitboxes.append(pygame.Rect(rect))
         self.hitbox_offsets.append(offset)
 
 

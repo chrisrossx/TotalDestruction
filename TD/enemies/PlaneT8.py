@@ -7,6 +7,7 @@ from TD.debuging import game_debugger
 from TD.bullets import Bullet
 from TD.particles.explosions import ExplosionMedium
 from TD.entity import EntityPathFollower, EntityType
+from TD.particles.explosions import ExplosionMedium002
 
 
 class EnemyPlaneT8(EntityPathFollower):
@@ -14,15 +15,14 @@ class EnemyPlaneT8(EntityPathFollower):
         super().__init__(path_index)
         self.type = EntityType.ENEMY
         self.frames = asset_manager.sprites["T8"]
-
+        self.frame_duration = 30
         self.velocity = 0.25
         self.sprite_offset = [-32, -32]
         self.add_hitbox((0, 0, 40, 20), (-32, -12))
 
     def killed(self):
+        signal("scene.add_entity").send(ExplosionMedium002((self.x, self.y)))
         self.delete()
-        # Still Needs
-        # signal("scene.add_particel explosion!
         
 
 class EnemyPlaneT8O:

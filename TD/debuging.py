@@ -1,6 +1,7 @@
 from blinker import signal
 import pygame 
 
+
 class GameDebugger:
     def __init__(self):
 
@@ -54,7 +55,12 @@ class GameDebugger:
             if event.key == pygame.K_e:
                 if self.show_panel:
                     from TD.particles.explosions import ExplosionMedium
-                    signal("scene.add_particle").send(ExplosionMedium([800,300]))
+                    signal("scene.add_entity").send(ExplosionMedium([800,300]))
+
+            if event.key == pygame.K_r:
+                if self.show_panel:
+                    from TD.particles.explosions import ExplosionMedium002
+                    signal("scene.add_entity").send(ExplosionMedium002([800,400]))
 
     def draw(self, elapsed):
 

@@ -48,6 +48,7 @@ class AssetManager:
             (128,0,64,64),
             (192,0,64,64),
         ])
+        # self.sprites["T8"] = scale_sprites(self.sprites["T8"], (128, 128))
      
         source = pygame.image.load(Path("TD/assets/TD CX-5 2.png"))
         source.convert()
@@ -75,8 +76,7 @@ class AssetManager:
         ])
         self.sprites["Explosion Medium"] = scale_sprites(self.sprites["Explosion Medium"], (128,128))
 
-
-
+        self.sprites["Explosion Medium 002"] = load_sprite_from_files(Path("TD/assets/explosion medium/TD_Explosion_Medium.png"), ["-{}".format(i+1) for i in range(13)])
 
 
 

@@ -90,6 +90,7 @@ class PlayerShip(Entity):
     def draw(self, elapsed, surface):
         super().draw(elapsed, surface)
         pygame.draw.circle(surface, (255,255,0), (self.x, self.y), 4)
+        # print("player draw")
 
     def tick(self, elapsed):
         #Move Ship
