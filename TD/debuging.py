@@ -15,8 +15,9 @@ class GameDebugger:
         self.show_panel = True 
 
         self.show_sky = not True
-        self.show_hitboxs = not True
+        self.show_hitboxes = not True
         self.show_paths = not True
+        self.show_bounds = not True 
 
     def load(self):
         self.surface = pygame.Surface((200,300), pygame.SRCALPHA, 32)
@@ -46,7 +47,7 @@ class GameDebugger:
 
             if event.key == pygame.K_h:
                 if self.show_panel:
-                    self.show_hitboxs = not self.show_hitboxs
+                    self.show_hitboxes = not self.show_hitboxes
 
             if event.key == pygame.K_p:
                 if self.show_panel:
@@ -55,12 +56,16 @@ class GameDebugger:
             if event.key == pygame.K_e:
                 if self.show_panel:
                     from TD.particles.explosions import ExplosionMedium
-                    signal("scene.add_entity").send(ExplosionMedium([800,300]))
+                    signal("scene.add_entity").send(ExplosionMedium(pygame.Vector2(800,300)))
 
             if event.key == pygame.K_r:
                 if self.show_panel:
                     from TD.particles.explosions import ExplosionMedium002
-                    signal("scene.add_entity").send(ExplosionMedium002([800,400]))
+                    signal("scene.add_entity").send(ExplosionMedium002(pygame.Vector2(800,400)))
+
+            if event.key == pygame.K_b:
+                if self.show_panel:
+                    self.show_bounds = not self.show_bounds
 
     def draw(self, elapsed):
 

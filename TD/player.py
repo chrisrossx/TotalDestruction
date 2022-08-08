@@ -3,8 +3,9 @@ from blinker import signal
 import pygame 
 
 from TD.debuging import game_debugger
-from TD.bullets import Bullet
+from TD.bullets import BulletGreenRound001
 from TD.entity import Entity, EntityType
+
 
 class PlayerShip(Entity):
     def __init__(self, screen_size):
@@ -15,7 +16,7 @@ class PlayerShip(Entity):
         surface.convert_alpha()
         self.render_simple_ship(surface)
         self.frames.append(surface)
-        self.sprite_offset = [-20, -20]
+        self.sprite_offset = pygame.Vector2(-20, -20)
 
         self.x = 200
         self.y = 300
@@ -25,8 +26,8 @@ class PlayerShip(Entity):
         self.velocity = 0.25
         self.heading = [0, 0]
 
-        self.add_hitbox((0, 0, 30, 20), [-20, -10])
-        self.add_hitbox((0, 0, 40, 8), [-20, -4])
+        self.add_hitbox((0, 0, 30, 20), pygame.Vector2(-20, -10))
+        self.add_hitbox((0, 0, 40, 8), pygame.Vector2(-20, -4))
 
         rect = surface.get_rect()
         left = rect.w / 2
@@ -34,6 +35,10 @@ class PlayerShip(Entity):
         top = rect.h / 2
         bottom = self.screen_size[1] - top
         self.bounds = pygame.Rect((left, top, right-left, bottom-top))
+
+        self.firing = False
+        self.firing_elapsed = 1000 #start high so fire right away
+        
 
 
     def render_simple_ship(self, surface):
@@ -57,6 +62,12 @@ class PlayerShip(Entity):
         pygame.draw.polygon(surface, (60,60,60), points)
         points = ((0, 40), (0, 30), (18, 28))
         pygame.draw.polygon(surface, (60,60,60), points)
+
+    def fire(self):
+        x, y = self.pos
+        x += 20
+        bullet = BulletGreenRound001([x, y])
+        signal("scene.add_entity").send(bullet)
 
     def pressed(self, pressed, elapsed):
 
@@ -92,6 +103,7 @@ class PlayerShip(Entity):
         pygame.draw.circle(surface, (255,255,0), (self.x, self.y), 4)
         # print("player draw")
 
+
     def tick(self, elapsed):
         #Move Ship
         self.x += (self.heading[0] * self.velocity) * elapsed
@@ -107,27 +119,11 @@ class PlayerShip(Entity):
         if self.y > self.bounds.bottom:
             self.y = self.bounds.bottom
 
-        super().tick(elapsed)
-
-
-class PlayerShip2:
-    def __init__(self, screen_size) -> None:
-        
-        self.firing = False
-        self.firing_elapsed = 1000 #start high so fire right away
-        
- 
-    def fire(self):
-        x, y = self.pos
-        x += 20
-        bullet = Bullet([x, y])
-        signal("scene.add_player_bullet").send(bullet)
-
-    def tick(self, elapsed):
-
         self.firing_elapsed += elapsed
         if self.firing:
-            if self.firing_elapsed > 100:
+            if self.firing_elapsed > 350:
                 self.firing_elapsed = 0
                 self.fire()
+
+        super().tick(elapsed)
 

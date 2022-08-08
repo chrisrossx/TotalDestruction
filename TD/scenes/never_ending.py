@@ -130,13 +130,21 @@ class NeverEndingLevel:
         #     if ebullet.pos[0] < 20:
         #         self.enemy_bullets.remove(ebullet)
 
-        #Check if Player is hitting any enemies. 
-        for enemy in [e for e in self.em.entities_by_type[EntityType.ENEMY]]:
-            if not enemy.deleted:
-                for ship_hitbox in self.ship.hitboxes:
-                    if ship_hitbox.collidelist(enemy.hitboxes) != -1:
-    #                   #TODO Player Damage!
-                        enemy.killed()
+
+        def on_enemy_hit_player(enemy):
+            enemy.killed()
+
+        self.em.collidelist(self.ship.hitboxes, on_enemy_hit_player, EntityType.ENEMY)
+
+        # 
+
+    #     #Check if Player is hitting any enemies. 
+    #     for enemy in [e for e in self.em.entities_by_type[EntityType.ENEMY]]:
+    #         if not enemy.deleted:
+    #             for ship_hitbox in self.ship.hitboxes:
+    #                 if ship_hitbox.collidelist(enemy.hitboxes) != -1:
+    # #                   #TODO Player Damage!
+    #                     enemy.killed()
                         # enemy.delete()
 
 
@@ -189,10 +197,7 @@ class NeverEndingLevel:
             self.tick_starting(elapsed)
 
         self.em.tick(elapsed)
-        # for e in self.em.entities_by_type[EntityType.PARTICLE]:
-        #     if e.x < 0:
-        #         self.em.delete(e)
-
+ 
     def pressed(self, pressed, elapsed):
         self.ship.pressed(pressed, elapsed)
 
@@ -218,27 +223,9 @@ class NeverEndingLevel:
         if self.state == State.PLAYING:
             pass
             
-        
-            # for enemy in self.enemies:
-            #     enemy.draw(elapsed, self.surface)
-
-            # for pickup in self.pickups:
-            #     pickup.draw(elapsed, self.surface)
-
-            # for pbullet in [e for e in self.player_bullets]:
-            #     pbullet.draw(elapsed, self.surface)
-
-            # for ebullet in [e for e in self.enemy_bullets]:
-            #     ebullet.draw(elapsed, self.surface)
-
-            # for particle in self.particles:
-            #     particle.draw(elapsed, self.surface)
-
-
         elif self.state == State.STARTING:
             self.draw_starting(elapsed)
-        # self.em.draw(elapsed, self.surface)
-        # self.ship.draw(elapsed, self.surface)
+ 
         self.em.draw(elapsed, self.surface, EntityType.ENEMY)
         self.em.draw(elapsed, self.surface, EntityType.PARTICLE)
         self.em.draw(elapsed, self.surface, EntityType.PICKUP)
@@ -249,16 +236,11 @@ class NeverEndingLevel:
 
         #Debug Runtime
         game_debugger.lines[0] = "Runtime: {}".format(str(round(self.runtime/1000, 1)))
-        # game_debugger.lines[1] = "Enemies: {}".format(str(len(self.enemies)))
-        # game_debugger.lines[2] = "Player bullets: {}".format(str(len(self.player_bullets)))
-        # game_debugger.lines[3] = "Enemy billets: {}".format(str(len(self.enemy_bullets)))
-        # game_debugger.lines[4] = "Pickups: {}".format(str(len(self.pickups)))
-        # game_debugger.lines[5] = "Particles: {}".format(str(len(self.particles)))
-
         game_debugger.lines[1] = "Entities: {}".format(str(len(self.em.entities)))
-        game_debugger.lines[2] = "Entities Particles: {}".format(str(len(self.em.entities_by_type[EntityType.PARTICLE])))
-        game_debugger.lines[3] = "Entities Enemies: {}".format(str(len(self.em.entities_by_type[EntityType.ENEMY])))
-        # game_debugger.lines[9] = "Entities: {}".format(str(len(self.em.entities)))
-        # game_debugger.lines[10] = "Entities: {}".format(str(len(self.em.entities)))
+        game_debugger.lines[2] = "- Particles: {}".format(str(len(self.em.entities_by_type[EntityType.PARTICLE])))
+        game_debugger.lines[3] = "- Enemies: {}".format(str(len(self.em.entities_by_type[EntityType.ENEMY])))
+        game_debugger.lines[4] = "- Enemy Bullets: {}".format(str(len(self.em.entities_by_type[EntityType.ENEMYBULLET])))
+        game_debugger.lines[5] = "- Player Bullets: {}".format(str(len(self.em.entities_by_type[EntityType.PLAYERBULLET])))
+        game_debugger.lines[6] = "- Pickups: {}".format(str(len(self.em.entities_by_type[EntityType.PICKUP])))
 
         

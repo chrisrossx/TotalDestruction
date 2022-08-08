@@ -1,21 +1,30 @@
 import pygame 
 
+from TD.entity import EntityVectorMovement, EntityType
+from TD.assetmanager import asset_manager
 
-class Bullet:
+
+
+class Bullet(EntityVectorMovement):
+    pass
+
+
+class BulletGreenRound001(EntityVectorMovement):
     def __init__(self, pos):
-        self.surface = pygame.Surface((15,5))
-        pygame.draw.rect(self.surface, (255,0,0), self.surface.get_rect())
-
-        self.hitbox = self.surface.get_rect()
+        super().__init__()
+        self.type = EntityType.PLAYERBULLET
+        self.frames = asset_manager.sprites["Bullet Green Round 001"]
+        self.frame_loop_start = 2
+        self.frame_duration = 75
+        # self.heading = pygame.Vector2(1.0,0.0)
+        self.heading.rotate_ip(30)
+        self.velocity = 0.75
         self.pos = pos
-        self.hitbox.x = pos[0]
-        self.hitbox.y = pos[1]
-        self.velocity = 0.5
+        self.sprite_offset = pygame.Vector2(-32, -32)
+        self.add_hitbox((0,0,16,16), pygame.Vector2(4,4))
+
 
     def tick(self, elapsed):
-        self.pos[0] += elapsed * self.velocity
-        self.hitbox.x = self.pos[0]
-        self.hitbox.y = self.pos[1]
-    
-    def draw(self, elapsed, surface):
-        surface.blit(self.surface, self.pos)
+        super().tick(elapsed)
+        if self.x > 1024:
+            self.delete()

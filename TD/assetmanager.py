@@ -29,6 +29,15 @@ def scale_sprites(source, size):
         return sprites
 
 
+def rotate_sprites(source, angle):
+        sprites = []
+        for sprite in source:
+            new_sprite = pygame.transform.rotate(sprite, angle)
+            sprites.append(new_sprite)
+        return sprites
+
+
+
 class AssetManager:
     
     def __init__(self):
@@ -77,6 +86,11 @@ class AssetManager:
         self.sprites["Explosion Medium"] = scale_sprites(self.sprites["Explosion Medium"], (128,128))
 
         self.sprites["Explosion Medium 002"] = load_sprite_from_files(Path("TD/assets/explosion medium/TD_Explosion_Medium.png"), ["-{}".format(i+1) for i in range(13)])
+
+        self.sprites["Bullet Green Round 001"] = load_sprite_from_files(Path("TD/assets/bullet green round 001/TD_Bullet_Green_Round_001.png"), ["-{}".format(i+1) for i in range(5)])
+        self.sprites["Bullet Green Round 001"] = scale_sprites(self.sprites["Bullet Green Round 001"], (38/2, 84/2))
+        self.sprites["Bullet Green Round 001"] = rotate_sprites(self.sprites["Bullet Green Round 001"], -90)
+        self.sprites["Bullet Green Round 001"] = rotate_sprites(self.sprites["Bullet Green Round 001"], -30)
 
 
 

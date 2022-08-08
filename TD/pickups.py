@@ -39,7 +39,7 @@ class PickupHeart:
         x, y = fast_round_point(self.pos)
         surface.blit(self.frames[self.frame_index], (x+self.offset[0], y+self.offset[1]))
 
-        if game_debugger.show_hitboxs:
+        if game_debugger.show_hitboxes:
             for i in range(len(self.hitboxs)):
                 pygame.draw.rect(surface, (255,0,0), self.hitboxs[i], 1)
 

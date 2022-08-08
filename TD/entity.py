@@ -4,7 +4,7 @@ import pygame
 from blinker import signal 
 
 from TD.paths import PathFollower
-from TD.utils import fast_round_point, fast_round
+from TD.utils import fast_round_point, fast_round, fast_round_vector2
 from TD.debuging import game_debugger
 
 
@@ -64,6 +64,21 @@ class EntityManager:
         self.entities_by_type[entity.type].append(entity)
 
 
+    def collidelist(self, other_hitboxes, callback, entity_type=None):
+        if entity_type:
+            entities = self.entities_by_type[entity_type]
+        else:
+            entities = self.entities
+
+        count = 0    
+        for entity in [e for e in entities]:
+            if not entity.deleted:
+                for hitbox in other_hitboxes:
+                    if hitbox.collidelist(entity.hitboxes) != -1:
+                        callback(entity)
+                        count += 1
+        return count 
+        
 class Entity:
     """
     Base game object
@@ -92,12 +107,12 @@ class Entity:
         self.frame_elapsed = 0 # Amount of time the frame has been displayed
         self.frame_duration = -1 # Amount of time to display each frame in milliseconds. If less than 0, animation will stop
         self.frame_loop_start = 0 # Frame to loop back to when frame_count loops back, normally zero
-        self.frame_loop_count = 0
+        self.frame_loop_count = 0 # After x Counts then delete self
         self.frame_loop_end = -1 # If greater than 0 delete self after that many loop
 
         # Position
-        self.sprite_offset = [0, 0] # When drawing animation frame, where
-        self.x, self.y = [0.0, 0.0]
+        self.sprite_offset = pygame.Vector2(0, 0)
+        self.pos = pygame.Vector2(0.0, 0.0)
 
         # Movement
         # No Movement is provided in Base Entity, will provide two subclasses
@@ -105,26 +120,27 @@ class Entity:
         # 2. Path Follower
 
         # Hit Boxes
-        self._hitbox_x = None # Compare Last self.x to last _hitbox_x to see if needs to update hitbox. avoid update every tick
-        self._hitbox_y = None  # Compare Last self.x to last _hitbox_x to see if needs to update hitbox. avoid update every tick
+        self._hitbox_last_pos = pygame.Vector2(0,0) # Cache last position and only update hitboxes if Entity has moved. avoid update every tick
         self.hitboxes = []
         self.hitbox_offsets = []
 
     @property
-    def pos(self):
-        return [self.x, self.y]
+    def x(self):
+        return self.pos.x
+
+    @x.setter
+    def x(self, v):
+        self.pos.x = v
+
+    @property
+    def y(self):
+        return self.pos.y
+
+    @y.setter
+    def y(self, v):
+        self.pos.y = v
 
     def tick(self, elapsed):
-        # Update every tick? or check if self.x or self.y changed?
-        if self._hitbox_x != self.x or self._hitbox_y != self.y:
-            self._hitbox_x = self.x 
-            self._hitbox_y = self.y
-            for i in range(len(self.hitboxes)):
-                self.hitboxes[i].x = self.x + self.hitbox_offsets[i][0]
-                self.hitboxes[i].y = self.y + self.hitbox_offsets[i][1]
-
-    def draw(self, elapsed, surface):
-        #Should this be in draw or in tick... 
         # Animation Sprite
         if len(self.frames) > 0 and self.frame_duration > 0:
             self.frame_elapsed += elapsed
@@ -136,15 +152,27 @@ class Entity:
                     self.frame_loop_count += 1
                     if self.frame_loop_end >= 0 and self.frame_loop_count >= self.frame_loop_end:
                         self.delete()
-       
-        if len(self.frames) > 0:
-            x = fast_round(self.x + self.sprite_offset[0])
-            y = fast_round(self.y + self.sprite_offset[1])
-            surface.blit(self.frames[self.frame_index], (x, y))
 
-        if game_debugger.show_hitboxs:
+        #Update Hitbox positions to follow Entity       
+        if self._hitbox_last_pos != self.pos:
+            self._hitbox_last_pos = self.pos.copy()
+            for i in range(len(self.hitboxes)):
+                self.hitboxes[i].topleft = self.pos + self.hitbox_offsets[i]
+
+    def draw(self, elapsed, surface):
+        if len(self.frames) > 0:
+            point = fast_round_vector2(self.pos + self.sprite_offset)
+            surface.blit(self.frames[self.frame_index], point)
+
+        if game_debugger.show_hitboxes:
             for i in range(len(self.hitboxes)):
                 pygame.draw.rect(surface, (255,0,0), self.hitboxes[i], 1)
+
+        if game_debugger.show_bounds:
+            if len(self.frames) > 0:
+                rect = self.frames[self.frame_index].get_rect()
+                rect.topleft = point
+                pygame.draw.rect(surface, (100,100,100), rect, 1)
 
 
     def delete(self):
@@ -162,7 +190,7 @@ class EntityPathFollower(Entity):
 
         self.path = PathFollower(path_index)
         self.path.on_end_of_path.connect(self.on_end_of_path)
-        self.x, self.y = self.path.pos
+        self.pos = self.path.pos #this is a reference to a vector2, so update to path will update position of entity. 
 
     def on_end_of_path(self, sender):
         """
@@ -172,7 +200,7 @@ class EntityPathFollower(Entity):
 
     def tick(self, elapsed):
         if not self.deleted:
-            self.x, self.y = self.path.tick(elapsed)
+            self.path.tick(elapsed)
         super().tick(elapsed)
 
     @property
@@ -195,10 +223,9 @@ class EntityVectorMovement(Entity):
         super().__init__()
 
         # Movement
-        self.heading = [1, 0]   # Direction Vectory
-        self.velocity = 0.1     # Pixels Per Milliscond 0.1 = 100 pixels per second
+        self.heading = pygame.math.Vector2(1, 0)  # Direction Vector
+        self.velocity = 0.1 # Pixels Per Milliscond 0.1 = 100 pixels per second
 
     def tick(self, elapsed):
-        self.x += (self.heading[0] * self.velocity) * elapsed
-        self.y += (self.heading[1] * self.velocity) * elapsed
+        self.pos += self.heading * self.velocity * elapsed 
         super().tick(elapsed)

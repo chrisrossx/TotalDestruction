@@ -14,8 +14,7 @@ class ExplosionMedium002(EntityVectorMovement):
         self.type = EntityType.PARTICLE
         self.frames = asset_manager.sprites["Explosion Medium 002"]
         self.frame_duration = 1000/15
-        self.x = pos[0]
-        self.y = pos[1]
+        self.pos = pos.copy()
         self.velocity = -0.1
         self.sprite_offset = [-64, -64]
         self.frame_loop_end = 1
@@ -26,8 +25,7 @@ class ExplosionMedium(EntityVectorMovement):
         self.type = EntityType.PARTICLE
         self.frames = asset_manager.sprites["Explosion Medium"]
         self.frame_duration = 75
-        self.x = pos[0]
-        self.y = pos[1]
+        self.pos = pos.copy()
         self.velocity = -0.1
         self.sprite_offset = [-64, -64]
         self.frame_loop_end = 1

@@ -177,8 +177,9 @@ class PathFollower:
         """
         @param index can by int or str: list index or path.name
         """
-        self.x = 0.0
-        self.y = 0.0
+        # self.x = 0.0
+        # self.y = 0.0
+        self.pos = pygame.Vector2(0.0, 0.0)
 
         if type(index) == int:
             self.data = path_data[index]
@@ -196,17 +197,16 @@ class PathFollower:
         #Update self.x and self.y to starting position
         self.tick(0)
 
-    @property
-    def pos(self):
-        return self.x, self.y
+    # @property
+    # def pos(self):
+        # return self.x, self.y
 
     def draw(self, elapsed, surface):
         pygame.draw.lines(surface,(255,0,0), False, self.data.points)
         if self.on_path:
-            pygame.draw.circle(surface, (255, 0, 255), (self.x, self.y), 5)
+            pygame.draw.circle(surface, (255, 0, 255), self.pos, 5)
 
     def tick(self, elapsed):
-        pass
         self.distance += elapsed * self.velocity
         self.on_path = False
         for i in range(len(self.data.points)-1):
@@ -217,15 +217,15 @@ class PathFollower:
                 p1 = self.data.points[i]
                 p2 = self.data.points[i+1]
                 t = (self.distance - start) / d
-                self.x = ((1-t) * p1[0])  + (t * p2[0])
-                self.y = ((1-t) * p1[1])  + (t * p2[1])
+                self.pos.x = ((1-t) * p1[0])  + (t * p2[0])
+                self.pos.y = ((1-t) * p1[1])  + (t * p2[1])
                 self.on_path = True
                 break
         
         if self.on_path == False:
             self.on_end_of_path.send()
         
-        return self.x, self.y
+        return self.pos
 
 
 # Singleton Pattern - Stinky, but practical for a game environment
