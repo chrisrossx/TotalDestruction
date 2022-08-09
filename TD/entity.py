@@ -16,6 +16,7 @@ class EntityType(IntEnum):
     PLAYER = 4
     ENEMYBULLET = 5
     PLAYERBULLET = 6
+    GUI = 7
 
 
 class EntityManager:
@@ -78,7 +79,36 @@ class EntityManager:
                         callback(entity)
                         count += 1
         return count 
-        
+
+    def collidetypes(self, type_a, type_b, multiple_hits=True):
+        """
+        multiple_hits: If set to True then type_a can collide with many type_b. If set 
+        to false then type_a can only strike the first type_b, then will not hit anymore
+        type_bs. Example, if type_a is bullets, only strike first type_b, don't keep kitting type_b
+        if there are multiple type_b collisions. 
+        """
+
+        # {type_b: [type_a, type_a]},
+
+        collisions = {}
+
+        ignore_type_a = []
+
+        for entity_b in self.entities_by_type[type_b]:
+            type_a_hitboxes = [e.hitboxes[0] for e in self.entities_by_type[type_a] if (not e.deleted and e not in ignore_type_a)]
+            if not entity_b.deleted:
+                for entity_b_hitbox in entity_b.hitboxes:
+                    hits = entity_b_hitbox.collidelistall(type_a_hitboxes)
+                    if len(hits) > 0:
+                        collisions[entity_b] = []
+                        entities_a = [self.entities_by_type[type_a][i] for i in hits]
+                        for entity_a in entities_a:
+                            collisions[entity_b].append(entity_a)
+                            if not multiple_hits:
+                                ignore_type_a.append(entity_a)
+                        break # Don't keep looping through enemy hitboxes because already hit
+        return collisions
+
 class Entity:
     """
     Base game object
@@ -173,6 +203,7 @@ class Entity:
                 rect = self.frames[self.frame_index].get_rect()
                 rect.topleft = point
                 pygame.draw.rect(surface, (100,100,100), rect, 1)
+                pygame.draw.circle(surface, (255,255,255), self.pos, 4)
 
 
     def delete(self):

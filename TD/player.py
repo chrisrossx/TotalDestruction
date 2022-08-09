@@ -66,8 +66,12 @@ class PlayerShip(Entity):
     def fire(self):
         x, y = self.pos
         x += 20
-        bullet = BulletGreenRound001([x, y])
+        bullet = BulletGreenRound001([x, y], -15)
+        # signal("scene.add_entity").send(bullet)
+        bullet = BulletGreenRound001([x, y], 0)
         signal("scene.add_entity").send(bullet)
+        bullet = BulletGreenRound001([x, y], 15)
+        # signal("scene.add_entity").send(bullet)
 
     def pressed(self, pressed, elapsed):
 
@@ -100,7 +104,7 @@ class PlayerShip(Entity):
 
     def draw(self, elapsed, surface):
         super().draw(elapsed, surface)
-        pygame.draw.circle(surface, (255,255,0), (self.x, self.y), 4)
+        # pygame.draw.circle(surface, (255,255,0), (self.x, self.y), 4)
         # print("player draw")
 
 
