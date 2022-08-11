@@ -10,54 +10,60 @@ from TD.backgrounds import Sky
 from TD.debuging import game_debugger
 from TD.pickups import PickupHeart, PickupStar
 from TD.particles.explosions import ExplosionMedium
-from TD.states import State
 from ..entity import EntityManager, EntityType
+from .scene import Scene
+from TD.config import SCREEN_SIZE
 
 
-class NeverEndingLevel:
+class State(Enum):
+    NOT_STARTED = 0
+    STARTING = 1
+    PLAYING = 2
+    ENDING = 3
+    ENDED = 4
+    PAUSED = 10
 
-    def __init__(self, size):
 
-        self.em = EntityManager()
+class NeverEndingLevel(Scene):
 
-        self.font = pygame.font.SysFont(None, 24)
-
-        self.surface = pygame.Surface(size)
-        self.sky = Sky(size)
+    def __init__(self):
+        super().__init__()
 
         self.state = State.STARTING
+        self.runtime = 0.0
 
         #Starting State Information
         self.starting_step = 0
         self.starting_elapsed = 0.0
-                
-        self.signal_add_entity = signal("scene.add_entity")
-        signal("scene.delete_entity").connect(self.em.delete)
-        signal("scene.add_entity").connect(self.em.add)
 
-        self.ship = PlayerShip(size)
+        self.ship = PlayerShip()
         self.em.add(self.ship)
 
         self.timed_add = []
-        # self.timed_add.append((0, EnemyPlaneT8(0)))
+        self.timed_add.append((0, EnemyPlaneT8("alpha pattern")))
+        self.timed_add.append((500, EnemyPlaneT8("alpha pattern")))
+        self.timed_add.append((1000, EnemyPlaneT8("alpha pattern MX")))
         # self.timed_add.append((0, EnemyPlaneT8(1)))
         # self.timed_add.append((0, EnemyPlaneT8("T8 Charlie")))
         # self.timed_add.append((400, EnemyPlaneT8("T8 Delta")))
-        # self.timed_add.append((400, EnemyPlaneT8("T8 Echo")))
-        # for i in range(1, 2):
-        #     x = i * 750
-        #     self.timed_add.append((x, EnemyPlaneT8(0)))
-        #     self.timed_add.append((x, EnemyPlaneT8(1)))
-        #     self.timed_add.append((x, EnemyPlaneT8("T8 Charlie")))
-        #     self.timed_add.append((400+x, EnemyPlaneT8("T8 Delta")))
-        #     self.timed_add.append((400+x, EnemyPlaneT8("T8 Echo")))
+        # # self.timed_add.append((400, EnemyPlaneT8("T8 Echo")))
+        # for i in range(1, 600):
+        #     x = i * 350
+        #     self.timed_add.append((x, EnemyPlaneT8("alpha pattern")))
+        # #     self.timed_add.append((x, EnemyPlaneT8(1)))
+        # #     self.timed_add.append((x, EnemyPlaneT8("T8 Charlie")))
+        # #     self.timed_add.append((400+x, EnemyPlaneT8("T8 Delta")))
+        # #     self.timed_add.append((400+x, EnemyPlaneT8("T8 Echo")))
+        #     self.timed_add.append((0, PickupHeart(Vector2(800, 100))))
+
+        # self.timed_add.append((0, PickupHeart(Vector2(800, 300))))
         
-        self.timed_add.append((0, PickupHeart(Vector2(800, 100))))
-        self.timed_add.append((0, PickupStar(Vector2(800, 200))))
+        # self.timed_add.append((0, PickupStar(Vector2(900, 200))))
+        # self.timed_add.append((0, PickupStar(Vector2(900, 100))))
+        # self.timed_add.append((0, PickupStar(Vector2(850, 250))))
+        # self.timed_add.append((0, PickupStar(Vector2(800, 350))))
         
         # self.timed_add.append((0, "particle", ExplosionMedium([1000, 100])))
-
-        self.runtime = 0.0
 
     def change_state(self, state):
         self.state = state 
@@ -66,8 +72,8 @@ class NeverEndingLevel:
 
     def tick_starting(self, elapsed):
         # Skip for now
-        self.change_state(State.PLAYING)
-        self.ship.pos[0] = 200
+        # self.ship.pos[0] = 200
+        # self.change_state(State.PLAYING)
 
         if self.starting_step == 0:
             self.ship.pos[0] += elapsed * 0.12
@@ -98,7 +104,19 @@ class NeverEndingLevel:
             for b in bullets:
                 print("PLAYER HIT")
                 b.delete()
-                
+
+        #Magnet Effect for pickups
+        for i, pickup in enumerate(self.em.entities_by_type[EntityType.PICKUP]):
+            d = self.ship.pos.distance_to(pickup.pos)
+            if d < 200:
+                p3 = self.ship.pos - pickup.pos
+                p3.normalize_ip()
+                # https://www.geogebra.org/calculator/jy4vgb2b
+                v = 0.00001 * (200-d)**2
+                pickup.set_magnet_force(p3, v)
+            else:
+                pickup.set_magnet_force(Vector2(0.0, 0.0), 0.0)
+
         timed_add = []
         for time_to_add, entity in self.timed_add:
             if time_to_add <= self.runtime:
@@ -108,22 +126,17 @@ class NeverEndingLevel:
         self.timed_add = timed_add
 
     def tick(self, elapsed):
-        self.sky.tick(elapsed)
-
-        self.em.tick(elapsed)
-        
+        super().tick(elapsed)        
         if self.state == State.PLAYING:
             self.tick_playing(elapsed)
         elif self.state == State.STARTING:
             self.tick_starting(elapsed)
-
  
     def pressed(self, pressed, elapsed):
         self.ship.pressed(pressed, elapsed)
 
     def on_event(self, event, elapsed):
         pass
-        # self.ship.on_event(event, elapsed)
 
     def draw_starting(self, elapsed):
         if self.starting_step == 1:
@@ -136,24 +149,12 @@ class NeverEndingLevel:
             self.surface.blit(line, (x, y))
 
     def draw(self, elapsed):
-        self.surface.fill((0,0,0))
+        super().draw(elapsed)
 
-        #fill background with Sky Texture
-        self.sky.draw(elapsed, self.surface)
         if self.state == State.PLAYING:
             pass
-            
         elif self.state == State.STARTING:
             self.draw_starting(elapsed)
- 
-        self.em.draw(elapsed, self.surface, EntityType.ENEMY)
-        self.em.draw(elapsed, self.surface, EntityType.PARTICLE)
-        self.em.draw(elapsed, self.surface, EntityType.PICKUP)
-        self.em.draw(elapsed, self.surface, EntityType.ENEMYBULLET)
-        self.em.draw(elapsed, self.surface, EntityType.PLAYERBULLET)
-        self.em.draw(elapsed, self.surface, EntityType.PLAYER)
-        self.em.draw(elapsed, self.surface, EntityType.ENEMY)
-        self.em.draw(elapsed, self.surface, EntityType.GUI)
 
         #Debug Runtime
         game_debugger.lines[0] = "Runtime: {}".format(str(round(self.runtime/1000, 1)))
@@ -163,5 +164,4 @@ class NeverEndingLevel:
         game_debugger.lines[4] = "- Enemy Bullets: {}".format(str(len(self.em.entities_by_type[EntityType.ENEMYBULLET])))
         game_debugger.lines[5] = "- Player Bullets: {}".format(str(len(self.em.entities_by_type[EntityType.PLAYERBULLET])))
         game_debugger.lines[6] = "- Pickups: {}".format(str(len(self.em.entities_by_type[EntityType.PICKUP])))
-
-        
+      

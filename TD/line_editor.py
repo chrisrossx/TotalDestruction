@@ -31,6 +31,7 @@ class UIButton:
         self.line_width = 1
         self.text_offset = (8, 8)
         self.hover = False
+        self.font = self.parent.font 
         if callback != None:
             self.callback = callback
     
@@ -38,7 +39,7 @@ class UIButton:
         if self.hover:
             pygame.draw.rect(surface, self.hover_color, self.rect, 0)
         pygame.draw.rect(surface, self.color, self.rect, self.line_width)
-        line = self.parent.font.render(self.text, True, self.text_color)
+        line = self.font.render(self.text, True, self.text_color)
         surface.blit(line, (self.rect.x + self.text_offset[0], self.rect.y + self.text_offset[1]))
 
     def tick(self, elapsed):
@@ -73,6 +74,19 @@ class UILineButton(UIButton):
         line = self.parent.font_sm.render(self.text_2, True, self.text_color)
         surface.blit(line, (self.rect.x + self.text_offset[0], self.rect.y + 21 + self.text_offset[1]))
 
+class UIButtonSymbol(UIButton):
+    def __init__(self, rect, text, parent, color=None, text_color=None, hover_color=None, callback=None):
+        super().__init__(rect, text, parent, color, text_color, hover_color, callback)
+        self.text_offset = (8, -1)
+        self.font = self.parent.font_symbol
+
+class UIButtonSm(UIButton):
+    def __init__(self, rect, text, parent, color=None, text_color=None, hover_color=None, callback=None):
+        super().__init__(rect, text, parent, color, text_color, hover_color, callback)
+        self.text_offset = (3, 8)
+        self.font = self.parent.font_sm
+
+
 class LineEditor:
 
     def __init__(self, size):
@@ -87,6 +101,9 @@ class LineEditor:
         self.page = 0   # Which Lines to Show
         self.copied_line = [] # Buffer for copied line
         self.move_line = False # Move LIne Mode
+        self.edit_line = False # Move LIne Mode
+        self.edit_rects = []
+        self.edit_index = -1 
         self.saved = True # Is File Saved
 
         self.text_input = False #Are we inputting Text?
@@ -94,7 +111,8 @@ class LineEditor:
         self.text_cursor = 0
         pygame.display.set_caption("Line Editor")
         
-        self.font = pygame.font.SysFont(None, 24)
+        # self.font = pygame.font.SysFont("consolas", 24)
+        self.font_symbol = pygame.font.SysFont("segoeuisymbol", 20)
         self.font = pygame.font.SysFont("consolas", 16)
         self.font_sm = pygame.font.SysFont("consolas", 14)
         
@@ -115,15 +133,22 @@ class LineEditor:
             button = UILineButton(rect, "", "", self, callback=lambda i=i: self.on_line_button(i))
             self.buttons.append(button)
             self.line_buttons.append(button)
+        
+        w = 38
 
         y = 517
         rect = pygame.Rect(1234, y, 180, 30)
         self.buttons.append(UIButton(rect, "Rename Line", self, callback=self.on_rename))
         y += 40
-        rect = pygame.Rect(1234, y, 85, 30)
-        self.buttons.append(UIButton(rect, "Copy", self, callback=self.on_copy))
+        rect = pygame.Rect(1234, y, w, 30)
+        self.buttons.append(UIButtonSm(rect, "copy", self, callback=self.on_copy))
+        rect = pygame.Rect(1234+w+9, y, w, 30)
+        self.buttons.append(UIButtonSm(rect, "pste", self, callback=self.on_paste))
+
         rect = pygame.Rect(1234+95, y, 85, 30)
-        self.buttons.append(UIButton(rect, "Paste", self, callback=self.on_paste))
+        self.edit_button = UIButton(rect, "[ ] Edit", self, callback=self.on_edit)
+        self.buttons.append(self.edit_button)
+
         y += 40
         rect = pygame.Rect(1234, y, 85, 30)
         self.show_button = UIButton(rect, "[x] Show", self, callback=self.on_show)
@@ -132,11 +157,23 @@ class LineEditor:
         self.move_button = UIButton(rect, "[ ] Move", self, callback=self.on_move)
         self.buttons.append(self.move_button)
         y += 40
-        rect = pygame.Rect(1234, y, 180, 30)
-        self.buttons.append(UIButton(rect, "Delete Last Point", self, callback=self.on_delete_last))
+        rect = pygame.Rect(1234, y, 85, 30)
+        self.buttons.append(UIButton(rect, "DEL Pt", self, callback=self.on_delete_last))
+        # y += 40
+        rect = pygame.Rect(1234+95, y, 85, 30)
+        self.buttons.append(UIButton(rect, "Clear Ln", self, callback=self.on_clear))
+
         y += 40
-        rect = pygame.Rect(1234, y, 180, 30)
-        self.buttons.append(UIButton(rect, "Clear Line", self, callback=self.on_clear))
+        rect = pygame.Rect(1234, y, w, 30)
+        self.buttons.append(UIButtonSymbol(rect, "⇋y", self, callback=self.on_mirror_y))
+        # y += 40
+        rect = pygame.Rect(1234+w+9, y, w, 30)
+        self.buttons.append(UIButtonSymbol(rect, "⥯x", self, callback=self.on_mirror_x))
+
+        rect = pygame.Rect(1234+95, y, 85, 30)
+        self.buttons.append(UIButton(rect, "Input", self, callback=self.on_input_point))
+
+
         y += 40
         rect = pygame.Rect(1234, y, 180, 30)
         self.saved_button = UIButton(rect, "[x] Save", self, callback=self.save)
@@ -147,10 +184,46 @@ class LineEditor:
 
         self.page_changed()
 
+    def on_mirror_y(self):
+        if not self.data[self.index].hidden:
+            if len(self.data[self.index].points) > 0:
+                for i in range(len(self.data[self.index].points)):
+                    point = self.data[self.index].points[i]
+                    point[1] -= 300
+                    point[1] *= -1
+                    point[1] += 300
+                    self.data[self.index].points[i] = point
+                    self.data[self.index].calculate()
+                    self.update_line_buttons()
+                    self.not_saved()
+
+    def on_mirror_x(self):
+        if not self.data[self.index].hidden:
+            if len(self.data[self.index].points) > 0:
+                for i in range(len(self.data[self.index].points)):
+                    point = self.data[self.index].points[i]
+                    point[0] -= 512
+                    point[0] *= -1
+                    point[0] += 512
+                    self.data[self.index].points[i] = point
+                    self.data[self.index].calculate()
+                    self.update_line_buttons()
+                    self.not_saved()
+
+
     def on_rename(self):
         if self.text_input:
             self.text_input = False
         else:
+            self.text_input_mode = "name"
+            self.text_input = True
+            self.text_line = ""
+
+    def on_input_point(self):
+        if self.text_input:
+            self.text_input = False
+        else:
+            self.text_input_mode = "point"
             self.text_input = True
             self.text_line = ""
 
@@ -158,7 +231,7 @@ class LineEditor:
         self.copied_line = self.data[self.index].duplicate()
     
     def on_paste(self):
-        if not self.data[self.index].hidden:
+        if not self.data[self.index].hidden and not self.edit_line:
             if len(self.copied_line.points) > 0:
                 self.data[self.index] = self.copied_line.duplicate()
                 self.data[self.index].name += " (COPY)"
@@ -168,21 +241,55 @@ class LineEditor:
 
     def on_delete_last(self):
         if not self.data[self.index].hidden:
-            self.data[self.index].points.pop()
-            self.data[self.index].calculate()
-            self.update_line_buttons()
-            self.not_saved()
+            if not self.edit_line:
+                self.data[self.index].points.pop()
+                self.data[self.index].calculate()
+                self.update_line_buttons()
+                self.not_saved()
+            else:
+                self.data[self.index].points.pop(self.edit_index)
+                self.data[self.index].calculate()
+                self.update_line_buttons()
+                self.not_saved()
+                self.set_edit_rects()
+                self.edit_index = -1
+
 
     def on_clear(self):
-        if not self.data[self.index].hidden:
+        if not self.data[self.index].hidden and not self.edit_line:
             self.data[self.index].clear()
             self.update_line_buttons()
             self.not_saved()
     
     def on_move(self):
-        self.move_line = not self.move_line
-        t = "x" if self.move_line else " "
-        self.move_button.text = "[{}] Move".format(t)
+        if not self.edit_line:
+            self.move_line = not self.move_line
+            t = "x" if self.move_line else " "
+            self.move_button.text = "[{}] Move".format(t)
+    
+    def on_edit(self):
+        if not self.data[self.index].hidden:
+            self.edit_line = not self.edit_line
+            if self.edit_line:
+                self.edit_button.text = "[x] Edit"
+                self.set_edit_rects()
+            else:
+                self.clear_edit()
+
+    def clear_edit(self):
+        self.edit_rects = []
+        self.edit_button.text = "[ ] Edit"
+
+
+    def set_edit_rects(self):
+        self.edit_rects = []
+        for i in range(len(self.data[self.index].points)):
+            point = self.data[self.index].points[i]
+            w = 20
+            h = 20 
+            rect = pygame.Rect(point[0]-(w/2)+100, point[1]-(h/2)+100, w, h)
+            self.edit_rects.append(rect)
+            
 
     def clear_move(self):
         self.move_line = False
@@ -236,6 +343,7 @@ class LineEditor:
             button.color = (80, 80, 80)
         selected_button.line_width = 4
         selected_button.color = (255, 80, 80)
+        self.clear_edit()
         self.update_show_button()
 
     def on_line_button(self, button_index):
@@ -265,7 +373,27 @@ class LineEditor:
             
             # Check for backspace
             if event.key == pygame.K_RETURN:
-                self.data[self.index].name = self.text_line
+                if self.text_input_mode == "name":
+                    self.data[self.index].name = self.text_line
+                if self.text_input_mode == "point":
+                    try:
+                        x, y = self.text_line.split(",")
+                        x = int(x)
+                        y = int(y)
+                        if self.edit_line:
+                            if self.edit_index >= 0:
+                                self.data[self.index].points[self.edit_index] = [x, y]
+                                self.data[self.index].calculate()
+                                self.update_line_buttons()
+                                self.not_saved()
+                                self.set_edit_rects()
+                        else:
+                            self.data[self.index].points.append((x, y))
+                            self.data[self.index].calculate()
+                            self.update_line_buttons()
+                            self.not_saved()
+                    except:
+                        print("Text Parse Error")
                 self.text_input = False
                 self.update_line_buttons()
             elif event.key == pygame.K_ESCAPE:
@@ -274,6 +402,12 @@ class LineEditor:
                 self.text_line = self.text_line[:-1]
             else:
                 self.text_line += event.unicode
+
+        if event.type == pygame.KEYDOWN and self.edit_line:
+            
+            # Check for backspace
+            if event.key == pygame.K_ESCAPE:
+                self.edit_index = -1
 
 
         if event.type == pygame.MOUSEMOTION:
@@ -285,9 +419,9 @@ class LineEditor:
             self.cursor = event.pos
             if self.cursor[0] <= 1224:
                 if not self.data[self.index].hidden:
-                    self.not_saved()
                     x, y = self.cursor[0] - 100, self.cursor[1] - 100
                     if self.move_line and len(self.data[self.index].points) > 0:
+                        self.not_saved()
                         tx = self.data[self.index].points[0][0] - x
                         ty = self.data[self.index].points[0][1] - y
                         new_waypoints = []
@@ -299,6 +433,17 @@ class LineEditor:
                         self.data[self.index].points = new_waypoints
                         self.data[self.index].calculate()
                         self.clear_move()
+                    elif self.edit_line:
+                        found = False
+                        for i, rect in enumerate(self.edit_rects):
+                            if rect.collidepoint(self.cursor):
+                                self.edit_index = i
+                                found = True
+                        if not found and self.edit_index >= 0:
+                            self.data[self.index].points[self.edit_index] = [self.cursor[0]-100, self.cursor[1]-100]
+                            self.data[self.index].calculate()
+                            self.set_edit_rects()
+                            self.not_saved()
                     else:
                         self.data[self.index].points.append((x, y))
                         self.data[self.index].calculate()
@@ -311,6 +456,9 @@ class LineEditor:
         self.surface.fill((0,0,0))
         #Draw Cursor 
         if self.cursor[0] <= 1224:
+            # if self.edit_line:
+                # c = (255,0,0)
+            # else:
             # pygame.draw.circle(self.surface, (255,0,0), self.cursor, 5)
             c = (255, 255, 255)
             x, y = self.cursor
@@ -319,6 +467,9 @@ class LineEditor:
             pygame.draw.line(self.surface, c, (x-d, y), (x+d, y), 1)
             if self.move_line:
                 line = self.font_sm.render("MOVE", True, (255,55,55))
+                self.surface.blit(line, (x - line.get_rect().w/2, y + 14))
+            if self.edit_line:
+                line = self.font_sm.render("EDIT", True, (255,55,55))
                 self.surface.blit(line, (x - line.get_rect().w/2, y + 14))
 
         #Draw LInes        
@@ -331,7 +482,17 @@ class LineEditor:
                     pygame.draw.lines(self.surface, color, False, waypoints)
                 for i in range(len(waypoints)):
                     pygame.draw.circle(self.surface, color, waypoints[i], 3)
-                        
+
+        for i, rect in enumerate(self.edit_rects):
+            if i == self.edit_index:
+                c = (255, 0, 0)
+            elif rect.collidepoint(self.cursor):
+                c = (155, 155, 155)
+            else:
+                c = (80,80,80)
+
+            pygame.draw.rect(self.surface, c, rect, 1)
+
         #Draw Dividers
         pygame.draw.rect(self.surface, (80,80,80), (100, 100, 1024, 600), 1)
         pygame.draw.line(self.surface, (80,80,80), (1224, 0), (1224,800))
@@ -344,11 +505,17 @@ class LineEditor:
         #Cursor Position
         line = self.font.render("({}, {})".format(self.cursor[0]- 100, self.cursor[1]-100), True, (180,180,180))
         self.surface.blit(line, (5,5))
+        if self.edit_line and self.edit_index != -1:
+            line = self.font.render("Edit {}: ({}, {})".format(self.edit_index, self.data[self.index].points[self.edit_index][0], self.data[self.index].points[self.edit_index][1]), True, (180,180,180))
+            self.surface.blit(line, (5,25))
 
         #Text Input Dialog Box
         if self.text_input:
             pygame.draw.rect(self.surface, (255, 0,0), (10,765,350,30), 2)
-            line = self.font.render("Rename Path: {}".format(self.text_line), True, (255, 255, 255))
+            if self.text_input_mode == "name":
+                line = self.font.render("Rename Path: {}".format(self.text_line), True, (255, 255, 255))
+            else:
+                line = self.font.render("Point: {}".format(self.text_line), True, (255, 255, 255))
             self.surface.blit(line, (20, 772))
             self.text_cursor += elapsed
             if self.text_cursor < 500:

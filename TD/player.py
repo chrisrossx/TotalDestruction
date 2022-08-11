@@ -5,20 +5,21 @@ import pygame
 from TD.debuging import game_debugger
 from TD.bullets import BulletGreenRound001
 from TD.entity import Entity, EntityType
+from TD.config import SCREEN_SIZE
 
 
 class PlayerShip(Entity):
-    def __init__(self, screen_size):
+    def __init__(self):
         super().__init__()
         self.type = EntityType.PLAYER
-        self.screen_size = screen_size
+        self.screen_size = SCREEN_SIZE
         surface = pygame.Surface((40,40), pygame.SRCALPHA, 32)
         surface.convert_alpha()
         self.render_simple_ship(surface)
         self.frames.append(surface)
         self.sprite_offset = pygame.Vector2(-20, -20)
 
-        self.x = 200
+        self.x = -40
         self.y = 300
 
         self.input_enabled = False
@@ -31,7 +32,7 @@ class PlayerShip(Entity):
 
         rect = surface.get_rect()
         left = rect.w / 2
-        right = screen_size[0] - left
+        right = self.screen_size[0] - left
         top = rect.h / 2
         bottom = self.screen_size[1] - top
         self.bounds = pygame.Rect((left, top, right-left, bottom-top))
@@ -114,14 +115,15 @@ class PlayerShip(Entity):
         self.y += (self.heading[1] * self.velocity) * elapsed
 
         #bounds checking
-        if self.x < self.bounds.left:
-            self.x = self.bounds.left
-        if self.x > self.bounds.right:
-            self.x = self.bounds.right
-        if self.y < self.bounds.top:
-            self.y = self.bounds.top
-        if self.y > self.bounds.bottom:
-            self.y = self.bounds.bottom
+        if self.input_enabled:
+            if self.x < self.bounds.left:
+                self.x = self.bounds.left
+            if self.x > self.bounds.right:
+                self.x = self.bounds.right
+            if self.y < self.bounds.top:
+                self.y = self.bounds.top
+            if self.y > self.bounds.bottom:
+                self.y = self.bounds.bottom
 
         self.firing_elapsed += elapsed
         if self.firing:

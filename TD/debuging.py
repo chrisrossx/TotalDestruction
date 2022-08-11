@@ -14,10 +14,20 @@ class GameDebugger:
 
         self.show_panel = True 
 
-        self.show_sky = not True
+        self.show_sky = True
         self.show_hitboxes = not True
         self.show_paths = not True
         self.show_bounds = not True 
+
+        self.disable_input = 0
+        signal("debugger.disable_input").connect(self.on_disable_input)
+        signal("debugger.enable_input").connect(self.on_enable_input)
+
+    def on_disable_input(self, sender):
+        self.disable_input += 1
+
+    def on_enable_input(self, sender):
+        self.disable_input -= 1
 
     def load(self):
         self.surface = pygame.Surface((200,300), pygame.SRCALPHA, 32)
@@ -29,17 +39,24 @@ class GameDebugger:
     def tick(self, elapsed):
 
         #fps
-        self.frame_count += 1
-        self.frame_count_elapsed += elapsed
-        if self.frame_count_elapsed >= 1000:
-            self.frame_count_surface = self.font.render(str(self.frame_count), True, (255, 255, 0))
-            self.frame_count = 0
-            self.frame_count_elapsed = 0.0
-        
+        if self.show_panel == 1 or self.show_panel == 2:
+            self.frame_count += 1
+            self.frame_count_elapsed += elapsed
+            if self.frame_count_elapsed >= 1000:
+                self.frame_count_surface = self.font.render(str(self.frame_count), True, (255, 255, 0))
+                self.frame_count = 0
+                self.frame_count_elapsed = 0.0
+            
     def on_event(self, event, elapsed):
-        if event.type == pygame.KEYDOWN:
+        if self.disable_input == 0 and event.type == pygame.KEYDOWN:
             if event.key == 96:
-                self.show_panel = not self.show_panel
+                if self.show_panel == None:
+                    self.show_panel = 1
+                elif self.show_panel == 1:
+                    self.show_panel = 2
+                else:
+                    self.show_panel = None
+                # self.show_panel = not self.show_panel
 
             if event.key == pygame.K_s:
                 if self.show_panel :
@@ -71,13 +88,15 @@ class GameDebugger:
 
         self.surface.fill((0,0,0,0))
         if self.show_panel:
-            if self.frame_count_surface:
-                self.surface.blit(self.frame_count_surface, (10, 10))
-            for i in range(len(self.lines)):
-                line = self.lines[i]
-                if line:
-                    #TODO Could optomize this by cacheing rendered text, only update when set
-                    surface = self.font.render(line, True, (255, 255, 0))
-                    self.surface.blit(surface, (10, (i * 17)+25))
+            if self.show_panel == 1 or self.show_panel == 2:
+                if self.frame_count_surface:
+                    self.surface.blit(self.frame_count_surface, (10, 10))
+            if self.show_panel == 1:
+                for i in range(len(self.lines)):
+                    line = self.lines[i]
+                    if line:
+                        #TODO Could optomize this by cacheing rendered text, only update when set
+                        surface = self.font.render(line, True, (255, 255, 0))
+                        self.surface.blit(surface, (10, (i * 17)+25))
 
 game_debugger = GameDebugger()

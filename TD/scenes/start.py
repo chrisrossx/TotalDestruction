@@ -8,7 +8,7 @@ from TD.enemies.PlaneT8 import EnemyPlaneT8
 from TD.backgrounds import Sky
 from TD.debuging import game_debugger
 
-from TD.states import State
+# from TD.states import State
 
 
 class StartScene:
@@ -21,7 +21,7 @@ class StartScene:
 
         self.sky = Sky(size)
 
-        self.state = State.NOT_STARTED
+        # self.state = State.NOT_STARTED
 
     def tick(self, elapsed):
         self.sky.tick(elapsed)
@@ -34,7 +34,7 @@ class StartScene:
             if event.key == pygame.K_SPACE:
                 signal("game.change_scene").send({
                     "sky_offset":self.sky.offset,
-                    "scene": "play",
+                    "scene": "select_player",
                     })
 
     def draw(self, elapsed):
@@ -45,7 +45,6 @@ class StartScene:
 
         line_b = self.font_96.render("[T]otal [D]estruction", True, (0,0,0))
         line_w = self.font_96.render("[T]otal [D]estruction", True, (255,255,255))
-
         
         rect = line_b.get_rect()
         x = (1024/2) - (rect.width/2)
@@ -58,6 +57,4 @@ class StartScene:
         x = (1024/2) - (rect.width/2)
         y = (600/2) - (rect.height/2) + 80
         self.surface.blit(line, (x, y))
-
-
 

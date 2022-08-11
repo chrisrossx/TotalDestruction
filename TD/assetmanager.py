@@ -4,7 +4,7 @@ import pygame
 
 def load_sprite_from_file(filename):
     sprite = pygame.image.load(filename)
-    sprite.convert()
+    sprite = sprite.convert_alpha()
     return [sprite, ]
 
 
@@ -13,7 +13,7 @@ def load_sprite_from_files(base_filename, steps):
     for i, step in enumerate(steps):
         filename = base_filename.parent / Path(base_filename.stem + step + base_filename.suffix)
         sprite = pygame.image.load(filename)
-        sprite.convert()
+        sprite = sprite.convert_alpha()
         sprites.append(sprite)
     return sprites
 
@@ -51,14 +51,19 @@ class AssetManager:
     def __init__(self):
 
         self.sprites = {}
+        self.fonts = {}
 
     def load(self):
 
+        self.fonts["Game 1 24"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 24)
+        self.fonts["Game 1 48"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 48)
+        self.fonts["Game 1 96"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 96)
+
         self.sprites["sky layered"] = pygame.image.load(Path("TD/assets/layered.jpg"))
-        self.sprites["sky layered"].convert()
+        self.sprites["sky layered"] = self.sprites["sky layered"].convert()
 
         source = pygame.image.load(Path("TD/assets/TD T-8.png"))
-        source.convert()
+        source = source.convert_alpha()
         self.sprites["T8"] = load_sprites_from_sheet(source, [
             (0,0,64,64),
             (64,0,64,64),
@@ -68,7 +73,7 @@ class AssetManager:
         # self.sprites["T8"] = scale_sprites(self.sprites["T8"], (128, 128))
      
         source = pygame.image.load(Path("TD/assets/TD CX-5 2.png"))
-        source.convert()
+        source = source.convert_alpha()
         self.sprites["CX5"] = load_sprites_from_sheet(source, [
             (0,0,64,64),
             (64,0,64,64),
@@ -77,17 +82,16 @@ class AssetManager:
         ])
 
         self.sprites["D2"] = load_sprite_from_files(Path("TD/assets/TD D-2 .png"), ["001", "002", "003", "004"])
-        # self.sprites["powerup heart"] = load_sprite_from_files(Path("TD/assets/TD_Powerups_002.png"), ["-1", "-2", "-3", "-4", "-5", "-6", "-7"])
-        # self.sprites["powerup heart"] = scale_sprites(self.sprites["powerup heart"], (64, 64))
 
         self.sprites["Pickup Heart"] = load_sprite_from_files(Path("TD/assets/pickup heart/TD_Pickup_Heart.png"), ["-{}".format(i+1) for i in range(4)])
         self.sprites["Pickup Heart"] = scale_sprites(self.sprites["Pickup Heart"], (48, 48))
-        self.sprites["Pickup Star"] = load_sprite_from_file(Path("TD/assets/pickup star 001.png"))
-
+        self.sprites["Pickup Star"] = load_sprite_from_files(Path("TD/assets/star shadow/TD_Pickup_Star.png"), ["-{}".format(i+1) for i in range(15)])
+        
 
         # source = pygame.image.load(Path("TD/assets/TD Powerups 001.png"))
 
         source = pygame.image.load(Path("TD/assets/TD Explosion M 001.png"))
+        source = source.convert_alpha()
         self.sprites["Explosion Medium"] = load_sprites_from_sheet(source, [
             (0,0,64,64),
             (64,0,64,64),

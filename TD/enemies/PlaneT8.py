@@ -27,7 +27,7 @@ class EnemyPlaneT8(EntityPathFollower):
         # x, y = self.pos
         # y += 20
         b = BulletBlueRound001(self.pos.copy(), 0)
-        signal("scene.add_entity").send(b)
+        # signal("scene.add_entity").send(b)
 
     def killed(self):
         signal("scene.add_entity").send(ExplosionMedium002(self.pos))

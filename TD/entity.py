@@ -65,20 +65,20 @@ class EntityManager:
         self.entities_by_type[entity.type].append(entity)
 
 
-    def collidelist(self, other_hitboxes, callback, entity_type=None):
-        if entity_type:
-            entities = self.entities_by_type[entity_type]
-        else:
-            entities = self.entities
+    # def collidelist(self, other_hitboxes, callback, entity_type=None):
+    #     if entity_type:
+    #         entities = self.entities_by_type[entity_type]
+    #     else:
+    #         entities = self.entities
 
-        count = 0    
-        for entity in [e for e in entities]:
-            if not entity.deleted:
-                for hitbox in other_hitboxes:
-                    if hitbox.collidelist(entity.hitboxes) != -1:
-                        callback(entity)
-                        count += 1
-        return count 
+    #     count = 0    
+    #     for entity in [e for e in entities]:
+    #         if not entity.deleted:
+    #             for hitbox in other_hitboxes:
+    #                 if hitbox.collidelist(entity.hitboxes) != -1:
+    #                     callback(entity)
+    #                     count += 1
+    #     return count 
 
     def collidetypes(self, type_a, type_b, multiple_hits=True):
         """
@@ -150,7 +150,7 @@ class Entity:
         # 2. Path Follower
 
         # Hit Boxes
-        self._hitbox_last_pos = pygame.Vector2(0,0) # Cache last position and only update hitboxes if Entity has moved. avoid update every tick
+        # self._hitbox_last_pos = pygame.Vector2(0,0) # Cache last position and only update hitboxes if Entity has moved. avoid update every tick
         self.hitboxes = []
         self.hitbox_offsets = []
 
@@ -170,6 +170,9 @@ class Entity:
     def y(self, v):
         self.pos.y = v
 
+    def get_rect(self):
+        return self.frames[self.frame_index].get_rect()
+
     def tick(self, elapsed):
         # Animation Sprite
         if len(self.frames) > 0 and self.frame_duration > 0:
@@ -184,13 +187,12 @@ class Entity:
                         self.delete()
 
         #Update Hitbox positions to follow Entity       
-        if self._hitbox_last_pos != self.pos:
-            self._hitbox_last_pos = self.pos.copy()
-            for i in range(len(self.hitboxes)):
-                self.hitboxes[i].topleft = self.pos + self.hitbox_offsets[i]
+        for i in range(len(self.hitboxes)):
+            self.hitboxes[i].topleft = self.pos + self.hitbox_offsets[i]
 
     def draw(self, elapsed, surface):
         if len(self.frames) > 0:
+            # TODO is this needed, or wont the blit do roudning anyways? 
             point = fast_round_vector2(self.pos + self.sprite_offset)
             surface.blit(self.frames[self.frame_index], point)
 

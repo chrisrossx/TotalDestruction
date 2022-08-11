@@ -50,7 +50,8 @@ class PathItem:
         item = PathItem()
         item.name = self.name
         item.hidden = self.hidden
-        item.points = [x for x in self.points]
+        item.points = [[x[0], x[1]] for x in self.points]
+        item.calculate()
         return item
     
     def set_data(self, data):

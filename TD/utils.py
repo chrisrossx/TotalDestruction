@@ -17,5 +17,9 @@ def fast_round_point(some_float):
 
 
 def fast_round_vector2(v2):
-    return pygame.Vector2(int(v2.x * ROUND_P + 0.5)/ROUND_P, int(v2.y * ROUND_P + 0.5)/ROUND_P)
+    # v2.x = int(v2.x * ROUND_P + 0.5)/ROUND_P
+    # v2.y = int(v2.y * ROUND_P + 0.5)/ROUND_P
+    v2.update(int(v2.x * ROUND_P + 0.5)/ROUND_P, int(v2.y * ROUND_P + 0.5)/ROUND_P)
+    return v2
+    # return pygame.Vector2(int(v2.x * ROUND_P + 0.5)/ROUND_P, int(v2.y * ROUND_P + 0.5)/ROUND_P)
 
