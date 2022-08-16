@@ -19,7 +19,7 @@ class Channels:
         self.channels[MixerChannels.PLAYERFIRE] = pygame.mixer.Channel(MixerChannels.PLAYERFIRE.value)
         self.channels[MixerChannels.COINPICKUP] = pygame.mixer.Channel(MixerChannels.COINPICKUP.value)
 
-        pygame.mixer.
+        # pygame.mixer.
 
     def __getitem__(self, key):
         return self.channels[key]
