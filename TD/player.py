@@ -1,11 +1,16 @@
 
 from blinker import signal 
 import pygame 
+from pygame import Vector2
 
 from TD.debuging import game_debugger
 from TD.bullets import BulletGreenRound001
 from TD.entity import Entity, EntityType
 from TD.config import SCREEN_SIZE
+from .pickups import PickupType
+from TD.scenes.levels.level_state import LevelState
+from TD.assetmanager import asset_manager
+from TD.mixer import MixerChannels, channels
 
 
 class PlayerShip(Entity):
@@ -19,13 +24,15 @@ class PlayerShip(Entity):
         self.frames.append(surface)
         self.sprite_offset = pygame.Vector2(-20, -20)
 
-        self.x = -40
-        self.y = 300
+        self.pos = Vector2(-40, 300)
+        # self.x = -40
+        # self.y = 300
 
         self.input_enabled = False
+        self.paused = False
 
         self.velocity = 0.25
-        self.heading = [0, 0]
+        self.heading = Vector2(0, 0)
 
         self.add_hitbox((0, 0, 30, 20), pygame.Vector2(-20, -10))
         self.add_hitbox((0, 0, 40, 8), pygame.Vector2(-20, -4))
@@ -38,9 +45,43 @@ class PlayerShip(Entity):
         self.bounds = pygame.Rect((left, top, right-left, bottom-top))
 
         self.firing = False
-        self.firing_elapsed = 1000 #start high so fire right away
-        
+        self.firing_elapsed = 1000 # start high so fire right away
 
+        self.lives = 3
+        self.been_hit = False
+        self.coins = 0
+        
+        signal("scene.player.pickedup").connect(self.on_pickedup)
+
+    def on_pickedup(self, pickup):
+        if pickup.pickup_type == PickupType.HEART:
+            asset_manager.sounds["heart pickup"].play()
+            if self.lives < 3:
+                self.lives += 1
+                signal("scene.hud.lives").send(self.lives)
+        
+        if pickup.pickup_type == PickupType.COIN:
+            print("coin pickedup", self.coins)
+            channels[MixerChannels.COINPICKUP].play(asset_manager.sounds["coin pickup"])
+            self.coins += 1
+
+    def hit(self):
+        self.lives -= 1
+        signal("scene.hud.lives").send(self.lives)
+        if self.lives == 0:
+            signal("scene.change_state").send(LevelState.DEAD)
+        self.been_hit = True 
+        signal("scene.hud.medal.heart").send(False)
+        asset_manager.sounds["player hit"].play()
+
+    def collision(self):
+        self.lives -= 1
+        signal("scene.hud.lives").send(self.lives)
+        if self.lives == 0:
+            signal("scene.change_state").send(LevelState.DEAD)
+        self.been_hit = True 
+        signal("scene.hud.medal.heart").send(False)
+        asset_manager.sounds["player collision"].play()
 
     def render_simple_ship(self, surface):
         #Guns under Wings
@@ -68,24 +109,29 @@ class PlayerShip(Entity):
         x, y = self.pos
         x += 20
         bullet = BulletGreenRound001([x, y], -15)
-        # signal("scene.add_entity").send(bullet)
+        signal("scene.add_entity").send(bullet)
         bullet = BulletGreenRound001([x, y], 0)
         signal("scene.add_entity").send(bullet)
         bullet = BulletGreenRound001([x, y], 15)
-        # signal("scene.add_entity").send(bullet)
+        signal("scene.add_entity").send(bullet)
+        # from TD.mixer import MixerChannels
+        # asset_manager.sounds["player gun"].play()
+        # channel = pygame.mixer.Channel(MixerChannels.PLAYERFIRE.value)
+        # channel.play(asset_manager.sounds["player gun"])
+        channels[MixerChannels.PLAYERFIRE].play(asset_manager.sounds["player gun"])
 
     def pressed(self, pressed, elapsed):
 
         if self.input_enabled:
 
-            if pressed[pygame.K_SPACE]:
+            if pressed[pygame.K_SPACE] or pressed[pygame.K_LCTRL]:
                 self.firing = True
             else:
                 self.firing = False
                 # self.firing_elapsed = 1000
 
             # Account for anguluar velocity, so that ship doesn't fly faster at diagonals. 
-            heading = [0, 0]
+            heading = Vector2(0,0)
             if pressed[pygame.K_DOWN] and not pressed[pygame.K_UP]:
                 heading[1] = 1
             if pressed[pygame.K_UP] and not pressed[pygame.K_DOWN]:
@@ -95,35 +141,32 @@ class PlayerShip(Entity):
             if pressed[pygame.K_RIGHT] and not pressed[pygame.K_LEFT]:
                 heading[0] = 1
 
-            if heading[0] != 0 and heading[1] != 0:
-                heading[0] *= 0.7071 # sqrt(1/2)
-                heading[1] *= 0.7071 # sqrt(1/2)
-
-            # velocity = self.velocity if not pressed[pygame.K_LSHIFT] else self.velocity * 3
+            if heading.length() > 0:
+                heading.normalize_ip()
             self.heading = heading
 
-
-    def draw(self, elapsed, surface):
-        super().draw(elapsed, surface)
+    # def draw(self, elapsed, surface):
+        # super().draw(elapsed, surface)
         # pygame.draw.circle(surface, (255,255,0), (self.x, self.y), 4)
         # print("player draw")
 
 
     def tick(self, elapsed):
         #Move Ship
-        self.x += (self.heading[0] * self.velocity) * elapsed
-        self.y += (self.heading[1] * self.velocity) * elapsed
+        self.pos += (self.heading * self.velocity) * elapsed
+        # self.x += (self.heading[0] * self.velocity) * elapsed
+        # self.y += (self.heading[1] * self.velocity) * elapsed
 
         #bounds checking
         if self.input_enabled:
-            if self.x < self.bounds.left:
-                self.x = self.bounds.left
-            if self.x > self.bounds.right:
-                self.x = self.bounds.right
-            if self.y < self.bounds.top:
-                self.y = self.bounds.top
-            if self.y > self.bounds.bottom:
-                self.y = self.bounds.bottom
+            if self.pos.x < self.bounds.left:
+                self.pos.x = self.bounds.left
+            if self.pos.x > self.bounds.right:
+                self.pos.x = self.bounds.right
+            if self.pos.y < self.bounds.top:
+                self.pos.y = self.bounds.top
+            if self.pos.y > self.bounds.bottom:
+                self.pos.y = self.bounds.bottom
 
         self.firing_elapsed += elapsed
         if self.firing:

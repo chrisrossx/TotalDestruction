@@ -11,9 +11,12 @@ from .enter_name import EnterPlayerName
 from .start import StartScreen
 from .select_player import SelectPlayerScreen
 from .level_select import StartLevelScreen, LevelSelectScreen
+from .confirm_exit import ConfirmExit
+from .credits import CreditScreen
+
 
 class MainMenu(Scene):
-    def __init__(self):
+    def __init__(self, return_to_level_select=False):
 
         super().__init__()
 
@@ -32,14 +35,17 @@ class MainMenu(Scene):
             "enter_player_name": EnterPlayerName(),
             "level_select": LevelSelectScreen(),
             "start_level": StartLevelScreen(),
+            "confirm_exit": ConfirmExit(),
+            "credits_screen": CreditScreen(),
         }
 
         signal("menu_screen.start_transition").connect(self.start_transition)
         signal("scene.play_level").connect(self.play_level)
         
         #Initial Screen
-        self.screen = self.menu_screens["start_screen"]
-        self.screen = self.menu_screens["select_player"]
+        # self.screen = self.menu_screens["start_screen"]
+        self.screen = self.menu_screens["level_select"]
+        # self.screen = self.menu_screens["select_player"]
         self.screen.activate()
         self.screen.pos = Vector2(0,0)
 

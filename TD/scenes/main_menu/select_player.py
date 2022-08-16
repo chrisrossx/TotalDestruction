@@ -17,20 +17,20 @@ class PlayerSlot(Entity):
 
         self.frames = [pygame.Surface((300, 30), pygame.SRCALPHA),]
         self.selected = False
-        self.font_s = asset_manager.fonts["Game 1 24"]
+        self.font_s = asset_manager.fonts["sm"]
        
         self.index = index 
         self.player_slot = save_data.slots[index]
         self.render()
-        self.cursor_elapsed = 0
-        self.cursor_shown = True
+        # self.cursor_elapsed = 0
+        # self.cursor_shown = True
 
     def draw(self, elapsed, surface):
         super().draw(elapsed, surface)
-        if self.cursor_shown and self.selected:
-            s_rect = self.frames[0].get_rect()
-            s_rect.topleft = self.pos
-            pygame.draw.rect(surface, (255,255,0, 155), s_rect, 2, 3)
+        # if self.cursor_shown and self.selected:
+        #     s_rect = self.frames[0].get_rect()
+        #     s_rect.topleft = self.pos
+        #     pygame.draw.rect(surface, (255,255, 0, 155), s_rect, 2, 3)
 
     def tick(self, elapsed):
         super().tick(elapsed)
@@ -95,6 +95,14 @@ class SelectPlayerScreen(MenuScreen):
         lbl_press_delete.tjust_in_rect(menu_rect, 550)
         self.em.add(lbl_press_delete)
 
+        self.left_cursor = gui.MenuCursor()
+        self.left_cursor.x = 512-175
+        self.em.add(self.left_cursor)
+        
+        self.right_cursor = gui.MenuCursor(True)
+        self.right_cursor.x = 512+175
+        self.em.add(self.right_cursor)
+
         self.player_slots = []
         x = 512 - 150
         y = 175
@@ -112,11 +120,15 @@ class SelectPlayerScreen(MenuScreen):
             save_slot.update()
 
     def update_select_slot(self):
-        for i, save_slot in enumerate(self.player_slots):
-            if i == self.slot_index:
-                save_slot.selected = True
-            else:
-                save_slot.selected = False 
+        pass
+        y = 175 + (self.slot_index * 40) + 15
+        self.left_cursor.y = y
+        self.right_cursor.y = y
+        # for i, save_slot in enumerate(self.player_slots):
+            # if i == self.slot_index:
+            #     save_slot.selected = True
+            # else:
+            #     save_slot.selected = False 
     
     def deactivate(self):
         for i, save_slot in enumerate(self.player_slots):
@@ -133,7 +145,8 @@ class SelectPlayerScreen(MenuScreen):
         if not self.transitioning:
         
             if event.type == pygame.KEYDOWN and event.key == pygame.K_DELETE:
-                signal("menu_screen.start_transition").send(screen_name="confirm_delete_player", direction="bottom", data={"slot_index": self.slot_index})
+                if save_data.slots[self.slot_index].name != None:
+                    signal("menu_screen.start_transition").send(screen_name="confirm_delete_player", direction="bottom", data={"slot_index": self.slot_index})
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 signal("menu_screen.start_transition").send(screen_name="start_screen", direction="left")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:

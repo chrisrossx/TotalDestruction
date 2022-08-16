@@ -41,6 +41,14 @@ def rotate_sprites(source, angle):
             sprites.append(new_sprite)
         return sprites
 
+def flip_sprites(source, flip_x=False, flip_y=False):
+        sprites = []
+        for sprite in source:
+            new_sprite = pygame.transform.flip(sprite, flip_x, flip_y)
+            sprites.append(new_sprite)
+        return sprites
+
+
 def create_rotations(store, source, angles):
     for angle in angles:
         store[angle] = rotate_sprites(source, angle)
@@ -53,13 +61,25 @@ class AssetManager:
         self.sprites = {}
         self.fonts = {}
 
+        self.sounds = {}
+
     def load(self):
 
-        self.fonts["Game 1 24"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 24)
-        self.fonts["Game 1 48"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 48)
-        self.fonts["Game 1 96"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 96)
+        self.fonts["sm"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 24)
+        self.fonts["md"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 48)
+        self.fonts["lg"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 96)
 
-        self.sprites["sky layered"] = pygame.image.load(Path("TD/assets/layered.jpg"))
+
+        self.sounds["coin pickup"] = pygame.mixer.Sound(str(Path("TD/assets/CoinBrass.wav")))
+        self.sounds["heart pickup"] = pygame.mixer.Sound(str(Path("TD/assets/CoinThree.wav")))
+        self.sounds["explosion md"] = pygame.mixer.Sound(str(Path("TD/assets/ExploFuel.wav")))
+        self.sounds["explosion player"] = pygame.mixer.Sound(str(Path("TD/assets/ExploBreakage2.wav")))
+        self.sounds["player hit"] = pygame.mixer.Sound(str(Path("TD/assets/ExploMetalbits.wav")))
+        self.sounds["player collision"] = pygame.mixer.Sound(str(Path("TD/assets/HitMetalBasher.wav")))
+        self.sounds["player gun"] = pygame.mixer.Sound(str(Path("TD/assets/GunUp.wav")))
+        self.sounds["player gun"].set_volume(0.3)
+
+        self.sprites["sky layered"] = pygame.image.load(str(Path("TD/assets/layered.jpg")))
         self.sprites["sky layered"] = self.sprites["sky layered"].convert()
 
         source = pygame.image.load(Path("TD/assets/TD T-8.png"))
@@ -113,8 +133,14 @@ class AssetManager:
         self.sprites["Bullet Blue Round 001"] = {}
         self.sprites["Bullet Blue Round 001"][0] = load_sprite_from_file(Path("TD/assets/bullet blue round 001.png"))
 
+        self.sprites["Menu Cursor Left"] = load_sprite_from_files(Path("TD/assets/menu cursor/TD_Menu_Cursor.png"), ["-{}".format(i+1) for i in range(9)])
+        self.sprites["Menu Cursor Left"] = rotate_sprites(self.sprites["Menu Cursor Left"], -90)
+        self.sprites["Menu Cursor Right"] = flip_sprites(self.sprites["Menu Cursor Left"], flip_x=True)
 
+        self.sprites["HUD"] = load_sprite_from_files(Path("TD/assets/HUD/TD_HUD.png"), ["-{}".format(i+1) for i in range(16)])
 
+        self.sprites["HUD Hurt"] = load_sprite_from_file(Path("TD/assets/HUD hurt.png"))
+        self.sprites["HUD Hurt"][0].set_alpha(50)
 
 # Singleton Pattern - Stinky, but practical for a game environment
 asset_manager = AssetManager()

@@ -15,11 +15,13 @@ class Scene:
         self.surface = pygame.Surface(SCREEN_SIZE)
         self.background = Sky(SCREEN_SIZE)
 
-        self.signal_add_entity = signal("scene.add_entity")
-        self.signal_add_entity.connect(self.em.add)
+        signal("scene.add_entity").connect(self.em.add)
         signal("scene.delete_entity").connect(self.em.delete)
         
     def pressed(self, pressed, elapsed):
+        pass
+
+    def delete(self):
         pass
 
     def on_event(self, event, elapsed):
@@ -36,14 +38,15 @@ class Scene:
         self.background.tick(elapsed)
     
     def draw(self, elapsed):
-        self.surface.fill((0,0,0))
+        # self.surface.fill((0,0,0))
         self.background.draw(elapsed, self.surface)
 
-        self.em.draw(elapsed, self.surface, EntityType.ENEMY)
+        # self.em.draw(elapsed, self.surface, EntityType.ENEMY)
         self.em.draw(elapsed, self.surface, EntityType.PARTICLE)
         self.em.draw(elapsed, self.surface, EntityType.PICKUP)
         self.em.draw(elapsed, self.surface, EntityType.ENEMYBULLET)
         self.em.draw(elapsed, self.surface, EntityType.PLAYERBULLET)
-        self.em.draw(elapsed, self.surface, EntityType.PLAYER)
         self.em.draw(elapsed, self.surface, EntityType.ENEMY)
+        self.em.draw(elapsed, self.surface, EntityType.PLAYER)
         self.em.draw(elapsed, self.surface, EntityType.GUI)
+        self.em.draw(elapsed, self.surface, EntityType.DIALOG)

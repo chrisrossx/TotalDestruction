@@ -17,6 +17,7 @@ class EntityType(IntEnum):
     ENEMYBULLET = 5
     PLAYERBULLET = 6
     GUI = 7
+    DIALOG = 8
 
 
 class EntityManager:
@@ -34,10 +35,10 @@ class EntityManager:
         if entity_type=None, then tick all entities
         """
         if entity_type:
-            for e in self.entities_by_type[entity_type]:
+            for e in [e for e in self.entities_by_type[entity_type] if e.enabled]:
                 e.tick(elapsed)
         else:
-            for e in self.entities:
+            for e in [e for e in self.entities if e.enabled]:
                 e.tick(elapsed)
 
     def draw(self, elapsed, surface, entity_type=None):
@@ -45,10 +46,10 @@ class EntityManager:
         if entity_type=None, then draw all entities
         """
         if entity_type:
-            for e in self.entities_by_type[entity_type]:
+            for e in [e for e in self.entities_by_type[entity_type] if e.enabled]:
                 e.draw(elapsed, surface)
         else:
-            for e in self.entities:
+            for e in [e for e in self.entities if e.enabled]:
                 e.draw(elapsed, surface)
 
     def delete(self, entity):
@@ -129,7 +130,8 @@ class Entity:
 
         # Meta / State
         self.type = EntityType.UNASSIGNED
-        self.deleted = False 
+        self.deleted = False # In Process of being deleted, don't collide with anything.
+        self.enabled = True # Don't Draw or Tick
 
         # Animation Sprite
         self.frames = [] # List of pygame.Surfaces
@@ -154,6 +156,11 @@ class Entity:
         self.hitboxes = []
         self.hitbox_offsets = []
 
+
+    @property
+    def surface(self):
+        return self.frames[self.frame_index]
+        
     @property
     def x(self):
         return self.pos.x
@@ -173,6 +180,9 @@ class Entity:
     def get_rect(self):
         return self.frames[self.frame_index].get_rect()
 
+    def animation_finished_callback(self, entity):
+        entity.delete()
+
     def tick(self, elapsed):
         # Animation Sprite
         if len(self.frames) > 0 and self.frame_duration > 0:
@@ -184,7 +194,8 @@ class Entity:
                     self.frame_index = self.frame_loop_start
                     self.frame_loop_count += 1
                     if self.frame_loop_end >= 0 and self.frame_loop_count >= self.frame_loop_end:
-                        self.delete()
+                        # self.delete()
+                        self.animation_finished_callback(self)
 
         #Update Hitbox positions to follow Entity       
         for i in range(len(self.hitboxes)):
@@ -210,6 +221,7 @@ class Entity:
 
     def delete(self):
         self.deleted = True 
+        self.enabled = False 
         signal("scene.delete_entity").send(self)
 
     def add_hitbox(self, rect, offset):

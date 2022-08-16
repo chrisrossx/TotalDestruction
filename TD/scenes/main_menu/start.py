@@ -12,7 +12,7 @@ class StartScreen(MenuScreen):
     def render(self):
         menu_rect = SCREEN_RECT.copy()
 
-        lbl_hero = gui.GUILabel("Total Destruction", self.font_l, (255,255,255), shadow_color=(80,80,80), shadow_step=Vector2(6,6))
+        lbl_hero = gui.GUILabel("[T]otal [D]estruction", self.font_l, (255,255,255), shadow_color=(80,80,80), shadow_step=Vector2(6,6))
         lbl_hero.center_in_rect(menu_rect)
         lbl_hero.tjust_in_rect(menu_rect, 100)
         self.em.add(lbl_hero)
@@ -39,9 +39,9 @@ class StartScreen(MenuScreen):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 signal("menu_screen.start_transition").send(screen_name="select_player", direction="right")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                signal("game.exit").send()
+                signal("menu_screen.start_transition").send(screen_name="confirm_exit", direction="bottom")
             if event.type == pygame.KEYDOWN and event.unicode == "?":
-                print("GAME CREDITS")
+                signal("menu_screen.start_transition").send(screen_name="credits_screen", direction="top")
 
 
 

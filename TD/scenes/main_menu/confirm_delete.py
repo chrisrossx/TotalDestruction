@@ -5,6 +5,7 @@ from blinker import signal
 from TD.config import SCREEN_RECT
 from TD import gui
 from .screen import MenuScreen
+from TD.savedata import save_data
 
 
 class ConfirmDeletePlayer(MenuScreen):
@@ -14,13 +15,14 @@ class ConfirmDeletePlayer(MenuScreen):
         super().__init__()
 
     def deactivate(self):
-        self.player_name = ""
-        self.lbl_name.set_text("\"{}\"".format(self.player_name))
+        player_name = ""
+        self.lbl_name.set_text("\"{}\"".format(player_name))
         self.lbl_name.centerx_in_rect(SCREEN_RECT)
 
     def set_data(self, data):
-        self.player_name = data["name"]
-        self.lbl_name.set_text("\"{}\"".format(self.player_name))
+        self.slot_index = data["slot_index"]
+        player_name = save_data.slots[self.slot_index].name
+        self.lbl_name.set_text("\"{}\"".format(player_name))
         self.lbl_name.centerx_in_rect(SCREEN_RECT)
 
     def render(self):
