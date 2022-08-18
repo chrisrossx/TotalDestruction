@@ -62,5 +62,7 @@ class LevelSelectScreen(MenuScreen):
         
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 signal("menu_screen.start_transition").send(screen_name="select_player", direction="left")
+                signal("mixer.play").send("menu click")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 signal("menu_screen.start_transition").send(screen_name="start_level", direction="right", data={"level": 0})
+                signal("mixer.play").send("menu click")

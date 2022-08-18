@@ -79,6 +79,13 @@ class AssetManager:
         self.sounds["player gun"] = pygame.mixer.Sound(str(Path("TD/assets/GunUp.wav")))
         self.sounds["player gun"].set_volume(0.3)
 
+        self.sounds["menu move"] = pygame.mixer.Sound(str(Path("TD/assets/CatchClose.wav")))
+        self.sounds["menu click"] = pygame.mixer.Sound(str(Path("TD/assets/CatchOpen.wav")))
+        self.sounds["menu type"] = pygame.mixer.Sound(str(Path("TD/assets/HitMetalBash.wav")))
+        
+
+
+
         self.sprites["sky layered"] = pygame.image.load(str(Path("TD/assets/layered.jpg")))
         self.sprites["sky layered"] = self.sprites["sky layered"].convert()
 

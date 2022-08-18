@@ -53,8 +53,11 @@ class ConfirmDeletePlayer(MenuScreen):
     def on_event(self, event, elapsed):
         if not self.transitioning:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                save_data.slots[self.slot_index].clear()
+                signal("savedata.save").send()
                 signal("menu_screen.start_transition").send(screen_name="select_player", direction="top")
-                print("CONFIRED DELETE")
+                signal("mixer.play").send("menu click")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 signal("menu_screen.start_transition").send(screen_name="select_player", direction="top")
+                signal("mixer.play").send("menu click")
 

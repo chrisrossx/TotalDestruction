@@ -10,8 +10,6 @@ from TD.config import SCREEN_SIZE
 from .pickups import PickupType
 from TD.scenes.levels.level_state import LevelState
 from TD.assetmanager import asset_manager
-from TD.mixer import MixerChannels, channels
-
 
 class PlayerShip(Entity):
     def __init__(self):
@@ -55,14 +53,14 @@ class PlayerShip(Entity):
 
     def on_pickedup(self, pickup):
         if pickup.pickup_type == PickupType.HEART:
-            asset_manager.sounds["heart pickup"].play()
+            signal("mixer.play").send("heart pickup")
             if self.lives < 3:
                 self.lives += 1
                 signal("scene.hud.lives").send(self.lives)
         
         if pickup.pickup_type == PickupType.COIN:
             print("coin pickedup", self.coins)
-            channels[MixerChannels.COINPICKUP].play(asset_manager.sounds["coin pickup"])
+            signal("mixer.play").send("coin pickup")
             self.coins += 1
 
     def hit(self):
@@ -72,7 +70,7 @@ class PlayerShip(Entity):
             signal("scene.change_state").send(LevelState.DEAD)
         self.been_hit = True 
         signal("scene.hud.medal.heart").send(False)
-        asset_manager.sounds["player hit"].play()
+        signal("mixer.play").send("player hit")
 
     def collision(self):
         self.lives -= 1
@@ -81,7 +79,7 @@ class PlayerShip(Entity):
             signal("scene.change_state").send(LevelState.DEAD)
         self.been_hit = True 
         signal("scene.hud.medal.heart").send(False)
-        asset_manager.sounds["player collision"].play()
+        signal("mixer.play").send("player collision")
 
     def render_simple_ship(self, surface):
         #Guns under Wings
@@ -114,11 +112,7 @@ class PlayerShip(Entity):
         signal("scene.add_entity").send(bullet)
         bullet = BulletGreenRound001([x, y], 15)
         signal("scene.add_entity").send(bullet)
-        # from TD.mixer import MixerChannels
-        # asset_manager.sounds["player gun"].play()
-        # channel = pygame.mixer.Channel(MixerChannels.PLAYERFIRE.value)
-        # channel.play(asset_manager.sounds["player gun"])
-        channels[MixerChannels.PLAYERFIRE].play(asset_manager.sounds["player gun"])
+        signal("mixer.play").send("player gun")
 
     def pressed(self, pressed, elapsed):
 

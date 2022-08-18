@@ -1,4 +1,3 @@
-from pathlib import Path
 import json
 import math
 
@@ -81,7 +80,7 @@ class PathData:
 # ]
 
     def __init__(self):
-        self._file = Path(PATHS_FILENAME)
+        self._file = PATHS_FILENAME
         self._items = []
         for i in range(256):
             self._items.append(PathItem())

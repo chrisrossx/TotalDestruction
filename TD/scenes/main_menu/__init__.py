@@ -43,9 +43,12 @@ class MainMenu(Scene):
         signal("scene.play_level").connect(self.play_level)
         
         #Initial Screen
-        # self.screen = self.menu_screens["start_screen"]
-        self.screen = self.menu_screens["level_select"]
-        # self.screen = self.menu_screens["select_player"]
+        if return_to_level_select:
+            self.screen = self.menu_screens["level_select"]
+        else:
+            self.screen = self.menu_screens["start_screen"]
+            # self.screen = self.menu_screens["level_select"]
+            # self.screen = self.menu_screens["select_player"]
         self.screen.activate()
         self.screen.pos = Vector2(0,0)
 

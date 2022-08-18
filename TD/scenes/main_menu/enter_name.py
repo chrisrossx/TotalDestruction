@@ -63,7 +63,6 @@ class EnterPlayerName(MenuScreen):
         self.lbl_name.set_text(self.text_line)
         self.lbl_name.centerx_in_rect(SCREEN_RECT)
         super().draw(elapsed)
-        # pos = .copy()
         lbl_rect = self.lbl_name.get_rect()
         lbl_rect.topleft = self.lbl_name.pos
         self.cursor_rect.x = lbl_rect.right + 0
@@ -78,15 +77,20 @@ class EnterPlayerName(MenuScreen):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     signal("menu_screen.start_transition").send(screen_name="select_player", direction="left")
+                    signal("mixer.play").send("menu click")
                 elif event.key == pygame.K_RETURN:
                     save_data.slots[self.slot_index].name = self.text_line
                     save_data.index = self.slot_index
-                    signal("menu_screen.start_transition").send(screen_name="level_select", direction="right", data={"slot_index": self.slot_index})
+                    signal("savedata.save").send()
+                    signal("menu_screen.start_transition").send(screen_name="level_select", direction="right")
+                    signal("mixer.play").send("menu click")
                 
                 # Check for backspace
                 elif event.key == pygame.K_BACKSPACE:
                     self.text_line = self.text_line[:-1]
+                    signal("mixer.play").send("menu type")
                 else:
                     if len(self.text_line) < 15:
                         self.text_line += event.unicode
+                        signal("mixer.play").send("menu type")
 

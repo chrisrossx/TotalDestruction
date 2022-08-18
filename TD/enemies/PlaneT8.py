@@ -37,23 +37,23 @@ class EnemyPlaneT8(EntityPathFollower):
         # x, y = self.pos
         # y += 20
         b = BulletBlueRound001(self.pos.copy(), 0)
-        # signal("scene.add_entity").send(b)
+        signal("scene.add_entity").send(b)
 
     def killed(self):
         signal("scene.player.enemy_killed").send(self)
         signal("scene.add_entity").send(ExplosionMedium002(self.pos))
-        asset_manager.sounds["explosion md"].play()
+        signal("mixer.play").send("explosion md")
 
-        for pickup in self.drops:
-            p = pickup(self.pos)
-            signal("scene.add_entity").send(p)
-            
         if self.drop_coins:
             r = (random.randint(0, 40)**2)/500
             r = round(r, 0)
             for i in range(int(r)):
                 p = PickupCoin(self.pos)
                 signal("scene.add_entity").send(p)
+
+        for pickup in self.drops:
+            p = pickup(self.pos)
+            signal("scene.add_entity").send(p)
 
         self.delete()
         

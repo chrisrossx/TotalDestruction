@@ -7,7 +7,7 @@ from .scenes.main_menu import MainMenu
 from .config import SCREEN_SIZE
 from .savedata import save_data
 from .scenes.levels.level_001 import Level_001
-from .mixer import channels
+from .mixer import Mixer
 
 class App:
 
@@ -21,7 +21,7 @@ class App:
 
         self.font = pygame.font.SysFont(None, 24)
         asset_manager.load()
-        channels.load()
+        self.mixer = Mixer()
 
         signal("game.change_scene").connect(self.on_change_scene)
         signal("game.exit").connect(self.on_exit)
@@ -34,7 +34,6 @@ class App:
 
     def on_change_scene(self, data):
         self.scene.delete()
-        # del self.scene
         if data["scene"] == "play":
             self.scene = Level_001()
             self.scene.background.offset = data["sky_offset"]
@@ -47,10 +46,8 @@ class App:
 
     def run(self):
 
-        # self.scene = NeverEndingLevel()
-        # self.scene = MainMenu()
-        # self.scene = Level()
-        self.scene = Level_001()
+        self.scene = MainMenu()
+        # self.scene = Level_001()
         
         self.clock.tick()
         self.running = True

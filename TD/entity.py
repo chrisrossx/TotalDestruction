@@ -41,6 +41,20 @@ class EntityManager:
             for e in [e for e in self.entities if e.enabled]:
                 e.tick(elapsed)
 
+    def on_event(self, event, elapsed, entity_type=None):
+        """
+        if entity_type=None, then call all entities
+        """
+        if entity_type:
+            for e in [e for e in self.entities_by_type[entity_type] if e.enabled]:
+                if hasattr(e, "on_event"):
+                    e.on_event(event, elapsed)
+        else:
+            for e in [e for e in self.entities if e.enabled]:
+                if hasattr(e, "on_event"):
+                    e.on_event(event, elapsed)
+
+
     def draw(self, elapsed, surface, entity_type=None):
         """
         if entity_type=None, then draw all entities

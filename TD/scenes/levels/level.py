@@ -74,7 +74,7 @@ class DeadState(LevelStateMachine):
         signal("scene.add_entity").send(ExplosionMedium002(self.player.pos + Vector2(0, 15)))
         signal("scene.add_entity").send(ExplosionMedium002(self.player.pos + Vector2(-15, -5)))
         signal("scene.add_entity").send(GUISprite(asset_manager.sprites["HUD Hurt"]))
-        asset_manager.sounds["explosion player"].play()
+        signal("mixer.play").send("explosion player")
 
     def tick(self, elapsed):
         self.step_elapsed += elapsed
@@ -281,14 +281,6 @@ class Level(Scene):
         }
         for hud in self.hud.values():
             self.em.add(hud)
-
-    # def delete(self):
-    #     print("scene.delete")
-    #     del self.state_machines[LevelState.STARTING]
-    #     del self.state_machines[LevelState.PLAYING]
-    #     del self.state_machines[LevelState.DEAD]
-    #     del self.state_machine
-
 
     def on_exit(self, data=None):
         print(data)

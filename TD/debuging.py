@@ -19,7 +19,7 @@ class GameDebugger:
         self.timeits_callback = []
 
         self.show_panel = True 
-        self.show_sky = True
+        self.show_sky = not True
         self.show_hitboxes = not True
         self.show_paths = not True
         self.show_bounds = not True 
@@ -145,6 +145,10 @@ class GameDebugger:
             if event.key == pygame.K_h:
                 if self.show_panel:
                     self.show_hitboxes = not self.show_hitboxes
+
+            if event.key == pygame.K_f:
+                from TD.savedata import save_data
+                save_data.save()
 
             if event.key == pygame.K_p:
                 if self.show_panel:

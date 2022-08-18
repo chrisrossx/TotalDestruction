@@ -2,7 +2,7 @@ import pygame
 
 from TD.config import SCREEN_SIZE
 from TD.assetmanager import asset_manager
-from TD.entity import EntityManager
+from TD.entity import EntityManager, EntityType
 
 class MenuScreen:
     def __init__(self) -> None:
@@ -30,7 +30,7 @@ class MenuScreen:
         pass
 
     def on_event(self, event, elapsed):
-        pass
+        self.em.on_event(event, elapsed, EntityType.GUI)
 
     def set_data(self, data):
         pass

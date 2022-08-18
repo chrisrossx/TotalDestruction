@@ -1,0 +1,45 @@
+{
+  "mute": true,
+  "slots": [
+    {
+      "name": "christopher",
+      "coins": 0,
+      "level_state": {}
+    },
+    {
+      "name": null,
+      "coins": 0,
+      "level_state": {}
+    },
+    {
+      "name": null,
+      "coins": 0,
+      "level_state": {}
+    },
+    {
+      "name": null,
+      "coins": 0,
+      "level_state": {}
+    },
+    {
+      "name": null,
+      "coins": 0,
+      "level_state": {}
+    },
+    {
+      "name": null,
+      "coins": 0,
+      "level_state": {}
+    },
+    {
+      "name": null,
+      "coins": 0,
+      "level_state": {}
+    },
+    {
+      "name": null,
+      "coins": 0,
+      "level_state": {}
+    }
+  ]
+}

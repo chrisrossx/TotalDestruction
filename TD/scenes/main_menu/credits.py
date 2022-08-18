@@ -45,3 +45,4 @@ class CreditScreen(MenuScreen):
         
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 signal("menu_screen.start_transition").send(screen_name="start_screen", direction="bottom")
+                signal("mixer.play").send("menu click")
