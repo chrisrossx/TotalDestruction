@@ -7,7 +7,6 @@ from blinker import signal
 from pygame import Vector2 
 import pygame
 
-from ...enemies.PlaneT8 import EnemyPlaneT8
 from .hud import HUDMedal100, HUDMedal70 , HUDMedalHeart, HUDLife
 from .level_state import LevelState
 from TD.scenes.scene import Scene
@@ -18,7 +17,7 @@ from TD.config import SCREEN_RECT, SCREEN_SIZE
 from TD.scenes.levels.pause_menu import PauseMenu
 from TD.player import PlayerShip
 from TD.debuging import game_debugger
-from TD.particles.explosions import ExplosionMedium002
+from TD.particles.explosions import ExplosionMedium
 
 
 class LevelStateMachine:
@@ -67,12 +66,12 @@ class DeadState(LevelStateMachine):
         self.player.enabled = False
         self.player.input_enabled = False
 
-        explosion = ExplosionMedium002(self.player.pos)
+        explosion = ExplosionMedium(self.player.pos)
         explosion.animation_finished_callback = self.on_animation_finished
         signal("scene.add_entity").send(explosion)
-        signal("scene.add_entity").send(ExplosionMedium002(self.player.pos + Vector2(-35, 0)))
-        signal("scene.add_entity").send(ExplosionMedium002(self.player.pos + Vector2(0, 15)))
-        signal("scene.add_entity").send(ExplosionMedium002(self.player.pos + Vector2(-15, -5)))
+        signal("scene.add_entity").send(ExplosionMedium(self.player.pos + Vector2(-35, 0)))
+        signal("scene.add_entity").send(ExplosionMedium(self.player.pos + Vector2(0, 15)))
+        signal("scene.add_entity").send(ExplosionMedium(self.player.pos + Vector2(-15, -5)))
         signal("scene.add_entity").send(GUISprite(asset_manager.sprites["HUD Hurt"]))
         signal("mixer.play").send("explosion player")
 
@@ -138,25 +137,6 @@ class PlayingState(LevelStateMachine):
         self.runtime = 0.0
         self.timed_add = []
 
-        t8 = EnemyPlaneT8(0)
-        t8.path.distance = 100
-        t8.velocity = 0.0
-
-        # self.timed_add.append((500, t8))
-        # self.timed_add.append((500, EnemyPlaneT8(1)))
-        # self.timed_add.append((1000, EnemyPlaneT8(1)))
-        # self.timed_add.append((1500, EnemyPlaneT8(1)))
-        # from TD.pickups import PickupHeart
-        # heart = PickupHeart(Vector2(600,300))
-        # self.timed_add.append((0, heart))/
-        # import random 
-        # from TD.pickups import PickupCoin
-        # pos = Vector2(512, 300)
-        # for i in range(6):
-        #     p = PickupCoin(pos)
-        #     signal("scene.add_entity").send(p)
-
-
         self.total_enemies = 4
         self.enemies_killed = 0
         self.enemies_missed = 0
@@ -165,6 +145,12 @@ class PlayingState(LevelStateMachine):
 
     def on_enemy_missed(self, enemy):
         self.enemies_missed += 1
+        print("enemy missed")
+        if self.enemies_missed / self.total_enemies >= 0.3:
+            signal("scene.hud.medal.70").send(False)
+        if self.enemies_missed / self.total_enemies > 0.0:
+            signal("scene.hud.medal.100").send(False)
+
 
     def start(self):
         self.player.input_enabled = True
@@ -174,7 +160,7 @@ class PlayingState(LevelStateMachine):
         self.runtime += elapsed
         self.player.tick(elapsed)
 
-        game_debugger.timeit_start("tick.hitboxes")
+        # game_debugger.timeit_start("tick.hitboxes")
 
         for enemy in self.em.collidetypes(EntityType.PLAYER, EntityType.ENEMY).keys():
             enemy.killed()
@@ -201,7 +187,7 @@ class PlayingState(LevelStateMachine):
                 self.player.hit()
                 b.delete()
 
-        game_debugger.timeit_end("tick.hitboxes")
+        # game_debugger.timeit_end("tick.hitboxes")
 
         #Magnet Effect for pickups
         for i, pickup in enumerate(self.em.entities_by_type[EntityType.PICKUP]):
@@ -222,12 +208,6 @@ class PlayingState(LevelStateMachine):
             else:
                 timed_add.append((time_to_add, entity))
         self.timed_add = timed_add
-
-        if self.enemies_missed / self.total_enemies >= 0.3:
-            signal("scene.hud.medal.70").send(False)
-        if self.enemies_missed / self.total_enemies > 0.0:
-            signal("scene.hud.medal.100").send(False)
-
     
 
 class Level(Scene):
@@ -268,8 +248,8 @@ class Level(Scene):
         self.player = PlayerShip()
         self.em.add(self.player)
 
-        game_debugger.timeit_setup("tick.hitboxes", 9, False)
-        game_debugger.timeit_setup("scene.draw", 10, False)
+        # game_debugger.timeit_setup("tick.hitboxes", 9, False)
+        # game_debugger.timeit_setup("scene.draw", 10, False)
 
         self.hud = {
             "life1": HUDLife(Vector2(10, -32), 1),
@@ -281,6 +261,9 @@ class Level(Scene):
         }
         for hud in self.hud.values():
             self.em.add(hud)
+
+    def add_level_entity(self, time, entity):
+        self.state_machines[LevelState.PLAYING].timed_add.append((time, entity))
 
     def on_exit(self, data=None):
         print(data)
@@ -334,6 +317,6 @@ class Level(Scene):
         game_debugger.lines[7] = "- GUI:            {}".format(str(len(self.em.entities_by_type[EntityType.GUI])))
         game_debugger.lines[8] = "- DIALOG:         {}".format(str(len(self.em.entities_by_type[EntityType.DIALOG])))
 
-    @game_debugger.timeit_wrapper("scene.draw")
+    # @game_debugger.timeit_wrapper("scene.draw")
     def draw(self, elapsed):
         super().draw(elapsed)

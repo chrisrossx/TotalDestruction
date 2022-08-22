@@ -101,7 +101,7 @@ class AssetManager:
      
         source = pygame.image.load(Path("TD/assets/TD CX-5 2.png"))
         source = source.convert_alpha()
-        self.sprites["CX5"] = load_sprites_from_sheet(source, [
+        self.sprites["CX5B"] = load_sprites_from_sheet(source, [
             (0,0,64,64),
             (64,0,64,64),
             (128,0,64,64),
@@ -109,6 +109,12 @@ class AssetManager:
         ])
 
         self.sprites["D2"] = load_sprite_from_files(Path("TD/assets/TD D-2 .png"), ["001", "002", "003", "004"])
+
+        self.sprites["BT1"] = load_sprite_from_files(Path("TD/assets/BT1/TD_BT1.png"), ["-{}".format(i+1) for i in range(18)])
+
+        self.sprites["Boss 001"] = load_sprite_from_files(Path("TD/assets/boss 001/TD_BOSS_001.png"), ["-{}".format(i+1) for i in range(12)])
+        self.sprites["Boss 001 laser"] = load_sprite_from_files(Path("TD/assets/boss 001/TD_BOSS_001_Laser.png"), ["-{}".format(i+1) for i in range(17)])
+        self.sprites["Boss 001 launchers"] = load_sprite_from_files(Path("TD/assets/boss 001/TD_BOSS_001_Launchers.png"), ["-{}".format(i+1) for i in range(9)])
 
         self.sprites["Pickup Heart"] = load_sprite_from_files(Path("TD/assets/pickup heart/TD_Pickup_Heart.png"), ["-{}".format(i+1) for i in range(4)])
         self.sprites["Pickup Heart"] = scale_sprites(self.sprites["Pickup Heart"], (48, 48))
@@ -131,14 +137,18 @@ class AssetManager:
 
         self.sprites["Explosion Medium 002"] = load_sprite_from_files(Path("TD/assets/explosion medium/TD_Explosion_Medium.png"), ["-{}".format(i+1) for i in range(13)])
 
-        self.sprites["Bullet Green Round 001"] = {}
-        self.sprites["Bullet Green Round 001"][0] = load_sprite_from_files(Path("TD/assets/bullet green round 001/TD_Bullet_Green_Round_001.png"), ["-{}".format(i+1) for i in range(5)])
-        self.sprites["Bullet Green Round 001"][0] = scale_sprites(self.sprites["Bullet Green Round 001"][0], (38/2, 84/2))
-        self.sprites["Bullet Green Round 001"][0] = rotate_sprites(self.sprites["Bullet Green Round 001"][0], -90)
-        create_rotations(self.sprites["Bullet Green Round 001"], self.sprites["Bullet Green Round 001"][0], [-15, 15,180])
+        self.sprites["Bullet 001"] = {}
+        self.sprites["Bullet 001"][0] = load_sprite_from_files(Path("TD/assets/Bullet 001/TD_Bullet_Green_Round_001.png"), ["-{}".format(i+1) for i in range(5)])
+        self.sprites["Bullet 001"][0] = scale_sprites(self.sprites["Bullet 001"][0], (38/2, 84/2))
+        self.sprites["Bullet 001"][0] = rotate_sprites(self.sprites["Bullet 001"][0], -90)
+        create_rotations(self.sprites["Bullet 001"], self.sprites["Bullet 001"][0], [-15, 15,180])
 
-        self.sprites["Bullet Blue Round 001"] = {}
-        self.sprites["Bullet Blue Round 001"][0] = load_sprite_from_file(Path("TD/assets/bullet blue round 001.png"))
+        # self.sprites["Bullet 002"] = {}
+        self.sprites["Bullet 002"] = load_sprite_from_file(Path("TD/assets/Bullet 002.png"))
+
+        self.sprites["Bullet 003"] = load_sprite_from_files(Path("TD/assets/Bullet 003/TD_Bullet_003.png"), ["-{}".format(i+1) for i in range(4)])
+
+        
 
         self.sprites["Menu Cursor Left"] = load_sprite_from_files(Path("TD/assets/menu cursor/TD_Menu_Cursor.png"), ["-{}".format(i+1) for i in range(9)])
         self.sprites["Menu Cursor Left"] = rotate_sprites(self.sprites["Menu Cursor Left"], -90)
@@ -148,6 +158,7 @@ class AssetManager:
 
         self.sprites["HUD Hurt"] = load_sprite_from_file(Path("TD/assets/HUD hurt.png"))
         self.sprites["HUD Hurt"][0].set_alpha(50)
+        self.sprites["title"] = load_sprite_from_file(Path("TD/assets/Title_Art_001.png"))
 
 # Singleton Pattern - Stinky, but practical for a game environment
 asset_manager = AssetManager()

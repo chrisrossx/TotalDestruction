@@ -14,10 +14,15 @@ class StartScreen(MenuScreen):
     def render(self):
         menu_rect = SCREEN_RECT.copy()
 
+        sprite_title = gui.GUISprite(asset_manager.sprites["title"])
+        sprite_title.center_in_rect(menu_rect)
+        sprite_title.tjust_in_rect(menu_rect, 100)
+        self.em.add(sprite_title)
+
         lbl_hero = gui.GUILabel("[T]otal [D]estruction", self.font_l, (255,255,255), shadow_color=(80,80,80), shadow_step=Vector2(6,6))
         lbl_hero.center_in_rect(menu_rect)
         lbl_hero.tjust_in_rect(menu_rect, 100)
-        self.em.add(lbl_hero)
+        # self.em.add(lbl_hero)
 
         lbl_press_esc = gui.GUILabel("Esc: Exit", self.font_s, (255,255,255), shadow_color=(80,80,80))
         lbl_press_esc.ljust_in_rect(menu_rect, 40)
@@ -35,7 +40,7 @@ class StartScreen(MenuScreen):
         self.btn_group = StartButtonGroup(self.on_button_press)
         self.em.add(self.btn_group)
 
-        y, c = 280, 50        
+        y, c = 320, 50        
         lbl = gui.GUILabel("Play", self.font_s, (255,255,255), shadow_color=(80,80,80))
         btn = StartButton("play", lbl.get_rect().size, lbl, bottom="mute", left_cursor=self.left_cursor, right_cursor=self.right_cursor)
         btn.centerx_in_rect(menu_rect)

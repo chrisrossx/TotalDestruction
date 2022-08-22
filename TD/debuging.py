@@ -24,10 +24,13 @@ class GameDebugger:
         self.show_paths = not True
         self.show_bounds = not True 
         self.print_app_timits = not True 
+        self.god_mode = True 
 
         self.disable_input = 0
         signal("debugger.disable_input").connect(self.on_disable_input)
         signal("debugger.enable_input").connect(self.on_enable_input)
+
+        self.send_envent = signal("debugger.on_event")
 
         self.app_timeits = [
             "app.loop",
@@ -41,6 +44,16 @@ class GameDebugger:
         ]
 
         self.timeits_callback.append(self.print_app_timeits_cb)
+
+        if self.show_panel:
+            print("[K_~: show_debugger] ", self.show_panel)
+            print("[K_s: show_sky]      ", self.show_sky)
+            print("[K_g: show_hitboxes] ", self.show_hitboxes)
+            print("[K_p: show_paths]    ", self.show_paths)
+            print("[K_t: app_timits]    ", self.print_app_timits)
+            print("[K_b: show_bounds]   ", self.show_bounds)
+            print("[K_g: god_mode]      ", self.god_mode)
+
 
     def print_app_timeits_cb(self):
         if self.print_app_timits:
@@ -127,6 +140,7 @@ class GameDebugger:
 
     def on_event(self, event, elapsed):
         if self.disable_input == 0 and event.type == pygame.KEYDOWN:
+            self.send_envent.send(event=event, elapsed=elapsed)
             if event.key == 96:
                 if self.show_panel == None:
                     self.show_panel = 1
@@ -146,10 +160,6 @@ class GameDebugger:
                 if self.show_panel:
                     self.show_hitboxes = not self.show_hitboxes
 
-            if event.key == pygame.K_f:
-                from TD.savedata import save_data
-                save_data.save()
-
             if event.key == pygame.K_p:
                 if self.show_panel:
                     self.show_paths = not self.show_paths
@@ -158,20 +168,16 @@ class GameDebugger:
                 if self.show_panel:
                     self.print_app_timits = not self.print_app_timits
 
-            if event.key == pygame.K_e:
-                if self.show_panel:
-                    from TD.particles.explosions import ExplosionMedium
-                    signal("scene.add_entity").send(ExplosionMedium(pygame.Vector2(800,300)))
-
-            if event.key == pygame.K_r:
-                if self.show_panel:
-                    from TD.particles.explosions import ExplosionMedium002
-                    signal("scene.add_entity").send(ExplosionMedium002(pygame.Vector2(800,400)))
-
             if event.key == pygame.K_b:
                 if self.show_panel:
                     self.show_bounds = not self.show_bounds
     
+
+            if event.key == pygame.K_g:
+                if self.show_panel:
+                    self.god_mode = not self.god_mode
+    
+
             self.show_panel = bypass_show_panel_lock_out 
 
     def draw(self, elapsed):

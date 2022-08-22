@@ -375,6 +375,7 @@ class LineEditor:
             if event.key == pygame.K_RETURN:
                 if self.text_input_mode == "name":
                     self.data[self.index].name = self.text_line
+                    self.not_saved()
                 if self.text_input_mode == "point":
                     try:
                         x, y = self.text_line.split(",")
@@ -415,6 +416,21 @@ class LineEditor:
             for button in self.buttons:
                 button.hovered(self.cursor)
 
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+            self.cursor = event.pos
+            if self.edit_line:
+                found = False
+                for i, rect in enumerate(self.edit_rects):
+                    if rect.collidepoint(self.cursor):
+                        self.edit_index = i
+                        found = True
+                # if not found and self.edit_index >= 0:
+                    # self.data[self.index].points[self.edit_index] = [self.cursor[0]-100, self.cursor[1]-100]
+                    # self.data[self.index].calculate()
+                    # self.set_edit_rects()
+                    # self.not_saved()
+
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             self.cursor = event.pos
             if self.cursor[0] <= 1224:
@@ -433,13 +449,14 @@ class LineEditor:
                         self.data[self.index].points = new_waypoints
                         self.data[self.index].calculate()
                         self.clear_move()
+                        self.not_saved()
                     elif self.edit_line:
-                        found = False
-                        for i, rect in enumerate(self.edit_rects):
-                            if rect.collidepoint(self.cursor):
-                                self.edit_index = i
-                                found = True
-                        if not found and self.edit_index >= 0:
+                        # found = False
+                        # for i, rect in enumerate(self.edit_rects):
+                            # if rect.collidepoint(self.cursor):
+                                # self.edit_index = i
+                                # found = True
+                        if self.edit_index >= 0:
                             self.data[self.index].points[self.edit_index] = [self.cursor[0]-100, self.cursor[1]-100]
                             self.data[self.index].calculate()
                             self.set_edit_rects()
@@ -447,6 +464,7 @@ class LineEditor:
                     else:
                         self.data[self.index].points.append((x, y))
                         self.data[self.index].calculate()
+                        self.not_saved()
                     self.update_line_buttons()
             else:
                 for button in self.buttons:

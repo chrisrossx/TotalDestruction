@@ -22,3 +22,5 @@ All original artwork, not attributed below is copyrighted by Christopher Ross in
 # Attributions
 
 * **Cloudy Skies** Background Image - License: [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/), Author: Onsemeliot, Uploaded: 2019-01-14, https://opengameart.org/content/cloudy-skies
+* **Sound Effects** License: IndieSFX Sound Effect Standard Licence, IndieSFX Game Audio, https://indiesfx.co.uk/
+  

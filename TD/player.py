@@ -4,7 +4,7 @@ import pygame
 from pygame import Vector2
 
 from TD.debuging import game_debugger
-from TD.bullets import BulletGreenRound001
+from TD.bullets import Bullet001
 from TD.entity import Entity, EntityType
 from TD.config import SCREEN_SIZE
 from .pickups import PickupType
@@ -22,7 +22,7 @@ class PlayerShip(Entity):
         self.frames.append(surface)
         self.sprite_offset = pygame.Vector2(-20, -20)
 
-        self.pos = Vector2(-40, 300)
+        self.pos = Vector2(-40, 320)
         # self.x = -40
         # self.y = 300
 
@@ -50,6 +50,10 @@ class PlayerShip(Entity):
         self.coins = 0
         
         signal("scene.player.pickedup").connect(self.on_pickedup)
+        signal("scene.player.get_pos").connect(self.on_get_pos)
+
+    def on_get_pos(self, sender):
+        return self.pos.copy()
 
     def on_pickedup(self, pickup):
         if pickup.pickup_type == PickupType.HEART:
@@ -64,22 +68,24 @@ class PlayerShip(Entity):
             self.coins += 1
 
     def hit(self):
-        self.lives -= 1
-        signal("scene.hud.lives").send(self.lives)
-        if self.lives == 0:
-            signal("scene.change_state").send(LevelState.DEAD)
-        self.been_hit = True 
-        signal("scene.hud.medal.heart").send(False)
-        signal("mixer.play").send("player hit")
+        if game_debugger.god_mode == False:
+            self.lives -= 1
+            signal("scene.hud.lives").send(self.lives)
+            if self.lives == 0:
+                signal("scene.change_state").send(LevelState.DEAD)
+            self.been_hit = True 
+            signal("scene.hud.medal.heart").send(False)
+            signal("mixer.play").send("player hit")
 
     def collision(self):
-        self.lives -= 1
-        signal("scene.hud.lives").send(self.lives)
-        if self.lives == 0:
-            signal("scene.change_state").send(LevelState.DEAD)
-        self.been_hit = True 
-        signal("scene.hud.medal.heart").send(False)
-        signal("mixer.play").send("player collision")
+        if game_debugger.god_mode == False:
+            self.lives -= 1
+            signal("scene.hud.lives").send(self.lives)
+            if self.lives == 0:
+                signal("scene.change_state").send(LevelState.DEAD)
+            self.been_hit = True 
+            signal("scene.hud.medal.heart").send(False)
+            signal("mixer.play").send("player collision")
 
     def render_simple_ship(self, surface):
         #Guns under Wings
@@ -106,11 +112,11 @@ class PlayerShip(Entity):
     def fire(self):
         x, y = self.pos
         x += 20
-        bullet = BulletGreenRound001([x, y], -15)
+        bullet = Bullet001([x, y], -15)
         signal("scene.add_entity").send(bullet)
-        bullet = BulletGreenRound001([x, y], 0)
+        bullet = Bullet001([x, y], 0)
         signal("scene.add_entity").send(bullet)
-        bullet = BulletGreenRound001([x, y], 15)
+        bullet = Bullet001([x, y], 15)
         signal("scene.add_entity").send(bullet)
         signal("mixer.play").send("player gun")
 

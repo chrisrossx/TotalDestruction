@@ -1,40 +1,71 @@
+from pygame import Vector2 
+
 from TD.scenes.levels.level import Level
-from TD.enemies.PlaneT8 import EnemyPlaneT8
 from .level_state import LevelState
 from TD.pickups import PickupHeart, PickupCoin
-    
+from TD.guns import SingleShotGun, ConstantFireGun, GenericGun, AimingGun
+from TD.scenes.levels.level_chains import *
+from TD.scenes.levels.enemy_chain import ChainGunFactory
+
+from TD.enemies.boss import Boss001
 
 class Level_001(Level):
 
     def __init__(self):
         super().__init__()
+        t = 0
 
 
+        boss = Boss001()
+        # boss.pos = Vector2(800, 300)
+        self.em.add(boss)
+        c = BT1Chain(self, t, path_index="straight 300")
+        return
+        # # c.set_guns(ChainGunFactory(GenericGun))
+        # c.set_guns(ChainGunFactory(AimingGun))
+        # t += 1400
+        # c = BT1Chain(self, t, path_index="straight 100")
+        # c = BT1Chain(self, t, path_index="straight 500")
+        # # c = CX5BChain(self, t, "slant bottom 1")
+        # # c.set_guns(ChainGunFactory(Gun))
+
+        # # t += 1000 
+        # c = BT1Chain(self, t, "slant bottom 1")
+        # # c.set_guns(ChainGunFactory(Gun))
+
+        # c = D2Chain(self, t, path_index="straight")
+
+        # return 
         t = 1000
-        chain_1 = self.create_chain(EnemyPlaneT8, 0, t, 7, 500, {"velocity": 0.25})
-        chain_1[2].drops = [PickupHeart]
+        c = CX5BChain(self, t, "slant top 1")
+        c.add_drops([PickupHeart, ], [2,])
+        # c.set_guns(ChainGunFactory(SingleShotGun, delay=1000), [1,])
 
-        t += 1000
-        chain_2 = self.create_chain(EnemyPlaneT8, 1, t, 7, 500, {"velocity": 0.25})
+        t += 1200 + 100
+        c = CX5BChain(self, t, "slant top 2")
 
-        t += 5000
-        chain_2 = self.create_chain(EnemyPlaneT8, 2, t, 7, 500, {"velocity": 0.25})
+        t += 8000
+        c = CX5BChain(self, t, "slant bottom 1")
+        c.add_drops([PickupHeart, ], [2,])
+
+        t += 1200
+        c = CX5BChain(self, t, "slant bottom 2")
 
 
+        t += 7200
+        c = T8Chain(self, t, "bravo loop 1")
 
-    def create_chain(self, cls, path, start_time, count, spacing, attr):
-        entities = []
-        for i in range(count):
-            entity = cls(path)
-            # entity.delayed_start = i * spacing
-            entities.append(entity)
-            for key, value in attr.items():
-                setattr(entity, key, value)
-            t = start_time + (i * spacing)
-            self.add_level_entity(t, entity)
-        return entities
-    
+        t += 11200
+        c = T8Chain(self, t, "bravo loop 1 MY")
 
-    def add_level_entity(self, time, entity):
-        self.state_machines[LevelState.PLAYING].timed_add.append((time, entity))
+        t+= 11200
 
+        print("Level Length", t)
+        # t += 1200
+        # c = T8Chain(self, t, "slant bottom 3")
+
+        # c = T8Chain(self, t, "alpha pattern MX", gun=ChainGunFactory(SingleShotGun, delay=1000))
+
+        # t += 5000
+
+        # c = T8Chain(self, t, 2, gun=ChainGunFactory(SingleShotGun, delay=1000))

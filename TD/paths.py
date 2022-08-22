@@ -180,14 +180,8 @@ class PathFollower:
         # self.x = 0.0
         # self.y = 0.0
         self.pos = pygame.Vector2(0.0, 0.0)
+        self.set_new_path(index)
 
-        if type(index) == int:
-            self.data = path_data[index]
-        if type(index) == str:
-            for path in path_data:
-                if path.name == index:
-                    self.data = path
-                    break
 
         self.velocity = 0.1
         self.distance = 0
@@ -200,6 +194,15 @@ class PathFollower:
     # @property
     # def pos(self):
         # return self.x, self.y
+    
+    def set_new_path(self, index):
+        if type(index) == int:
+            self.data = path_data[index]
+        if type(index) == str:
+            for path in path_data:
+                if path.name == index:
+                    self.data = path
+                    break
 
     def draw(self, elapsed, surface):
         pygame.draw.lines(surface,(255,0,0), False, self.data.points)

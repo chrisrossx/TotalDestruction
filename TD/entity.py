@@ -1,7 +1,7 @@
 from enum import IntEnum
 
 import pygame
-from blinker import signal 
+from blinker import signal, Signal
 
 from TD.paths import PathFollower
 from TD.utils import fast_round_point, fast_round, fast_round_vector2
@@ -21,8 +21,6 @@ class EntityType(IntEnum):
 
 
 class EntityManager:
-    def __init__(self, scene):
-        self.scene = scene # Parent Scene 
     def __init__(self):
         self.entities = []
         
@@ -170,6 +168,7 @@ class Entity:
         self.hitboxes = []
         self.hitbox_offsets = []
 
+        self.signal_animation_finished = Signal()
 
     @property
     def surface(self):
@@ -198,6 +197,8 @@ class Entity:
         entity.delete()
 
     def tick(self, elapsed):
+        if self.enabled == False:
+            return
         # Animation Sprite
         if len(self.frames) > 0 and self.frame_duration > 0:
             self.frame_elapsed += elapsed
@@ -209,6 +210,9 @@ class Entity:
                     self.frame_loop_count += 1
                     if self.frame_loop_end >= 0 and self.frame_loop_count >= self.frame_loop_end:
                         # self.delete()
+                        self.frame_duration = 0
+                        # self.frame_index -= 1
+                        self.signal_animation_finished.send(self)
                         self.animation_finished_callback(self)
 
         #Update Hitbox positions to follow Entity       
@@ -216,6 +220,8 @@ class Entity:
             self.hitboxes[i].topleft = self.pos + self.hitbox_offsets[i]
 
     def draw(self, elapsed, surface):
+        if self.enabled == False:
+            return 
         if len(self.frames) > 0:
             # TODO is this needed, or wont the blit do roudning anyways? 
             point = fast_round_vector2(self.pos + self.sprite_offset)
@@ -280,7 +286,6 @@ class EntityPathFollower(Entity):
 class EntityVectorMovement(Entity):
     def __init__(self):
         super().__init__()
-
         # Movement
         self.heading = pygame.math.Vector2(1, 0)  # Direction Vector
         self.velocity = 0.1 # Pixels Per Milliscond 0.1 = 100 pixels per second

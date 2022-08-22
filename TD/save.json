@@ -1,5 +1,5 @@
 {
-  "mute": true,
+  "mute": false,
   "slots": [
     {
       "name": "christopher",
@@ -7,7 +7,7 @@
       "level_state": {}
     },
     {
-      "name": null,
+      "name": "sawyer",
       "coins": 0,
       "level_state": {}
     },
