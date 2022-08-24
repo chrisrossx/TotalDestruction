@@ -1,4 +1,3 @@
-from blinker import signal 
 from pygame import Vector2
 
 from TD.entity import Entity, EntityType
@@ -16,9 +15,8 @@ class HUDLife(HUD):
         super().__init__(pos)
         self.frames = [asset_manager.sprites["HUD"][i+2] for i in range(2)]
         self.life_index = life_index
-        signal("scene.hud.lives").connect(self.on_lives)
 
-    def on_lives(self, lives):
+    def lives(self, lives):
         if lives >= self.life_index:
             self.frame_index = 0
         else:
@@ -45,19 +43,14 @@ class HUDMedal100(Medal):
     def __init__(self, pos):
         super().__init__(pos)
         self.frames = [asset_manager.sprites["HUD"][i+13] for i in range(3)]
-        signal("scene.hud.medal.100").connect(self.on_valid)
-       
 
 class HUDMedal70(Medal):
     def __init__(self, pos):
         super().__init__(pos)
         self.frames = [asset_manager.sprites["HUD"][i+10] for i in range(3)]
-        signal("scene.hud.medal.70").connect(self.on_valid)
-
 
 class HUDMedalHeart(Medal):
     def __init__(self, pos):
         super().__init__(pos)
         self.frames = [asset_manager.sprites["HUD"][i+4] for i in range(3)]
-        signal("scene.hud.medal.heart").connect(self.on_valid)
         

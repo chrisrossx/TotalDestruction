@@ -1,14 +1,8 @@
-from ast import Delete
-from enum import Enum
-from re import A
-import weakref
-
-from blinker import signal
 from pygame import Vector2 
 import pygame
 
 from .hud import HUDMedal100, HUDMedal70 , HUDMedalHeart, HUDLife
-from .level_state import LevelState
+from .level_state import LevelState, LevelStateMachine
 from TD.scenes.scene import Scene
 from TD.entity import Entity, EntityManager, EntityType, EntityVectorMovement
 from TD.gui import GUIPanel, GUILabel, GUISprite
@@ -18,118 +12,148 @@ from TD.scenes.levels.pause_menu import PauseMenu
 from TD.player import PlayerShip
 from TD.debuging import game_debugger
 from TD.particles.explosions import ExplosionMedium
-
-
-class LevelStateMachine:
-    def __init__(self, level) -> None:
-        self.level = weakref.ref(level)
-
-    @property
-    def em(self):
-        return self.level().em
-
-    @property
-    def player(self):
-        return self.level().player
-
-    @property
-    def hud(self):
-        return self.level().hud
-
-    def start(self):
-        pass
-
-    def stop(self):
-        pass
-
-    def tick(self, elapsed):
-        pass
-
-    def on_event(self, event, elapsed):
-        pass
-
-    def pressed(self, pressed, elapsed):
-        pass
+from TD import current_app, current_scene
 
 
 class DeadState(LevelStateMachine):
     def __init__(self, level) -> None:
         super().__init__(level)
 
-        self.step = 0
-        self.step_elapsed = 0.0
-
-    def tick(self, elapsed):
-        return super().tick(elapsed)
-
     def start(self):
+        super().start()
         self.player.enabled = False
         self.player.input_enabled = False
 
         explosion = ExplosionMedium(self.player.pos)
-        explosion.animation_finished_callback = self.on_animation_finished
-        signal("scene.add_entity").send(explosion)
-        signal("scene.add_entity").send(ExplosionMedium(self.player.pos + Vector2(-35, 0)))
-        signal("scene.add_entity").send(ExplosionMedium(self.player.pos + Vector2(0, 15)))
-        signal("scene.add_entity").send(ExplosionMedium(self.player.pos + Vector2(-15, -5)))
-        signal("scene.add_entity").send(GUISprite(asset_manager.sprites["HUD Hurt"]))
-        signal("mixer.play").send("explosion player")
+        # explosion.animation_finished_callback = self.on_animation_finished
+        current_scene.em.add(explosion)
+        current_scene.em.add(ExplosionMedium(self.player.pos + Vector2(-35, 0)))
+        current_scene.em.add(ExplosionMedium(self.player.pos + Vector2(0, 15)))
+        current_scene.em.add(ExplosionMedium(self.player.pos + Vector2(-15, -5)))
+        self.red_sprite = GUISprite(asset_manager.sprites["HUD Hurt"])
+        self.red_sprite.surface.set_alpha(50)
+        current_scene.em.add(self.red_sprite)
+        current_app.mixer.play("explosion player")
 
-    def tick(self, elapsed):
-        self.step_elapsed += elapsed
-        if self.step == 1 and self.step_elapsed > 1500:
-            signal("scene.exit").send({"condition": "died"})
+    def tick_step_003(self, elapsed):
+        current_scene.exit({"condition": "died"})
 
-    def on_animation_finished(self, entity):
-        entity.delete()
+    def tick_step_002(self, elapsed):
+        #Fade out Level Complete Label
+        x = 500
+        l = ((x - self.step_elapsed) / x ) * 255
+        if l > 255:
+            l = 255
+        self.game_over.surface.set_alpha(l)
+        l = ((x - self.step_elapsed) / x ) * 50
+        if l > 50:
+            l = 50
+        self.red_sprite.surface.set_alpha(l)
 
-        self.step += 1
-        self.step_elapsed = 0
-        self.starting_go = GUILabel("GAME OVER", asset_manager.fonts["lg"], (255,255,255), shadow_color=(80,80,80), shadow_step=Vector2(6,6))
-        self.starting_go.center_in_rect(SCREEN_RECT)
-        signal("scene.add_entity").send(self.starting_go)
+        #Fly out HUD
+        hud_y = 0 # A little lazy but all HUDs are at same Y values
+        for key, hud in self.hud.items():
+            hud.y -= elapsed * 0.06
+            hud_y = hud.y
 
+        #Make sure both the player and HUD are off screen
+        if self.step_elapsed >= x and hud_y <= -32:
+            self.next_step()
+
+    def tick_step_001(self, elapsed):
+        if self.step_elapsed >= 1000:
+            self.next_step()
+
+    def tick_step_000(self, elapsed):
+        if self.step_elapsed >= 500:
+            self.next_step()
+            self.game_over = GUILabel("GAME OVER", asset_manager.fonts["lg"], (255,255,255), shadow_color=(80,80,80), shadow_step=Vector2(6,6))
+            self.game_over.center_in_rect(SCREEN_RECT)
+            current_scene.em.add(self.game_over)
+
+    # def on_animation_finished(self, entity):
+    #     entity.delete()
+    #     self.next_step()
+
+
+
+class WonState(LevelStateMachine):
+    def __init__(self, level) -> None:
+        super().__init__(level)
+
+    def start(self):
+        super().start()
+        self.player.input_enabled = False
+        self.step_elapsed = 0.0
+        self.lbl_complete = GUILabel("LEVEL COMPLETE", asset_manager.fonts["lg"], (255,255,255), shadow_color=(80,80,80), shadow_step=Vector2(6,6))
+        self.lbl_complete.center_in_rect(SCREEN_RECT)
+        self.player.velocity = 0 
+        self.player.heading = Vector2(1, 0)
+
+    def tick_step_000(self, elapsed):
+        #Enjoy Victory for a pause! 
+        if self.step_elapsed > 1500:
+            current_scene.em.add(self.lbl_complete)
+            self.player.velocity = 0.2
+            self.next_step()
+
+    def tick_step_001(self, elapsed):
+        #Fly out Player and HUD
+        self.player.pos += self.player.heading * self.player.velocity
+        
+        #Fly out HUD
+        hud_y = 0 # A little lazy but all HUDs are at same Y values
+        for key, hud in self.hud.items():
+            hud.y -= elapsed * 0.04
+            hud_y = hud.y
+
+        #Make sure both the player and HUD are off screen
+        if self.player.pos.x >= 1050 and hud_y <= -32:
+            self.next_step()
+
+    def tick_step_002(self, elapsed):
+        #Fade out Level Complete Label
+        x = 500
+        l = ((x - self.step_elapsed) / x ) * 255
+        if l > 255:
+            l = 255
+        self.lbl_complete.surface.set_alpha(l)
+        if self.step_elapsed >= x:
+            current_scene.exit({"condition": "won"})
+                
 
 class StartingState(LevelStateMachine):
     def __init__(self, level) -> None:
         super().__init__(level)
-       
-        self.starting_step = 0
-        self.starting_elapsed = 0.0
-        
-    def tick(self, elapsed):
+      
+    def tick_step_000(self, elapsed):
         # Skip for now
-        if True:
+        if False:
             self.player.pos.x = 200
             for key, hud in self.hud.items():
                 hud.y = 0
-            signal("scene.change_state").send(LevelState.PLAYING)
+            current_scene.change_state(LevelState.PLAYING)
             return
+        
+        #Fly in HUD
+        for key, hud in self.hud.items():
+            hud.y += elapsed * 0.04
+            if hud.y >= 0:
+                hud.y = 0
+        
+        #Fly in Ship 
+        self.player.pos.x += elapsed * 0.12
+        if self.player.pos.x > 200: 
+            self.player.pos.x = 200
+            self.next_step()
+            self.starting_go = GUILabel("GO!", asset_manager.fonts["lg"], (255,255,255), shadow_color=(80,80,80), shadow_step=Vector2(6,6))
+            self.starting_go.center_in_rect(SCREEN_RECT)
+            current_scene.em.add(self.starting_go)
 
-        if self.starting_step == 0:
-            
-            #Fly in HUD
-            for key, hud in self.hud.items():
-                hud.y += elapsed * 0.04
-                if hud.y >= 0:
-                    hud.y = 0
-            
-            #Fly in Ship 
-            self.player.pos.x += elapsed * 0.12
-            if self.player.pos.x > 200: 
-                self.player.pos.x = 200
-                self.starting_step = 1
-                self.starting_elapsed = 0.0
-                self.starting_go = GUILabel("GO!", asset_manager.fonts["lg"], (255,255,255), shadow_color=(80,80,80), shadow_step=Vector2(6,6))
-                self.starting_go.center_in_rect(SCREEN_RECT)
-                signal("scene.add_entity").send(self.starting_go)
-
-        elif self.starting_step == 1:
-            self.starting_elapsed += elapsed
-            if self.starting_elapsed > 500:
-                signal("scene.delete_entity").send(self.starting_go)
-                signal("scene.change_state").send(LevelState.PLAYING)
-
+    def tick_step_001(self, elapsed):
+        if self.step_elapsed > 500:
+            current_scene.em.delete(self.starting_go)
+            current_scene.change_state(LevelState.PLAYING)
 
 class PlayingState(LevelStateMachine):
     def __init__(self, level) -> None:
@@ -138,24 +162,28 @@ class PlayingState(LevelStateMachine):
         self.timed_add = []
 
         self.total_enemies = 4
-        self.enemies_killed = 0
         self.enemies_missed = 0
 
-        signal("scene.enemy_missed").connect(self.on_enemy_missed)
+        # TODO
 
-    def on_enemy_missed(self, enemy):
+    def enemy_missed(self, enemy):
         self.enemies_missed += 1
         print("enemy missed")
         if self.enemies_missed / self.total_enemies >= 0.3:
-            signal("scene.hud.medal.70").send(False)
+            self.hud["medal70"].invalid()
+            # TODO
+            # signal("scene.hud.medal.70").send(False)
         if self.enemies_missed / self.total_enemies > 0.0:
-            signal("scene.hud.medal.100").send(False)
-
+            self.hud["medal100"].invalid()
+            # TODO
+            pass
+            # signal("scene.hud.medal.100").send(False)
 
     def start(self):
+        super().start()
         self.player.input_enabled = True
 
-    def tick(self, elapsed):
+    def tick_step_000(self, elapsed):
         game_debugger.lines[0] = "Runtime: {}".format(str(round(self.runtime/1000, 1)))
         self.runtime += elapsed
         self.player.tick(elapsed)
@@ -163,28 +191,21 @@ class PlayingState(LevelStateMachine):
         # game_debugger.timeit_start("tick.hitboxes")
 
         for enemy in self.em.collidetypes(EntityType.PLAYER, EntityType.ENEMY).keys():
-            enemy.killed()
-            self.enemies_killed += 1
-            # self.player.hit()
+            enemy.collision()
             self.player.collision()
 
         for pickup in self.em.collidetypes(EntityType.PLAYER, EntityType.PICKUP).keys():
             pickup.pickedup()
 
         for enemy, bullets in self.em.collidetypes(EntityType.PLAYERBULLET, EntityType.ENEMY, True).items():
-            #First if any bullets are not deleted then kill enemy
-            not_deleted = False
             for b in bullets:
                 if b.deleted == False: 
                     b.delete()
-                    not_deleted = True 
-            if not_deleted:
-                enemy.killed()
-                self.enemies_killed += 1
+                    enemy.hit(b)
 
         for bullets in self.em.collidetypes(EntityType.ENEMYBULLET, EntityType.PLAYER, True).values():
             for b in bullets:
-                self.player.hit()
+                self.player.hit(b)
                 b.delete()
 
         # game_debugger.timeit_end("tick.hitboxes")
@@ -204,7 +225,7 @@ class PlayingState(LevelStateMachine):
         timed_add = []
         for time_to_add, entity in self.timed_add:
             if time_to_add <= self.runtime:
-                signal("scene.add_entity").send(entity)
+                current_scene.em.add(entity)
             else:
                 timed_add.append((time_to_add, entity))
         self.timed_add = timed_add
@@ -213,40 +234,32 @@ class PlayingState(LevelStateMachine):
 class Level(Scene):
 
     """
-    Siganls Sent:
-    scene.paused -> (paused:boolean)
-    
-    Signals Listening:
-    scene.paused
-    scene.exit
     """
 
-    def __init__(self):
+    def __init__(self, level):
         super().__init__()
 
         self.paused = False
+        self.level = level
         # self.timed_add = []
+
+        self.player = PlayerShip()
+        # current_player.__wrapped__ = self.player
+
+        self.em.add(self.player)
 
         self.state_machines = {
             LevelState.STARTING: StartingState(self),
             LevelState.PLAYING: PlayingState(self),
-            LevelState.DEAD: DeadState(self)
+            LevelState.DEAD: DeadState(self),
+            LevelState.WON: WonState(self),
         }
         self.state = LevelState.STARTING
-        # self.state_machine = DeadState(self)
         self.state_machine = self.state_machines[self.state]
-        self.state_machine.start()
 
         self.pause_menu = PauseMenu(SCREEN_SIZE)
         self.pause_menu.enabled = False
         self.em.add(self.pause_menu)
-
-        signal("scene.paused").connect(self.on_paused)
-        signal("scene.exit").connect(self.on_exit)
-        signal("scene.change_state").connect(self.change_state)
-        
-        self.player = PlayerShip()
-        self.em.add(self.player)
 
         # game_debugger.timeit_setup("tick.hitboxes", 9, False)
         # game_debugger.timeit_setup("scene.draw", 10, False)
@@ -255,23 +268,41 @@ class Level(Scene):
             "life1": HUDLife(Vector2(10, -32), 1),
             "life2": HUDLife(Vector2(42, -32), 2),
             "life3": HUDLife(Vector2(74, -32), 3),
-            "Medal70": HUDMedal70(Vector2(918, -32)),
-            "Medal100": HUDMedal100(Vector2(950, -32)),
-            "MedalHeart": HUDMedalHeart(Vector2(982, -32)),
+            "medal70": HUDMedal70(Vector2(918, -32)),
+            "medal100": HUDMedal100(Vector2(950, -32)),
+            "medalheart": HUDMedalHeart(Vector2(982, -32)),
         }
         for hud in self.hud.values():
             self.em.add(hud)
 
+    def enemy_missed(self, enemy):
+        self.state_machines[LevelState.PLAYING].enemy_missed(enemy)
+
+    def on_start(self):
+        self.state_machine.start()
+
     def add_level_entity(self, time, entity):
         self.state_machines[LevelState.PLAYING].timed_add.append((time, entity))
 
-    def on_exit(self, data=None):
-        print(data)
-        signal("game.change_scene").send({
+    def exit(self, data=None):
+        current_app.change_scene({
             "scene": "main_menu",
-            "return_to_level_select": True,
+            "return_from_level": True,
+            "level_data": {
+                "condition": data["condition"],
+                "score": 100000,
+                "level": self.level,
+            },
             "sky_offset": self.background.offset,
         })
+
+    def hud_lives(self, health):
+        self.hud["life1"].lives(health)
+        self.hud["life2"].lives(health)
+        self.hud["life3"].lives(health)
+        
+    def hud_been_hit(self):
+        self.hud["medalheart"].invalid()
 
     def pressed(self, pressed, elapsed):
         if not self.paused:
@@ -280,6 +311,14 @@ class Level(Scene):
 
     def on_paused(self, paused):
         self.paused = paused 
+
+    def pause(self):
+        self.paused = True
+        self.pause_menu.show()
+
+    def unpause(self):
+        self.paused = False 
+        self.pause_menu.hide()
 
     def on_event(self, event, elapsed):
         if self.paused:
@@ -290,7 +329,7 @@ class Level(Scene):
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             if not self.paused:
-                signal("scene.paused").send(True)
+                self.pause()
     
     def change_state(self, state):
         self.state_machine.stop()

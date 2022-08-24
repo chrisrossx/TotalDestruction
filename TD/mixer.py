@@ -1,11 +1,10 @@
 from enum import Enum 
 
 import pygame
-from blinker import signal
 
 from TD.assetmanager import asset_manager
 from TD import config 
-from TD.savedata import save_data
+from TD.globals import current_app
 
 class MixerChannels(Enum):
     PLAYERFIRE = 0
@@ -15,7 +14,9 @@ class MixerChannels(Enum):
 class Mixer:
     pass 
     def __init__(self):
-        self.muted = save_data.muted
+        self.sounds_muted = current_app.save_data.sounds_muted
+        self.music_muted = current_app.save_data.music_muted
+        self.music_playing = False
        
         pygame.mixer.set_num_channels(16)
         pygame.mixer.set_reserved(3)
@@ -25,19 +26,41 @@ class Mixer:
             MixerChannels.COINPICKUP: pygame.mixer.Channel(MixerChannels.COINPICKUP.value),
             MixerChannels.HEARTPICKUP: pygame.mixer.Channel(MixerChannels.COINPICKUP.value),
         }
-        signal("mixer.play").connect(self.on_play)
-        signal("mixer.mute").connect(self.on_mute)
-        signal("mixer.is_muted").connect(self.on_is_muted)
 
-    def on_is_muted(self, sender):
-        return self.muted
+    def play_music(self, file):
+        pygame.mixer.music.load(asset_manager.music[file]["filename"])
+        pygame.mixer.music.set_volume(asset_manager.music[file]["volume"])
+        self.music_playing = True
+        if not self.music_muted:
+            pygame.mixer.music.play(loops=-1)
 
-    def on_mute(self, value):
-        self.muted = value
-        signal("savedata.save").send()
+    def stop_music(self):
+        self.music_playing = False 
+        pygame.mixer.music.stop()
 
-    def on_play(self, name):
-        if self.muted:
+    def is_sounds_muted(self):
+        return self.sounds_muted
+
+    def is_music_muted(self):
+        return self.music_muted
+    
+    def mute_sounds(self, value):
+        self.sounds_muted = value
+        current_app.save_data.save()
+
+    def mute_music(self, value):
+        # self.sounds_muted = value
+        self.music_muted = value
+        if self.music_playing:
+            if self.music_muted:
+                pygame.mixer.music.stop()
+            else:
+                pygame.mixer.music.play(loops=-1)
+
+        current_app.save_data.save()
+
+    def play(self, name):
+        if self.sounds_muted:
             return
 
         if name == "coin pickup":

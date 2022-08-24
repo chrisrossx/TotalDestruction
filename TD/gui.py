@@ -3,7 +3,7 @@ from pygame import Vector2
 
 from TD.assetmanager import asset_manager
 from TD.entity import Entity, EntityType, EntityManager
-from blinker import signal
+from TD import current_app
 
 
 class GUIEntity(Entity):
@@ -139,6 +139,9 @@ class GuiButtonGroup(GUIEntity):
         self.selected = name 
         self.buttons[self.selected].on_selected()
 
+    def __getitem__(self, name):
+        return self.buttons[name]
+
     def on_event(self, event, elapsed):
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
@@ -147,18 +150,22 @@ class GuiButtonGroup(GUIEntity):
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
             if self.buttons[self.selected].left:
+                current_app.mixer.play("menu move")
                 self.select(self.buttons[self.selected].left)
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
             if self.buttons[self.selected].right:
+                current_app.mixer.play("menu move")
                 self.select(self.buttons[self.selected].right)
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
             if self.buttons[self.selected].bottom:
+                current_app.mixer.play("menu move")
                 self.select(self.buttons[self.selected].bottom)
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
             if self.buttons[self.selected].top:
+                current_app.mixer.play("menu move")
                 self.select(self.buttons[self.selected].top)
     
     def draw(self, elapsed, surface):

@@ -1,11 +1,10 @@
 import pygame 
 from pygame import Vector2
-from blinker import signal 
 
 from TD.config import SCREEN_RECT
-from TD import gui
+from TD import gui, current_scene, current_app
 from .screen import MenuScreen
-from TD.savedata import save_data
+# from TD.savedata import save_data
 
 
 class ConfirmDeletePlayer(MenuScreen):
@@ -21,7 +20,7 @@ class ConfirmDeletePlayer(MenuScreen):
 
     def set_data(self, data):
         self.slot_index = data["slot_index"]
-        player_name = save_data.slots[self.slot_index].name
+        player_name = current_app.save_data.slots[self.slot_index].name
         self.lbl_name.set_text("\"{}\"".format(player_name))
         self.lbl_name.centerx_in_rect(SCREEN_RECT)
 
@@ -53,11 +52,10 @@ class ConfirmDeletePlayer(MenuScreen):
     def on_event(self, event, elapsed):
         if not self.transitioning:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                save_data.slots[self.slot_index].clear()
-                signal("savedata.save").send()
-                signal("menu_screen.start_transition").send(screen_name="select_player", direction="top")
-                signal("mixer.play").send("menu click")
+                current_app.save_data.slots[self.slot_index].clear()
+                current_app.save_data.save()
+                current_scene.start_transition(screen_name="select_player", direction="top")
+                current_app.mixer.play("menu click")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                signal("menu_screen.start_transition").send(screen_name="select_player", direction="top")
-                signal("mixer.play").send("menu click")
-
+                current_scene.start_transition(screen_name="select_player", direction="top")
+                current_app.mixer.play("menu click")

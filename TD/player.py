@@ -1,5 +1,4 @@
 
-from blinker import signal 
 import pygame 
 from pygame import Vector2
 
@@ -10,6 +9,7 @@ from TD.config import SCREEN_SIZE
 from .pickups import PickupType
 from TD.scenes.levels.level_state import LevelState
 from TD.assetmanager import asset_manager
+from TD import current_scene, current_app
 
 class PlayerShip(Entity):
     def __init__(self):
@@ -45,47 +45,46 @@ class PlayerShip(Entity):
         self.firing = False
         self.firing_elapsed = 1000 # start high so fire right away
 
-        self.lives = 3
+        self.health = 3
         self.been_hit = False
         self.coins = 0
-        
-        signal("scene.player.pickedup").connect(self.on_pickedup)
-        signal("scene.player.get_pos").connect(self.on_get_pos)
 
-    def on_get_pos(self, sender):
+    def get_pos(self):
         return self.pos.copy()
 
-    def on_pickedup(self, pickup):
+    def pickedup(self, pickup):
         if pickup.pickup_type == PickupType.HEART:
-            signal("mixer.play").send("heart pickup")
-            if self.lives < 3:
-                self.lives += 1
-                signal("scene.hud.lives").send(self.lives)
+            current_app.mixer.play("heart pickup")
+            if self.health < 3:
+                self.health += 1
+                current_scene.hud_lives(self.health)
         
         if pickup.pickup_type == PickupType.COIN:
             print("coin pickedup", self.coins)
-            signal("mixer.play").send("coin pickup")
+            current_app.mixer.play("coin pickup")
             self.coins += 1
 
-    def hit(self):
+    def hit(self, bullet):
         if game_debugger.god_mode == False:
-            self.lives -= 1
-            signal("scene.hud.lives").send(self.lives)
-            if self.lives == 0:
-                signal("scene.change_state").send(LevelState.DEAD)
+            self.health -= bullet.damage
+            current_scene.hud_lives(self.health)
             self.been_hit = True 
-            signal("scene.hud.medal.heart").send(False)
-            signal("mixer.play").send("player hit")
+            current_scene.hud_been_hit()
+        if self.health <= 0:
+            current_scene.change_state(LevelState.DEAD)
+        current_app.mixer.play("player hit")
 
     def collision(self):
-        if game_debugger.god_mode == False:
-            self.lives -= 1
-            signal("scene.hud.lives").send(self.lives)
-            if self.lives == 0:
-                signal("scene.change_state").send(LevelState.DEAD)
-            self.been_hit = True 
-            signal("scene.hud.medal.heart").send(False)
-            signal("mixer.play").send("player collision")
+        pass
+        "No Damage to Player if Overlapping a Enemy, Bullets Only!"
+        # if game_debugger.god_mode == False:
+        #     self.health -= 1
+        #     signal("scene.hud.lives").send(self.health)
+        #     if self.health == 0:
+        #         signal("scene.change_state").send(LevelState.DEAD)
+        #     self.been_hit = True 
+        #     signal("scene.hud.medal.heart").send(False)
+        #     signal("mixer.play").send("player collision")
 
     def render_simple_ship(self, surface):
         #Guns under Wings
@@ -113,12 +112,12 @@ class PlayerShip(Entity):
         x, y = self.pos
         x += 20
         bullet = Bullet001([x, y], -15)
-        signal("scene.add_entity").send(bullet)
+        current_scene.em.add(bullet)
         bullet = Bullet001([x, y], 0)
-        signal("scene.add_entity").send(bullet)
+        current_scene.em.add(bullet)
         bullet = Bullet001([x, y], 15)
-        signal("scene.add_entity").send(bullet)
-        signal("mixer.play").send("player gun")
+        current_scene.em.add(bullet)
+        current_app.mixer.play("player gun")
 
     def pressed(self, pressed, elapsed):
 
@@ -145,8 +144,16 @@ class PlayerShip(Entity):
                 heading.normalize_ip()
             self.heading = heading
 
-    # def draw(self, elapsed, surface):
-        # super().draw(elapsed, surface)
+    def draw(self, elapsed, surface):
+        super().draw(elapsed, surface)
+        if game_debugger.show_hitboxes:
+            health = "{}(GOD)".format(self.health) if game_debugger.god_mode else self.health
+            line = asset_manager.fonts["xs"].render("[  H={}  ]".format(health), True, (255,0,0))
+            pos = self.pos + self.sprite_offset
+            pos.y -= line.get_rect().h
+            surface.blit(line, pos)
+
+
         # pygame.draw.circle(surface, (255,255,0), (self.x, self.y), 4)
         # print("player draw")
 
@@ -154,8 +161,6 @@ class PlayerShip(Entity):
     def tick(self, elapsed):
         #Move Ship
         self.pos += (self.heading * self.velocity) * elapsed
-        # self.x += (self.heading[0] * self.velocity) * elapsed
-        # self.y += (self.heading[1] * self.velocity) * elapsed
 
         #bounds checking
         if self.input_enabled:
@@ -169,7 +174,7 @@ class PlayerShip(Entity):
                 self.pos.y = self.bounds.bottom
 
         self.firing_elapsed += elapsed
-        if self.firing:
+        if self.firing and self.input_enabled:
             if self.firing_elapsed > 350:
                 self.firing_elapsed = 0
                 self.fire()

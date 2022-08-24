@@ -21,6 +21,10 @@ All original artwork, not attributed below is copyrighted by Christopher Ross in
 
 # Attributions
 
-* **Cloudy Skies** Background Image - License: [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/), Author: Onsemeliot, Uploaded: 2019-01-14, https://opengameart.org/content/cloudy-skies
-* **Sound Effects** License: IndieSFX Sound Effect Standard Licence, IndieSFX Game Audio, https://indiesfx.co.uk/
+* **Cloudy Skies** Background Image, License: [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/), Author: Onsemeliot, Uploaded: 2019-01-14, https://opengameart.org/content/cloudy-skies
+* **Muisc** Looted Village, License: [CC-BY 3.0](https://creativecommons.org/licenses/by/3.0/), Author: bobjt, Uploaded: 2022-08-21, https://opengameart.org/content/looted-village-orc-vox
+* **Muisc** Battle Zero, License: [CC-BY 3.0](https://creativecommons.org/licenses/by/3.0/), Author: bobjt, Uploaded: 2022-01-08, https://opengameart.org/content/battle-zero
+* **Muisc** Sabatoge, License: License: [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/), Author: Tsorthan Grove, Uploaded: 2022-08-22, https://opengameart.org/content/sabotage
+* **Sound Effects** Various, License: [A Sound Effect - Royalty Free](https://www.asoundeffect.com/license-agreement/), Licensor: Portion Auido, https://www.asoundeffect.com/sounddesigner/potion-audio/ 
+* **Sound Effects** Various, License: [IndieSFX Sound Effect Standard Licence](https://indiesfx.co.uk/Licence.pdf), IndieSFX Game Audio, https://indiesfx.co.uk/
   

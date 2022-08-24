@@ -15,6 +15,7 @@ class Bullet(EntityVectorMovement):
 
     def __init__(self, pos, angle):
         super().__init__()
+        self.damage = 1
         self.type = EntityType.ENEMYBULLET
         self.pos = pos 
         self.heading = pygame.Vector2(1.0,0.0)
@@ -37,6 +38,7 @@ class RotatedBullet(EntityVectorMovement):
 
     def __init__(self, pos, angle):
         super().__init__()
+        self.damage = 1
         self.pos = pos 
         ac = self.angle_config[angle]
         self.heading = pygame.Vector2(1.0,0.0)
@@ -66,6 +68,7 @@ class Bullet001(RotatedBullet):
         self.frame_loop_start = 2
         self.frame_duration = 75
         self.velocity = 0.75
+        self.damage = 1
 
 # class Bullet002(RotatedBullet):
 #     angle_config = {

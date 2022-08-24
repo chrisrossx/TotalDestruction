@@ -1,8 +1,5 @@
 import math 
 
-from blinker import signal 
-import pygame 
-
 from TD.assetmanager import asset_manager
 from TD.debuging import game_debugger
 

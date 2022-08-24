@@ -62,9 +62,11 @@ class AssetManager:
         self.fonts = {}
 
         self.sounds = {}
+        self.music = {}
 
     def load(self):
 
+        self.fonts["xs"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 14)
         self.fonts["sm"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 24)
         self.fonts["md"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 48)
         self.fonts["lg"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 96)
@@ -73,23 +75,36 @@ class AssetManager:
         self.sounds["coin pickup"] = pygame.mixer.Sound(str(Path("TD/assets/CoinBrass.wav")))
         self.sounds["heart pickup"] = pygame.mixer.Sound(str(Path("TD/assets/CoinThree.wav")))
         self.sounds["explosion md"] = pygame.mixer.Sound(str(Path("TD/assets/ExploFuel.wav")))
+        # self.sounds["explosion sm"] = pygame.mixer.Sound(str(Path("TD/assets/ExploBreakage1.wav")))
+        self.sounds["explosion sm"] = pygame.mixer.Sound(str(Path("TD/assets/Dynamite1.wav")))
+        self.sounds["explosion sm"].set_volume(0.5)
+        
         self.sounds["explosion player"] = pygame.mixer.Sound(str(Path("TD/assets/ExploBreakage2.wav")))
         self.sounds["player hit"] = pygame.mixer.Sound(str(Path("TD/assets/ExploMetalbits.wav")))
         self.sounds["player collision"] = pygame.mixer.Sound(str(Path("TD/assets/HitMetalBasher.wav")))
         self.sounds["player gun"] = pygame.mixer.Sound(str(Path("TD/assets/GunUp.wav")))
         self.sounds["player gun"].set_volume(0.3)
 
+        self.sounds["boss servo 001"] = pygame.mixer.Sound(str(Path("TD/assets/Robot_Movement_Gesture_4A.wav")))
+        self.sounds["boss servo 002"] = pygame.mixer.Sound(str(Path("TD/assets/Robot_Movement_Head_01.wav")))
+        
+        self.sounds["boss laser 001"] = pygame.mixer.Sound(str(Path("TD/assets/Robot_ON.wav")))
+        self.sounds["boss laser 002"] = pygame.mixer.Sound(str(Path("TD/assets/Robot_Weapon_Release_01.wav")))
+
         self.sounds["menu move"] = pygame.mixer.Sound(str(Path("TD/assets/CatchClose.wav")))
         self.sounds["menu click"] = pygame.mixer.Sound(str(Path("TD/assets/CatchOpen.wav")))
         self.sounds["menu type"] = pygame.mixer.Sound(str(Path("TD/assets/HitMetalBash.wav")))
         
+        self.music["menu"] = {"filename": str(Path("TD/assets/sabotage_loop.flac")), "volume": 1}
+        self.music["level 001"] = {"filename": str(Path("TD/assets/lootedvillage_orc_vox.mp3")), "volume": 0.2}
+        self.music["level 002"] = {"filename": str(Path("TD/assets/battle_zero_2022_remaster_update.mp3")), "volume": 0.2}
 
 
 
         self.sprites["sky layered"] = pygame.image.load(str(Path("TD/assets/layered.jpg")))
         self.sprites["sky layered"] = self.sprites["sky layered"].convert()
 
-        source = pygame.image.load(Path("TD/assets/TD T-8.png"))
+        source = pygame.image.load(Path("TD/assets/T8/TD T-8.png"))
         source = source.convert_alpha()
         self.sprites["T8"] = load_sprites_from_sheet(source, [
             (0,0,64,64),
@@ -99,7 +114,7 @@ class AssetManager:
         ])
         # self.sprites["T8"] = scale_sprites(self.sprites["T8"], (128, 128))
      
-        source = pygame.image.load(Path("TD/assets/TD CX-5 2.png"))
+        source = pygame.image.load(Path("TD/assets/CX5/TD CX-5 2.png"))
         source = source.convert_alpha()
         self.sprites["CX5B"] = load_sprites_from_sheet(source, [
             (0,0,64,64),
@@ -108,9 +123,11 @@ class AssetManager:
             (192,0,64,64),
         ])
 
-        self.sprites["D2"] = load_sprite_from_files(Path("TD/assets/TD D-2 .png"), ["001", "002", "003", "004"])
+        self.sprites["D2"] = load_sprite_from_files(Path("TD/assets/D2/TD D-2 .png"), ["001", "002", "003", "004"])
 
         self.sprites["BT1"] = load_sprite_from_files(Path("TD/assets/BT1/TD_BT1.png"), ["-{}".format(i+1) for i in range(18)])
+
+        self.sprites["HX7"] = load_sprite_from_files(Path("TD/assets/HX7/TD_HX7.png"), ["-{}".format(i+1) for i in range(5)])
 
         self.sprites["Boss 001"] = load_sprite_from_files(Path("TD/assets/boss 001/TD_BOSS_001.png"), ["-{}".format(i+1) for i in range(12)])
         self.sprites["Boss 001 laser"] = load_sprite_from_files(Path("TD/assets/boss 001/TD_BOSS_001_Laser.png"), ["-{}".format(i+1) for i in range(17)])
@@ -119,23 +136,10 @@ class AssetManager:
         self.sprites["Pickup Heart"] = load_sprite_from_files(Path("TD/assets/pickup heart/TD_Pickup_Heart.png"), ["-{}".format(i+1) for i in range(4)])
         self.sprites["Pickup Heart"] = scale_sprites(self.sprites["Pickup Heart"], (48, 48))
         self.sprites["Pickup Star"] = load_sprite_from_files(Path("TD/assets/star shadow/TD_Pickup_Star.png"), ["-{}".format(i+1) for i in range(15)])
-        
-
-        # source = pygame.image.load(Path("TD/assets/TD Powerups 001.png"))
-
-        source = pygame.image.load(Path("TD/assets/TD Explosion M 001.png"))
-        source = source.convert_alpha()
-        self.sprites["Explosion Medium"] = load_sprites_from_sheet(source, [
-            (0,0,64,64),
-            (64,0,64,64),
-            (128,0,64,64),
-            (192,0,64,64),
-            (192+64,0,64,64),
-            (192+128,0,64,64),
-        ])
-        self.sprites["Explosion Medium"] = scale_sprites(self.sprites["Explosion Medium"], (128,128))
 
         self.sprites["Explosion Medium 002"] = load_sprite_from_files(Path("TD/assets/explosion medium/TD_Explosion_Medium.png"), ["-{}".format(i+1) for i in range(13)])
+
+        self.sprites["Explosion Small"] = load_sprite_from_files(Path("TD/assets/explosion sm/TD_Explosion_SM_001.png"), ["-{}".format(i+1) for i in range(8)])
 
         self.sprites["Bullet 001"] = {}
         self.sprites["Bullet 001"][0] = load_sprite_from_files(Path("TD/assets/Bullet 001/TD_Bullet_Green_Round_001.png"), ["-{}".format(i+1) for i in range(5)])
@@ -143,12 +147,16 @@ class AssetManager:
         self.sprites["Bullet 001"][0] = rotate_sprites(self.sprites["Bullet 001"][0], -90)
         create_rotations(self.sprites["Bullet 001"], self.sprites["Bullet 001"][0], [-15, 15,180])
 
-        # self.sprites["Bullet 002"] = {}
-        self.sprites["Bullet 002"] = load_sprite_from_file(Path("TD/assets/Bullet 002.png"))
+        self.sprites["Bullet 002"] = load_sprite_from_file(Path("TD/assets/Bullet 002/Bullet 002.png"))
 
         self.sprites["Bullet 003"] = load_sprite_from_files(Path("TD/assets/Bullet 003/TD_Bullet_003.png"), ["-{}".format(i+1) for i in range(4)])
 
-        
+        self.sprites["Missile 001"] = load_sprite_from_files(Path("TD/assets/Missile 001/TD_Missile_001.png"), ["-{}".format(i+1) for i in range(3)])
+        self.sprites["Missile Smoke 001"] =  load_sprite_from_files(Path("TD/assets/missile smoke/TD_Missile_Smoke.png"), ["-{}".format(i+1) for i in range(5)])
+
+        self.sprites["Spoof 001"] =  load_sprite_from_files(Path("TD/assets/Spoof 001/TD_Spoof.png"), ["-{}".format(i+1) for i in range(4)])
+        self.sprites["Spoof Hit 001"] =  load_sprite_from_files(Path("TD/assets/Spoof Hit 001/TD_Spoof_Hit.png"), ["-{}".format(i+1) for i in range(6)])
+
 
         self.sprites["Menu Cursor Left"] = load_sprite_from_files(Path("TD/assets/menu cursor/TD_Menu_Cursor.png"), ["-{}".format(i+1) for i in range(9)])
         self.sprites["Menu Cursor Left"] = rotate_sprites(self.sprites["Menu Cursor Left"], -90)

@@ -1,5 +1,4 @@
 import pygame
-from blinker import signal
 
 from TD.assetmanager import asset_manager
 from TD.paths import PathFollowerOld

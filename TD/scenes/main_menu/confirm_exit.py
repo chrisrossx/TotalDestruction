@@ -1,16 +1,15 @@
 import pygame 
 from pygame import Vector2
-from blinker import signal 
 
 from TD.config import SCREEN_RECT
 from TD import gui
+from TD import current_app, current_scene
 from .screen import MenuScreen
 
 
 class ConfirmExit(MenuScreen):
     def __init__(self) -> None:
         super().__init__()
-
 
     def render(self):
         menu_rect = SCREEN_RECT.copy()
@@ -35,8 +34,8 @@ class ConfirmExit(MenuScreen):
     def on_event(self, event, elapsed):
         if not self.transitioning:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                signal("game.exit").send()
+                current_app.exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                signal("mixer.play").send("menu click")
-                signal("menu_screen.start_transition").send(screen_name="start_screen", direction="top")
+                current_app.mixer.play("menu click")
+                current_scene.start_transition(screen_name="start_screen", direction="top")
             

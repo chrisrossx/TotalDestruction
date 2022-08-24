@@ -1,8 +1,7 @@
 import json 
 
-from blinker import signal 
-
 from TD.config import SAVE_FILENAME
+from TD.globals import current_app
 
 
 class SaveSlot:
@@ -51,18 +50,19 @@ class SaveData:
         self._file = SAVE_FILENAME
         self.slots = []
         self.index = None
-        self.muted = None
+        self.sounds_muted = None
+        self.music_muted = None
         for i in range(8):
             item = SaveSlot()
             self.slots.append(item)
 
         self.load()
-        signal("savedata.save").connect(self.save)
 
     def load_failed(self):
         self.slots = []
         self.index = None
-        self.muted = False
+        self.sounds_muted = False
+        self.music_muted = False
         for i in range(8):
             item = SaveSlot()
             self.slots.append(item)
@@ -75,7 +75,8 @@ class SaveData:
             self.slots = []
             with open(self._file, "r") as f:
                 data = json.load(f)
-            self.muted = data["mute"]
+            self.sounds_muted = data["sounds_mute"]
+            self.music_muted = data["music_mute"]
 
         try:
             for i in range(8):
@@ -86,7 +87,8 @@ class SaveData:
                 
     def save(self, *args, **kwargs):
         data = {
-            "mute": signal("mixer.is_muted").send()[0][1],
+            "sounds_mute": current_app.mixer.is_sounds_muted(),
+            "music_mute": current_app.mixer.is_music_muted(),
             "slots": [s.get_data() for s in self.slots],
         }
         with open(self._file, "w") as f:
@@ -99,5 +101,3 @@ class SaveData:
     @property
     def percent(self):
         return self.slots[self.index].percent
-
-save_data = SaveData()

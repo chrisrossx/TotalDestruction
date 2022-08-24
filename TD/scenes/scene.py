@@ -1,8 +1,6 @@
 from enum import Enum 
 
 import pygame
-from pygame import Vector2
-from blinker import signal 
 
 from TD.entity import EntityType, EntityManager
 from TD.config import SCREEN_SIZE
@@ -15,22 +13,16 @@ class Scene:
         self.surface = pygame.Surface(SCREEN_SIZE)
         self.background = Sky(SCREEN_SIZE)
 
-        signal("scene.add_entity").connect(self.em.add)
-        signal("scene.delete_entity").connect(self.em.delete)
-        
     def pressed(self, pressed, elapsed):
-        pass
-
-    def delete(self):
         pass
 
     def on_event(self, event, elapsed):
         pass
 
-    def on_start_scene(self):
+    def on_start(self):
         pass
 
-    def on_delete_scene(self):
+    def on_delete(self):
         pass
 
     def tick(self, elapsed):

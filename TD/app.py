@@ -1,17 +1,20 @@
 import pygame
-from blinker import signal
 
 from .assetmanager import asset_manager
 from .debuging import game_debugger
-from .scenes.main_menu import MainMenu
+from .scenes.main_menu.main_menu import MainMenu
 from .config import SCREEN_SIZE
-from .savedata import save_data
 from .scenes.levels.level_001 import Level_001
 from .mixer import Mixer
+from .savedata import SaveData
+
+from .globals import current_app, current_scene
+
 
 class App:
 
     def __init__(self):
+        current_app.__wrapped__ = self
         # self.size = (640, 480)
         self.size = SCREEN_SIZE
 
@@ -19,35 +22,40 @@ class App:
         self.screen = pygame.display.set_mode(self.size)
         self.clock = pygame.time.Clock()
 
-        self.font = pygame.font.SysFont(None, 24)
+        # self.font = pygame.font.SysFont(None, 24)
+        self.save_data = SaveData()
         asset_manager.load()
         self.mixer = Mixer()
-
-        signal("game.change_scene").connect(self.on_change_scene)
-        signal("game.exit").connect(self.on_exit)
 
         game_debugger.load()
         self.running = True
 
-    def on_exit(self, sender):
+    def exit(self):
+        print("Thank you, come again!")
         self.running = False
 
-    def on_change_scene(self, data):
-        self.scene.delete()
+    def change_scene(self, data):
+        self.scene.on_delete()
+        del self.scene
         if data["scene"] == "play":
-            self.scene = Level_001()
+            self._set_scene(Level_001())
             self.scene.background.offset = data["sky_offset"]
         if data["scene"] == "main_menu":
-            if "return_to_level_select" in data:
-                self.scene = MainMenu(return_to_level_select=data["return_to_level_select"])
+            if "return_from_level" in data:
+                self._set_scene(MainMenu(return_from_level=data["return_from_level"], level_data=data["level_data"]))
             else:
-                self.scene = MainMenu()
+                self._set_scene(MainMenu())
             self.scene.background.offset = data["sky_offset"]
+
+    def _set_scene(self, scene):
+        self.scene = scene
+        current_scene.__wrapped__ = self.scene 
+        self.scene.on_start()
 
     def run(self):
 
-        # self.scene = MainMenu()
-        self.scene = Level_001()
+        # self._set_scene(Level_001())
+        self._set_scene(MainMenu())
         
         self.clock.tick()
         self.running = True

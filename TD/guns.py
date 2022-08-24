@@ -1,7 +1,7 @@
-from blinker import signal 
 from pygame import Vector2
 
 from TD.bullets import Bullet002, Bullet003
+from TD import current_scene
 
 
 class ConstantFireGun:
@@ -13,7 +13,7 @@ class ConstantFireGun:
 
     def fire(self):
         b = Bullet002(self.parent.pos + self.parent.gun_points[0], 0)
-        signal("scene.add_entity").send(b)
+        current_scene.em.add(b)
 
     def tick(self, elapsed):
         self.elapsed += elapsed 
@@ -32,7 +32,7 @@ class SingleShotGun():
 
         def fire(self):
             b = Bullet002(self.parent.pos + self.parent.gun_points[0], 0)
-            signal("scene.add_entity").send(b)
+            current_scene.em.add(b)
 
         def tick(self, elapsed):
             if not self.fired:
@@ -81,7 +81,7 @@ class GenericGun():
     def fire(self):
         angle = self.get_angle()
         b = self.bullet_factory(angle)
-        signal("scene.add_entity").send(b)
+        current_scene.em.add(b)
         self.fired += 1
 
     def tick_pattern(self, elapsed):
@@ -117,9 +117,10 @@ class AimingGun(GenericGun):
         super().__init__()
         x = 100
         self.pattern_rate = [1000, 1000, x, x, x, x, x, x]
+        self.pattern_rate = [1000, 1000, x, x]
 
     def get_angle(self):
-        player_pos = signal("scene.player.get_pos").send()[0][1]
+        player_pos = current_scene.player.get_pos()
         gun_pos = self.parent.pos + self.parent.gun_points[0]
         angle1 = player_pos - gun_pos
         angle1.normalize_ip()

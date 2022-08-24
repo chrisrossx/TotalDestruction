@@ -1,17 +1,39 @@
 from enum import Enum
-from functools import total_ordering
-from locale import locale_encoding_alias 
-
 import pygame 
+
+from TD.particles.explosions import ExplosionMedium
+from TD.scenes.levels.level_state import LevelState
+import random 
 from pygame import Vector2
-from blinker import signal, Signal
 
 from TD.entity import EntityVectorMovement, EntityType, Entity
 from TD.assetmanager import asset_manager
 from TD.paths import PathFollower
 from TD.debuging import game_debugger
+from TD import current_app, current_scene
+
 
 SPRITE_OFFSET = Vector2(-64,-70) 
+
+
+class Boss001State(Enum):
+    STARTING = 0
+    LASER_STARTING = 1
+    LASER_ALL = 2
+    LASER_TWO = 3
+    LASER_ONE = 4
+    LASER_DEAD = 5
+    LAUNCHERS_LOADING = 6
+    LAUNCHERS_ALL = 7
+    LAUNCHERS_ONE = 8
+    LAUNCHERS_DEAD = 9
+    THRUSTERS_ALL = 10
+    THRUSTERS_TWO = 11
+    THRUSTERS_ONE = 12
+    THRUSTERS_DEAD = 13
+    # ALMOST_DEAD = 9
+    # DIEING = 10
+
 
 
 class Boss001Laser(Entity):
@@ -19,7 +41,7 @@ class Boss001Laser(Entity):
         super().__init__()
         self.sprite_offset = SPRITE_OFFSET
 
-    def animation_finished_callback(self, entity):
+    def on_finished_callback(self, entity):
         pass
 
 
@@ -28,11 +50,12 @@ class Boss001Launchers(Entity):
         super().__init__()
         self.sprite_offset = SPRITE_OFFSET
 
-    def animation_finished_callback(self, entity):
+    def on_finished_callback(self, entity):
         pass
 
 
 class BossState:
+    state = None
     def __init__(self, parent):
         self.parent = parent 
         self.total_elapsed = 0
@@ -115,6 +138,25 @@ class BossState:
 
     def start(self):
         self.total_elapsed = 0
+        self.health = self.parent.health_by_state[self.state]
+
+    def hit(self, bullet):
+        "Called when PlayerBullet Hits Boss"
+
+        if self.health > 0:
+            total_damage = bullet.damage
+            if total_damage > self.health:
+                total_damage = self.health
+
+            self.parent.health -= total_damage    
+            self.health -= bullet.damage
+            
+            if self.health <= 0:
+                self.next_state()
+
+    @property
+    def killed(self):
+        return self.parent.killed
 
     @property
     def pos(self):
@@ -132,8 +174,14 @@ class BossState:
     def stop_path(self):
         return self.parent.stop_path
 
+    def collision(self):
+        "Called when Player Collides with Boss"
+        return False 
+
+
 
 class BossState_STARTING(BossState):
+    state = Boss001State.STARTING
     def __init__(self, parent) -> None:
         super().__init__(parent)
 
@@ -154,68 +202,76 @@ class BossState_STARTING(BossState):
             self.next_state()
 
 class BossState_LASER_STARTING(BossState):
+    state = Boss001State.LASER_STARTING
     def __init__(self, parent) -> None:
         self.parent = parent 
 
     def start(self):
         super().start()
-        self.parent.start_path()
         self.parent.velocity = 0
         self.set_laser_sprite(1, 4, 350, 1)
-
-        self.parent.laser_sprite.signal_animation_finished.connect(self.on_animation_finished)
+        current_app.mixer.play("boss laser 001")
+        self.laser_sprite.callback_animation_finished.append(self.on_animation_finished)
 
     def on_animation_finished(self, sender):
         self.next_state()
 
     def end(self):
         super().end()
-        self.parent.laser_sprite.signal_animation_finished.disconnect(self.on_animation_finished)
+        self.laser_sprite.callback_animation_finished.remove(self.on_animation_finished)        
 
 
 class BossState_LASER_ALL(BossState):
+    state = Boss001State.LASER_ALL
     def __init__(self, parent):
         super().__init__(parent)
 
     def start(self):
         super().start()
+        self.parent.start_path()
         self.set_laser_sprite(3, 4)
-    
-    def tick(self, elapsed):
-        super().tick(elapsed)
-        if self.total_elapsed >= 2500:
-            self.next_state()
-
+            
 
 class BossState_LASER_TWO(BossState):
+    state = Boss001State.LASER_TWO
     def __init__(self, parent):
         super().__init__(parent)
 
     def start(self):
+        current_app.mixer.play("explosion sm")
         super().start()
         self.set_laser_sprite(4, 8, 100)
+        
+        #TEMP TO KILL BOSS FAST
+        # current_scene.em.add(ExplosionMedium(self.pos + Vector2(random.randint(-65,65), random.randint(-65,65))))
+        # current_app.mixer.play("explosion md")
+        # current_scene.change_state(LevelState.WON)
+        # self.killed()
     
-    def tick(self, elapsed):
-        super().tick(elapsed)
-        if self.total_elapsed >= 2500:
-            self.next_state()
+    # def tick(self, elapsed):
+    #     super().tick(elapsed)
+    #     if self.total_elapsed >= 2500:
+    #         self.next_state()
 
 
 class BossState_LASER_ONE(BossState):
+    state = Boss001State.LASER_ONE
     def __init__(self, parent):
         super().__init__(parent)
 
     def start(self):
         super().start()
         self.set_laser_sprite(8, 12, 100)
+        current_app.mixer.play("explosion sm")
     
-    def tick(self, elapsed):
-        super().tick(elapsed)
-        if self.total_elapsed >= 2500:
-            self.next_state()
+    # def tick(self, elapsed):
+    #     super().tick(elapsed)
+    #     if self.total_elapsed >= 2500:
+    #         self.next_state()
 
 
 class BossState_LASER_DEAD(BossState):
+    state = Boss001State.LASER_DEAD
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -232,6 +288,7 @@ class BossState_LASER_DEAD(BossState):
         # So if distance is 800 pixels
         # 0.1 at 800 pixels would take 8 seconds 8000
         self.lerp_rate = (1 / self.pos_start.distance_to(self.pos_finish)) * 0.1
+        current_app.mixer.play("explosion sm")
 
     def tick(self, elapsed):
         super().tick(elapsed)
@@ -250,15 +307,17 @@ class BossState_LASER_DEAD(BossState):
       
 
 class BossState_LAUNCHERS_LOADING(BossState):
+    state = Boss001State.LAUNCHERS_LOADING
     def __init__(self, parent):
         super().__init__(parent)
 
     def start(self):
         super().start()
         self.set_laser_sprite(16, 17)
-        self.set_launchers_sprite(0, 7, 250, 1)
+        self.set_launchers_sprite(0, 7, 120, 1)
         self.launchers_sprite.enabled = True
-        self.launchers_sprite.signal_animation_finished.connect(self.on_animation_finished)
+        self.launchers_sprite.callback_animation_finished.append(self.on_animation_finished)
+        current_app.mixer.play("boss servo 002")
 
     def on_animation_finished(self, sender):
         self.next_state()
@@ -268,10 +327,11 @@ class BossState_LAUNCHERS_LOADING(BossState):
 
     def end(self):
         super().end()
-        self.launchers_sprite.signal_animation_finished.disconnect(self.on_animation_finished)
+        self.launchers_sprite.callback_animation_finished.remove(self.on_animation_finished)
 
 
 class BossState_LAUNCHERS_ALL(BossState):
+    state = Boss001State.LAUNCHERS_ALL
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -287,6 +347,7 @@ class BossState_LAUNCHERS_ALL(BossState):
 
 
 class BossState_LAUNCHERS_ONE(BossState):
+    state = Boss001State.LAUNCHERS_ONE
     sprite_start = 7
     sprite_end = 8
     def __init__(self, parent):
@@ -295,6 +356,7 @@ class BossState_LAUNCHERS_ONE(BossState):
     def start(self):
         super().start()
         self.set_launchers_sprite(self.sprite_start, self.sprite_end)
+        current_app.mixer.play("explosion sm")
 
     def tick(self, elapsed):
         super().tick(elapsed)
@@ -303,21 +365,24 @@ class BossState_LAUNCHERS_ONE(BossState):
 
 
 class BossState_LAUNCHERS_DEAD(BossState):
+    state = Boss001State.LAUNCHERS_DEAD
     def __init__(self, parent):
         super().__init__(parent)
 
     def start(self):
         super().start()
         self.set_launchers_sprite(8, 9)
+        current_app.mixer.play("explosion sm")
 
     def tick(self, elapsed):
         super().tick(elapsed)
-        if self.total_elapsed >= 2500:
+        if self.total_elapsed >= 250:
             self.next_state()
             # print("finished")
 
 
 class BossState_THRUSTERS_ALL(BossState):
+    state = Boss001State.THRUSTERS_ALL
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -333,12 +398,14 @@ class BossState_THRUSTERS_ALL(BossState):
 
 
 class BossState_THRUSTERS_TWO(BossState):
+    state = Boss001State.THRUSTERS_TWO
     def __init__(self, parent):
         super().__init__(parent)
 
     def start(self):
         super().start()
         self.set_parent_sprite(3, 6, 100)
+        current_app.mixer.play("explosion sm")
 
     def tick(self, elapsed):
         super().tick(elapsed)
@@ -347,12 +414,14 @@ class BossState_THRUSTERS_TWO(BossState):
 
 
 class BossState_THRUSTERS_ONE(BossState):
+    state = Boss001State.THRUSTERS_ONE
     def __init__(self, parent):
         super().__init__(parent)
 
     def start(self):
         super().start()
         self.set_parent_sprite(6, 9, 100)
+        current_app.mixer.play("explosion sm")
 
     def tick(self, elapsed):
         super().tick(elapsed)
@@ -361,38 +430,35 @@ class BossState_THRUSTERS_ONE(BossState):
 
 
 class BossState_THRUSTERS_DEAD(BossState):
+    state = Boss001State.THRUSTERS_DEAD
     def __init__(self, parent):
         super().__init__(parent)
 
     def start(self):
         super().start()
         self.set_parent_sprite(9, 12, 100)
+        self.stop_path()
+        self.heading = Vector2(0, 1)
+        self.velocity = 0.2
+        # current_app.mixer.play("explosion sm")
 
     def tick(self, elapsed):
         super().tick(elapsed)
-        if self.total_elapsed >= 2500:
-            # self.next_state()
-            print("DEAD!")
-
-
-
-class Boss001State(Enum):
-    STARTING = 0
-    LASER_STARTING = 1
-    LASER_ALL = 2
-    LASER_TWO = 3
-    LASER_ONE = 4
-    LASER_DEAD = 5
-    LAUNCHERS_LOADING = 6
-    LAUNCHERS_ALL = 7
-    LAUNCHERS_ONE = 8
-    LAUNCHERS_DEAD = 9
-    THRUSTERS_ALL = 10
-    THRUSTERS_TWO = 11
-    THRUSTERS_ONE = 12
-    THRUSTERS_DEAD = 13
-    # ALMOST_DEAD = 9
-    # DIEING = 10
+        if self.total_elapsed >= 250:
+            current_scene.em.add(ExplosionMedium(self.pos))
+            current_scene.em.add(ExplosionMedium(self.pos + Vector2(random.randint(-35,35), random.randint(-35,35))))
+            current_scene.em.add(ExplosionMedium(self.pos + Vector2(random.randint(-35,35), random.randint(-35,35))))
+            current_scene.em.add(ExplosionMedium(self.pos + Vector2(random.randint(-35,35), random.randint(-35,35))))
+            current_scene.em.add(ExplosionMedium(self.pos + Vector2(random.randint(-35,35), random.randint(-35,35))))
+            current_scene.em.add(ExplosionMedium(self.pos + Vector2(random.randint(-35,35), random.randint(-35,35))))
+            current_scene.em.add(ExplosionMedium(self.pos + Vector2(random.randint(-35,35), random.randint(-35,35))))
+            current_scene.em.add(ExplosionMedium(self.pos + Vector2(random.randint(-65,65), random.randint(-65,65))))
+            current_scene.em.add(ExplosionMedium(self.pos + Vector2(random.randint(-65,65), random.randint(-65,65))))
+            current_scene.em.add(ExplosionMedium(self.pos + Vector2(random.randint(-65,65), random.randint(-65,65))))
+            current_app.mixer.play("explosion md")
+            current_scene.change_state(LevelState.WON)
+            self.killed()
+            # print("DEAD!")
 
 
 class Boss001(EntityVectorMovement):
@@ -403,6 +469,7 @@ class Boss001(EntityVectorMovement):
         self.add_hitbox((0,0,64,30),Vector2(-32, -10))
         self.add_hitbox((0,0,30,15),Vector2(-15, -25))
 
+        self.health = 0
 
         # self.frames = asset_manager.sprites["Boss 001"][3:6]
         # print(len(self.frames))
@@ -416,7 +483,7 @@ class Boss001(EntityVectorMovement):
         # self.main_sprite = 
 
         self.path = PathFollower("boss 001 lasers")
-        self.path.on_end_of_path.connect(self.on_end_of_path)
+        self.path.on_end_of_path.append(self.on_end_of_path)
         self.path.velocity = 0.11
         self.running_path = False 
 
@@ -438,13 +505,41 @@ class Boss001(EntityVectorMovement):
             Boss001State.THRUSTERS_DEAD: BossState_THRUSTERS_DEAD(self),
         }
 
+        self.health_by_state = {
+            Boss001State.STARTING: -1,
+            Boss001State.LASER_STARTING: -1,
+            Boss001State.LASER_ALL: 5,
+            Boss001State.LASER_TWO: 5,
+            Boss001State.LASER_ONE: 5,
+            Boss001State.LASER_DEAD: -1,
+            Boss001State.LAUNCHERS_LOADING: -1,
+            Boss001State.LAUNCHERS_ALL: 5,
+            Boss001State.LAUNCHERS_ONE: 5,
+            Boss001State.LAUNCHERS_DEAD: -1,
+            Boss001State.THRUSTERS_ALL: 5,
+            Boss001State.THRUSTERS_TWO: 5,
+            Boss001State.THRUSTERS_ONE: 5,
+            Boss001State.THRUSTERS_DEAD: -1,
+        }
+        for h in self.health_by_state.values():
+            if h > 0:
+                self.health += h
+
         # self.state = Boss001State.LASER_DEAD
         # self.states[self.state].set_parent_sprite(0,3, 100)
         # self.pos = Vector2(1000,300)
 
         self.states[self.state].start()
 
+    def hit(self, bullet):
+        # self.health -= bullet.damage
+        self.states[self.state].hit(bullet)
+
     def killed(self):
+        self.delete()
+
+    def collision(self):
+        """Collision with Player"""
         pass
 
     def on_end_of_path(self, sender):
@@ -454,11 +549,13 @@ class Boss001(EntityVectorMovement):
         if index:
             self.path.set_new_path(index)
             self.path.distance = 0
+            self.path.velocity = 0.11
         self.running_path = True 
         self.pos = self.path.pos
 
     def stop_path(self):
         self.runnin_path = False
+        self.path.velocity = 0
         self.pos = self.path.pos.copy()
 
     def next_state(self):
@@ -484,3 +581,14 @@ class Boss001(EntityVectorMovement):
         self.launchers_sprite.draw(elapsed, surface)
         if game_debugger.show_paths:
             self.path.draw(elapsed, surface)
+        if game_debugger.show_hitboxes:
+            line = asset_manager.fonts["xs"].render("[  H={}  ]".format(self.health), True, (255,0,0))
+            pos = self.pos + self.sprite_offset
+            pos.y -= line.get_rect().h
+            surface.blit(line, pos)
+
+            line = asset_manager.fonts["xs"].render("[  S={}, S={}  ]".format(self.state.name, self.states[self.state].health), True, (255,0,0))
+            pos = self.pos + self.sprite_offset
+            pos.y -= line.get_rect().h
+            pos.y -= 20
+            surface.blit(line, pos)

@@ -1,7 +1,6 @@
 import time 
 import functools
 
-from blinker import signal
 import pygame 
 
 class GameDebugger:
@@ -24,13 +23,9 @@ class GameDebugger:
         self.show_paths = not True
         self.show_bounds = not True 
         self.print_app_timits = not True 
-        self.god_mode = True 
+        self.god_mode = not True 
 
-        self.disable_input = 0
-        signal("debugger.disable_input").connect(self.on_disable_input)
-        signal("debugger.enable_input").connect(self.on_enable_input)
-
-        self.send_envent = signal("debugger.on_event")
+        self._disable_input = 0
 
         self.app_timeits = [
             "app.loop",
@@ -54,6 +49,9 @@ class GameDebugger:
             print("[K_b: show_bounds]   ", self.show_bounds)
             print("[K_g: god_mode]      ", self.god_mode)
 
+    def clear_lines(self):
+        self.lines = [None for i in range(20)]
+        # pass
 
     def print_app_timeits_cb(self):
         if self.print_app_timits:
@@ -65,11 +63,11 @@ class GameDebugger:
                 v = timeit["report_value"]
                 print("- {:<20}: {:>7.6f}, {:>8.1f}, {:>8.1f}%".format(name, v, 1/v, (v/tally)*100))
 
-    def on_disable_input(self, sender):
-        self.disable_input += 1
+    def disable_input(self):
+        self._disable_input += 1
 
-    def on_enable_input(self, sender):
-        self.disable_input -= 1
+    def enable_input(self):
+        self._disable_input -= 1
 
     def load(self):
         self.surface = pygame.Surface((300,300), pygame.SRCALPHA, 32)
@@ -139,8 +137,7 @@ class GameDebugger:
         self.timeits[name]["values"].append(time.perf_counter() - self.timeits[name]["start"])
 
     def on_event(self, event, elapsed):
-        if self.disable_input == 0 and event.type == pygame.KEYDOWN:
-            self.send_envent.send(event=event, elapsed=elapsed)
+        if self._disable_input == 0 and event.type == pygame.KEYDOWN:
             if event.key == 96:
                 if self.show_panel == None:
                     self.show_panel = 1

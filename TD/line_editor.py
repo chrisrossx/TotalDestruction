@@ -3,8 +3,6 @@ import math
 import json
 
 import pygame
-from blinker import signal
-# from paths import PathData
 from . import paths
 
 COLORS = [

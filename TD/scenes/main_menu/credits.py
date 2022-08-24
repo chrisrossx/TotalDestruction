@@ -1,13 +1,12 @@
 import pygame 
 from pygame import Vector2
-from blinker import signal 
 
 from TD.config import SCREEN_RECT
 from TD import gui
 from .screen import MenuScreen
-from TD.savedata import save_data
 from TD.entity import Entity, EntityType
 from TD.assetmanager import asset_manager
+from TD.globals import current_app, current_scene
 
 from TD.enemies.BT1 import EnemyBT1 
 from TD.enemies.CX5B import EnemyCX5B
@@ -58,30 +57,30 @@ class CreditScreen(MenuScreen):
         bt1 = EnemyBT1("credits 2")
         bt1.velocity = v
         bt1.path.distance = 442 * 0
-        bt1.path.on_end_of_path.disconnect(bt1.on_end_of_path)
+        bt1.path.on_end_of_path.remove(bt1.on_end_of_path)
         bt1.on_end_of_path = lambda sender: on_end_of_path(bt1)
-        bt1.path.on_end_of_path.connect(bt1.on_end_of_path)
+        bt1.path.on_end_of_path.append(bt1.on_end_of_path)
 
         cx5b = EnemyCX5B("credits 2")
         cx5b.velocity = v
         cx5b.path.distance = 442 * 1
-        cx5b.path.on_end_of_path.disconnect(cx5b.on_end_of_path)
+        cx5b.path.on_end_of_path.remove(cx5b.on_end_of_path)
         cx5b.on_end_of_path = lambda sender: on_end_of_path(cx5b)
-        cx5b.path.on_end_of_path.connect(cx5b.on_end_of_path)
+        cx5b.path.on_end_of_path.append(cx5b.on_end_of_path)
 
         d2 = EnemyD2("credits 2")
         d2.velocity = v
         d2.path.distance = 442 * 2
-        d2.path.on_end_of_path.disconnect(d2.on_end_of_path)
+        d2.path.on_end_of_path.remove(d2.on_end_of_path)
         d2.on_end_of_path = lambda sender: on_end_of_path(d2)
-        d2.path.on_end_of_path.connect(d2.on_end_of_path)
+        d2.path.on_end_of_path.append(d2.on_end_of_path)
 
         t8 = EnemyT8("credits 2")
         t8.velocity = v
         t8.path.distance = 442 * 3
-        t8.path.on_end_of_path.disconnect(t8.on_end_of_path)
+        t8.path.on_end_of_path.remove(t8.on_end_of_path)
         t8.on_end_of_path = lambda sender: on_end_of_path(t8)
-        t8.path.on_end_of_path.connect(t8.on_end_of_path)
+        t8.path.on_end_of_path.append(t8.on_end_of_path)
                 
         self.em.add(bt1)
         self.em.add(cx5b)
@@ -103,5 +102,5 @@ class CreditScreen(MenuScreen):
         if not self.transitioning:
         
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                signal("menu_screen.start_transition").send(screen_name="start_screen", direction="bottom")
-                signal("mixer.play").send("menu click")
+                current_app.mixer.play("menu click")
+                current_scene.start_transition(screen_name="start_screen", direction="bottom")

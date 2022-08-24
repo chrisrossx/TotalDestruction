@@ -3,7 +3,6 @@ import random
 
 import pygame
 from pygame import Vector2
-from blinker import signal
 
 from TD.assetmanager import asset_manager
 from TD.paths import PathFollowerOld
@@ -12,6 +11,7 @@ from TD.debuging import game_debugger
 from TD.utils import fast_round_point
 from TD.entity import EntityVectorMovement, EntityType
 from TD.config import SCREEN_SIZE, SKY_VELOCITY
+from TD import current_scene
 
 class PickupType(Enum):
     HEART = 0 
@@ -38,7 +38,7 @@ class PickupEntity(EntityVectorMovement):
         self.magnet_heading = Vector2(0,0)
 
     def pickedup(self):
-        signal("scene.player.pickedup").send(self)
+        current_scene.player.pickedup(self)
         self.delete()
 
     def tick(self, elapsed):

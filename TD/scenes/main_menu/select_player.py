@@ -1,13 +1,13 @@
 import pygame 
 from pygame import Vector2
-from blinker import signal 
 
 from TD.config import SCREEN_RECT
 from TD import gui
 from .screen import MenuScreen
-from TD.savedata import save_data
+# from TD.savedata import save_data
 from TD.entity import Entity, EntityType
 from TD.assetmanager import asset_manager
+from TD.globals import current_app, current_scene
 
 
 class PlayerSlot(Entity):
@@ -20,8 +20,11 @@ class PlayerSlot(Entity):
         self.font_s = asset_manager.fonts["sm"]
        
         self.index = index 
-        self.player_slot = save_data.slots[index]
+        self.player_slot = current_app.save_data.slots[index]
+        
+
         self.render()
+
         # self.cursor_elapsed = 0
         # self.cursor_shown = True
 
@@ -71,7 +74,6 @@ class SelectPlayerScreen(MenuScreen):
     def __init__(self):
         super().__init__()
         self.slot_index = 0
-        # signal("menu_screen.select_player.update").connect(self.update)
 
     def render(self):
         menu_rect = SCREEN_RECT.copy()
@@ -109,7 +111,7 @@ class SelectPlayerScreen(MenuScreen):
         self.player_slots = []
         x = 512 - 150
         y = 175
-        for i, save_slot in enumerate(save_data.slots):
+        for i, save_slot in enumerate(current_app.save_data.slots):
             player_slot = PlayerSlot(i)
             player_slot.pos = Vector2(x, y)
             y += player_slot.get_rect().h + 10
@@ -145,30 +147,30 @@ class SelectPlayerScreen(MenuScreen):
         if not self.transitioning:
         
             if event.type == pygame.KEYDOWN and event.key == pygame.K_DELETE:
-                if save_data.slots[self.slot_index].name != None:
-                    signal("menu_screen.start_transition").send(screen_name="confirm_delete_player", direction="bottom", data={"slot_index": self.slot_index})
-                    signal("mixer.play").send("menu click")
+                if current_app.save_data.slots[self.slot_index].name != None:
+                    current_scene.start_transition(screen_name="confirm_delete_player", direction="bottom", data={"slot_index": self.slot_index})
+                    current_app.mixer.play("menu click")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                signal("menu_screen.start_transition").send(screen_name="start_screen", direction="left")
-                signal("mixer.play").send("menu click")
+                current_scene.start_transition(screen_name="start_screen", direction="left")
+                current_app.mixer.play("menu click")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                if save_data.slots[self.slot_index].name == None:
-                    signal("menu_screen.start_transition").send(screen_name="enter_player_name", direction="right", data={"slot_index": self.slot_index})
-                    signal("mixer.play").send("menu click")
+                if current_app.save_data.slots[self.slot_index].name == None:
+                    current_scene.start_transition(screen_name="enter_player_name", direction="right", data={"slot_index": self.slot_index})
+                    current_app.mixer.play("menu click")
                 else:
-                    save_data.index = self.slot_index
-                    signal("menu_screen.start_transition").send(screen_name="level_select", direction="right", data={"slot_index": self.slot_index})
-                    signal("mixer.play").send("menu click")
+                    current_app.save_data.index = self.slot_index
+                    current_scene.start_transition(screen_name="level_select", direction="right", data={"slot_index": self.slot_index})
+                    current_app.mixer.play("menu click")
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
                 self.slot_index += 1
-                if self.slot_index >= len(save_data.slots):
-                    self.slot_index = len(save_data.slots) - 1
+                if self.slot_index >= len(current_app.save_data.slots):
+                    self.slot_index = len(current_app.save_data.slots) - 1
                 self.update_select_slot()
-                signal("mixer.play").send("menu move")
+                current_app.mixer.play("menu move")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
                 self.slot_index -= 1
                 if self.slot_index < 0:
                     self.slot_index = 0
                 self.update_select_slot()
-                signal("mixer.play").send("menu move")
+                current_app.mixer.play("menu move")

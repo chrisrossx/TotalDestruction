@@ -136,7 +136,7 @@ class PathFollowerOld:
         self.velocity = 0.1
         self.distance = 0
         self.on_path = False
-        self.on_end_of_path = blinker.Signal()
+        self.on_end_of_path = [] 
 
     @property
     def pos(self):
@@ -186,7 +186,7 @@ class PathFollower:
         self.velocity = 0.1
         self.distance = 0
         self.on_path = False
-        self.on_end_of_path = blinker.Signal()
+        self.on_end_of_path = []
 
         #Update self.x and self.y to starting position
         self.tick(0)
@@ -226,7 +226,9 @@ class PathFollower:
                 break
         
         if self.on_path == False:
-            self.on_end_of_path.send()
+            for cb in self.on_end_of_path:
+                cb(self)
+            # self.on_end_of_path.send()
         
         return self.pos
 

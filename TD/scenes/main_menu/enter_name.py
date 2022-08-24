@@ -1,12 +1,11 @@
 import pygame 
 from pygame import Vector2
-from blinker import signal 
 
 from TD.config import SCREEN_RECT
-from TD import gui
+from TD import gui, current_app, current_scene
 from .screen import MenuScreen
-from TD.savedata import save_data
-
+from TD.debuging import game_debugger
+from TD.entity import Entity
 
 class EnterPlayerName(MenuScreen):
     def __init__(self) -> None:
@@ -15,14 +14,14 @@ class EnterPlayerName(MenuScreen):
         super().__init__()
         self.cursor_elapsed = 0
         self.cursor_shown = True
-        self.cursor_rect = pygame.Rect(0,0, 8, 5)
+        self.cursor_rect = pygame.Rect(0,0, 10, 5)
 
     def activate(self):
-        signal("debugger.disable_input").send()
+        game_debugger.disable_input()
 
     def deactivate(self):
         self.text_line = ""
-        signal("debugger.enable_input").send()
+        game_debugger.enable_input()
 
     def render(self):
         menu_rect = SCREEN_RECT.copy()
@@ -32,7 +31,22 @@ class EnterPlayerName(MenuScreen):
         lbl_hero.tjust_in_rect(menu_rect, 100)
         self.em.add(lbl_hero)
 
-        self.lbl_name = gui.GUILabel("{}".format(self.text_line), self.font_s, (250,206,72), shadow_color=(100,100,100))
+        dark_panel = Entity()
+        size = Vector2(400, 50)
+        dark_panel.frames = [pygame.Surface(size, pygame.SRCALPHA), ]
+        # dark_panel.frames[0].fill((0,0,0,50))
+        rect = (0,0,size.x, size.y)
+        pygame.draw.rect(dark_panel.frames[0], (0,0,0,50),rect,0,5)
+        dark_panel.pos = SCREEN_RECT.center - (size / 2)
+        dark_panel.pos.y = 200-10
+        self.em.add(dark_panel)
+
+        # color = (250,206,72)
+        # scolor = (100,100,100)
+        # color = (255, 255, 255)
+        color = (212, 175, 28)
+        scolor = (0,0,0)
+        self.lbl_name = gui.GUILabel("{}".format(self.text_line), self.font_s, color, shadow_color=scolor)
         self.lbl_name.center_in_rect(menu_rect)
         self.lbl_name.tjust_in_rect(menu_rect, 200)
         self.em.add(self.lbl_name)
@@ -65,7 +79,7 @@ class EnterPlayerName(MenuScreen):
         super().draw(elapsed)
         lbl_rect = self.lbl_name.get_rect()
         lbl_rect.topleft = self.lbl_name.pos
-        self.cursor_rect.x = lbl_rect.right + 0
+        self.cursor_rect.x = lbl_rect.right + 2
         self.cursor_rect.y = lbl_rect.bottom - 8
         
         if self.cursor_shown and not self.transitioning:
@@ -76,21 +90,21 @@ class EnterPlayerName(MenuScreen):
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    signal("menu_screen.start_transition").send(screen_name="select_player", direction="left")
-                    signal("mixer.play").send("menu click")
+                    current_scene.start_transition(screen_name="select_player", direction="left")
+                    current_app.mixer.play("menu click")
                 elif event.key == pygame.K_RETURN:
-                    save_data.slots[self.slot_index].name = self.text_line
-                    save_data.index = self.slot_index
-                    signal("savedata.save").send()
-                    signal("menu_screen.start_transition").send(screen_name="level_select", direction="right")
-                    signal("mixer.play").send("menu click")
+                    current_app.save_data.slots[self.slot_index].name = self.text_line
+                    current_app.save_data.index = self.slot_index
+                    current_app.save_data.save()
+                    current_scene.start_transition(screen_name="level_select", direction="right")
+                    current_app.mixer.play("menu click")
                 
                 # Check for backspace
                 elif event.key == pygame.K_BACKSPACE:
                     self.text_line = self.text_line[:-1]
-                    signal("mixer.play").send("menu type")
+                    current_app.mixer.play("menu type")
                 else:
-                    if len(self.text_line) < 15:
+                    if len(self.text_line) < 22:
                         self.text_line += event.unicode
-                        signal("mixer.play").send("menu type")
+                        current_app.mixer.play("menu type")
 

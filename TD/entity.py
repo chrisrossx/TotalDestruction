@@ -1,12 +1,11 @@
 from enum import IntEnum
 
 import pygame
-from blinker import signal, Signal
 
 from TD.paths import PathFollower
 from TD.utils import fast_round_point, fast_round, fast_round_vector2
 from TD.debuging import game_debugger
-
+from TD import current_app, current_scene
 
 class EntityType(IntEnum):
     UNASSIGNED = 0
@@ -168,7 +167,7 @@ class Entity:
         self.hitboxes = []
         self.hitbox_offsets = []
 
-        self.signal_animation_finished = Signal()
+        self.callback_animation_finished = []
 
     @property
     def surface(self):
@@ -193,7 +192,7 @@ class Entity:
     def get_rect(self):
         return self.frames[self.frame_index].get_rect()
 
-    def animation_finished_callback(self, entity):
+    def on_finished_callback(self, entity):
         entity.delete()
 
     def tick(self, elapsed):
@@ -209,11 +208,10 @@ class Entity:
                     self.frame_index = self.frame_loop_start
                     self.frame_loop_count += 1
                     if self.frame_loop_end >= 0 and self.frame_loop_count >= self.frame_loop_end:
-                        # self.delete()
                         self.frame_duration = 0
-                        # self.frame_index -= 1
-                        self.signal_animation_finished.send(self)
-                        self.animation_finished_callback(self)
+                        for cb in self.callback_animation_finished:
+                            cb(self)
+                        self.on_finished_callback(self)
 
         #Update Hitbox positions to follow Entity       
         for i in range(len(self.hitboxes)):
@@ -242,7 +240,8 @@ class Entity:
     def delete(self):
         self.deleted = True 
         self.enabled = False 
-        signal("scene.delete_entity").send(self)
+        #TODO maybe entity should reference its own manager and call itself thatway...
+        current_scene.em.delete(self)
 
     def add_hitbox(self, rect, offset):
         self.hitboxes.append(pygame.Rect(rect))
@@ -254,7 +253,7 @@ class EntityPathFollower(Entity):
         super().__init__()
 
         self.path = PathFollower(path_index)
-        self.path.on_end_of_path.connect(self.on_end_of_path)
+        self.path.on_end_of_path.append(self.on_end_of_path)
         self.pos = self.path.pos #this is a reference to a vector2, so update to path will update position of entity. 
 
     def on_end_of_path(self, sender):

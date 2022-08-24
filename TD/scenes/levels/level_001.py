@@ -6,13 +6,16 @@ from TD.pickups import PickupHeart, PickupCoin
 from TD.guns import SingleShotGun, ConstantFireGun, GenericGun, AimingGun
 from TD.scenes.levels.level_chains import *
 from TD.scenes.levels.enemy_chain import ChainGunFactory
+from TD import current_app
 
 from TD.enemies.boss import Boss001
 
 class Level_001(Level):
 
     def __init__(self):
-        super().__init__()
+        super().__init__(level=1)
+        current_app.mixer.play_music("level 001")
+
         t = 0
 
 
@@ -20,13 +23,14 @@ class Level_001(Level):
         # boss.pos = Vector2(800, 300)
         self.em.add(boss)
         c = BT1Chain(self, t, path_index="straight 300")
-        return
+        c.set_guns(ChainGunFactory(AimingGun))
+        
         # # c.set_guns(ChainGunFactory(GenericGun))
-        # c.set_guns(ChainGunFactory(AimingGun))
+        # return
         # t += 1400
         # c = BT1Chain(self, t, path_index="straight 100")
         # c = BT1Chain(self, t, path_index="straight 500")
-        # # c = CX5BChain(self, t, "slant bottom 1")
+        # c = CX5BChain(self, t, "slant bottom 1")
         # # c.set_guns(ChainGunFactory(Gun))
 
         # # t += 1000 
@@ -39,6 +43,7 @@ class Level_001(Level):
         t = 1000
         c = CX5BChain(self, t, "slant top 1")
         c.add_drops([PickupHeart, ], [2,])
+        c.set_guns(ChainGunFactory(AimingGun))
         # c.set_guns(ChainGunFactory(SingleShotGun, delay=1000), [1,])
 
         t += 1200 + 100
