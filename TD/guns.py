@@ -124,7 +124,7 @@ class AimingGun(GenericGun):
         gun_pos = self.parent.pos + self.parent.gun_points[0]
         angle1 = player_pos - gun_pos
         angle1.normalize_ip()
-        angle1 = angle1.angle_to((0,0)) * 1
+        angle1 = angle1.angle_to((0,0)) #* 1
         return angle1
 
     def bullet_factory(self, angle):

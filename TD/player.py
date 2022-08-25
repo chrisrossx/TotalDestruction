@@ -3,13 +3,15 @@ import pygame
 from pygame import Vector2
 
 from TD.debuging import game_debugger
-from TD.bullets import Bullet001
+from TD.bullets import Bullet001, Missile
 from TD.entity import Entity, EntityType
 from TD.config import SCREEN_SIZE
 from .pickups import PickupType
 from TD.scenes.levels.level_state import LevelState
 from TD.assetmanager import asset_manager
 from TD import current_scene, current_app
+from TD.particles.spoofs import SpoofHitFollow
+from TD.particles.explosions import ExplosionSmallFollow
 
 class PlayerShip(Entity):
     def __init__(self):
@@ -67,12 +69,23 @@ class PlayerShip(Entity):
     def hit(self, bullet):
         if game_debugger.god_mode == False:
             self.health -= bullet.damage
-            current_scene.hud_lives(self.health)
             self.been_hit = True 
-            current_scene.hud_been_hit()
+
+        current_scene.hud_lives(self.health)
+        current_scene.hud_been_hit()
+            
+        if type(bullet) == Missile:
+            l = (bullet.pos.lerp(self.pos, 0.8) - bullet.pos) * -1
+            current_scene.em.add(ExplosionSmallFollow(self, l))
+        else:
+            l = (bullet.pos.lerp(self.pos, 0.9) - bullet.pos) * -1
+            current_scene.em.add(SpoofHitFollow(self, l))
+        current_app.mixer.play("player hit")
+
+
         if self.health <= 0:
             current_scene.change_state(LevelState.DEAD)
-        current_app.mixer.play("player hit")
+        
 
     def collision(self):
         pass

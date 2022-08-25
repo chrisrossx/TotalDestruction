@@ -86,6 +86,13 @@ class PathData:
             self._items.append(PathItem())
 
     def __getitem__(self, index):
+        # if type(index) == int:
+            # return self._items[index]
+        if type(index) == str:
+            for i, path in enumerate(self._items):
+                if path.name == index:
+                    return self._items[i]
+
         return self._items[index]
 
     def __setitem__(self, index, value):
@@ -111,66 +118,6 @@ class PathData:
             for i, item_data in enumerate(data):
                 item = PathItem(data=item_data)
                 self._items.append(item)
-
-class PathFollowerOld:
-    def __init__(self, index, offset=(0,0)):
-        """
-        @param index can by int or str: list index or path.name
-        """
-        self.x = 0
-        self.y = 0
-        self.offset = offset
-
-        # data = PathData()
-        # data.load()
-
-        if type(index) == int:
-            self.data = path_data[index]
-        if type(index) == str:
-            for path in path_data:
-                if path.name == index:
-                    self.data = path
-                    break
-
-
-        self.velocity = 0.1
-        self.distance = 0
-        self.on_path = False
-        self.on_end_of_path = [] 
-
-    @property
-    def pos(self):
-        return self.x, self.y
-
-    def draw(self, elapsed, surface):
-        pygame.draw.lines(surface,(255,0,0), False, self.data.points)
-        if self.on_path:
-            pygame.draw.circle(surface, (255, 0, 255), (self.x - self.offset[0], self.y - self.offset[1]), 5)
-
-    def tick(self, elapsed):
-        pass
-        self.distance += elapsed * self.velocity
-        self.on_path = False
-        for i in range(len(self.data.points)-1):
-            start = self.data.start[i]
-            end = self.data.end[i]
-            if self.distance >= start and self.distance < end:
-                d = self.data.length[i]
-                p1 = self.data.points[i]
-                p2 = self.data.points[i+1]
-                t = (self.distance - start) / d
-                self.x = ((1-t) * p1[0])  + (t * p2[0])
-                self.y = ((1-t) * p1[1])  + (t * p2[1])
-                self.y = fast_round(self.y)
-                self.x = fast_round(self.x)
-                self.x += self.offset[0]
-                self.y += self.offset[1]
-                self.on_path = True
-                break
-        
-        if self.on_path == False:
-            self.on_end_of_path.send()
-
 
 class PathFollower:
     def __init__(self, index):
@@ -227,7 +174,7 @@ class PathFollower:
         
         if self.on_path == False:
             for cb in self.on_end_of_path:
-                cb(self)
+                cb()
             # self.on_end_of_path.send()
         
         return self.pos

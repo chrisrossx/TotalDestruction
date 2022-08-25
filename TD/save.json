@@ -1,5 +1,5 @@
 {
-  "sounds_mute": true,
+  "sounds_mute": false,
   "music_mute": true,
   "slots": [
     {
@@ -13,12 +13,12 @@
       "level_state": {}
     },
     {
-      "name": null,
+      "name": "ads",
       "coins": 0,
       "level_state": {}
     },
     {
-      "name": null,
+      "name": "hellow rold typwriter",
       "coins": 0,
       "level_state": {}
     },

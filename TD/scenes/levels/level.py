@@ -128,7 +128,7 @@ class StartingState(LevelStateMachine):
       
     def tick_step_000(self, elapsed):
         # Skip for now
-        if False:
+        if not False:
             self.player.pos.x = 200
             for key, hud in self.hud.items():
                 hud.y = 0

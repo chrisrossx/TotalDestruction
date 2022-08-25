@@ -20,10 +20,11 @@ class Level_001(Level):
 
 
         boss = Boss001()
-        # boss.pos = Vector2(800, 300)
         self.em.add(boss)
+        # boss.pos = Vector2(800, 300)
         c = BT1Chain(self, t, path_index="straight 300")
         c.set_guns(ChainGunFactory(AimingGun))
+        return 
         
         # # c.set_guns(ChainGunFactory(GenericGun))
         # return

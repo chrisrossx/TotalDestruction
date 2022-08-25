@@ -49,11 +49,6 @@ def flip_sprites(source, flip_x=False, flip_y=False):
         return sprites
 
 
-def create_rotations(store, source, angles):
-    for angle in angles:
-        store[angle] = rotate_sprites(source, angle)
-
-
 class AssetManager:
     
     def __init__(self):
@@ -85,6 +80,12 @@ class AssetManager:
         self.sounds["player gun"] = pygame.mixer.Sound(str(Path("TD/assets/GunUp.wav")))
         self.sounds["player gun"].set_volume(0.3)
 
+        self.sounds["enemy hit"] = pygame.mixer.Sound(str(Path("TD/assets/HitMetalDull1.wav")))
+        self.sounds["enemy hit"].set_volume(0.3)
+
+        self.sounds["missile launch"] = pygame.mixer.Sound(str(Path("TD/assets/Robot_Weapon_Electricity.wav")))
+        self.sounds["missile launch 002"] = pygame.mixer.Sound(str(Path("TD/assets/Robot_Weapon_Recharge_02.wav")))
+
         self.sounds["boss servo 001"] = pygame.mixer.Sound(str(Path("TD/assets/Robot_Movement_Gesture_4A.wav")))
         self.sounds["boss servo 002"] = pygame.mixer.Sound(str(Path("TD/assets/Robot_Movement_Head_01.wav")))
         
@@ -93,7 +94,8 @@ class AssetManager:
 
         self.sounds["menu move"] = pygame.mixer.Sound(str(Path("TD/assets/CatchClose.wav")))
         self.sounds["menu click"] = pygame.mixer.Sound(str(Path("TD/assets/CatchOpen.wav")))
-        self.sounds["menu type"] = pygame.mixer.Sound(str(Path("TD/assets/HitMetalBash.wav")))
+        # self.sounds["menu type"] = pygame.mixer.Sound(str(Path("TD/assets/HitMetalBash.wav")))
+        self.sounds["menu type"] = pygame.mixer.Sound(str(Path("TD/assets/UI_Button_Click.wav")))
         
         self.music["menu"] = {"filename": str(Path("TD/assets/sabotage_loop.flac")), "volume": 1}
         self.music["level 001"] = {"filename": str(Path("TD/assets/lootedvillage_orc_vox.mp3")), "volume": 0.2}
@@ -137,25 +139,26 @@ class AssetManager:
         self.sprites["Pickup Heart"] = scale_sprites(self.sprites["Pickup Heart"], (48, 48))
         self.sprites["Pickup Star"] = load_sprite_from_files(Path("TD/assets/star shadow/TD_Pickup_Star.png"), ["-{}".format(i+1) for i in range(15)])
 
-        self.sprites["Explosion Medium 002"] = load_sprite_from_files(Path("TD/assets/explosion medium/TD_Explosion_Medium.png"), ["-{}".format(i+1) for i in range(13)])
+        self.sprites["Explosion Medium"] = load_sprite_from_files(Path("TD/assets/explosion medium/TD_Explosion_Medium.png"), ["-{}".format(i+1) for i in range(13)])
 
         self.sprites["Explosion Small"] = load_sprite_from_files(Path("TD/assets/explosion sm/TD_Explosion_SM_001.png"), ["-{}".format(i+1) for i in range(8)])
+        self.sprites["Explosion Small"] = scale_sprites(self.sprites["Explosion Small"], (64, 64))
 
-        self.sprites["Bullet 001"] = {}
-        self.sprites["Bullet 001"][0] = load_sprite_from_files(Path("TD/assets/Bullet 001/TD_Bullet_Green_Round_001.png"), ["-{}".format(i+1) for i in range(5)])
-        self.sprites["Bullet 001"][0] = scale_sprites(self.sprites["Bullet 001"][0], (38/2, 84/2))
-        self.sprites["Bullet 001"][0] = rotate_sprites(self.sprites["Bullet 001"][0], -90)
-        create_rotations(self.sprites["Bullet 001"], self.sprites["Bullet 001"][0], [-15, 15,180])
+        self.sprites["Bullet 001"] = load_sprite_from_files(Path("TD/assets/Bullet 001/TD_Bullet_Green_Round_001.png"), ["-{}".format(i+1) for i in range(5)])
+        self.sprites["Bullet 001"] = scale_sprites(self.sprites["Bullet 001"], (38/2, 84/2))
+        self.sprites["Bullet 001"] = rotate_sprites(self.sprites["Bullet 001"], -90)
 
         self.sprites["Bullet 002"] = load_sprite_from_file(Path("TD/assets/Bullet 002/Bullet 002.png"))
 
         self.sprites["Bullet 003"] = load_sprite_from_files(Path("TD/assets/Bullet 003/TD_Bullet_003.png"), ["-{}".format(i+1) for i in range(4)])
 
-        self.sprites["Missile 001"] = load_sprite_from_files(Path("TD/assets/Missile 001/TD_Missile_001.png"), ["-{}".format(i+1) for i in range(3)])
-        self.sprites["Missile Smoke 001"] =  load_sprite_from_files(Path("TD/assets/missile smoke/TD_Missile_Smoke.png"), ["-{}".format(i+1) for i in range(5)])
+        self.sprites["Missile 001"] = load_sprite_from_files(Path("TD/assets/Missile 001/TD_Missile_001.png"), ["-{}".format(i+1) for i in range(6)])
+        self.sprites["Missile 001"] = rotate_sprites(self.sprites["Missile 001"], -90)
+
+        self.sprites["Missile Smoke 004"] =  load_sprite_from_files(Path("TD/assets/missile smoke/TD_Missile_Smoke_004.png"), ["-{}".format(i+1) for i in range(2,8)])
 
         self.sprites["Spoof 001"] =  load_sprite_from_files(Path("TD/assets/Spoof 001/TD_Spoof.png"), ["-{}".format(i+1) for i in range(4)])
-        self.sprites["Spoof Hit 001"] =  load_sprite_from_files(Path("TD/assets/Spoof Hit 001/TD_Spoof_Hit.png"), ["-{}".format(i+1) for i in range(6)])
+        self.sprites["Spoof Hit 001"] =  load_sprite_from_files(Path("TD/assets/Spoof Hit 001/TD_Spoof_Hit_002.png"), ["-{}".format(i+1) for i in range(6)])
 
 
         self.sprites["Menu Cursor Left"] = load_sprite_from_files(Path("TD/assets/menu cursor/TD_Menu_Cursor.png"), ["-{}".format(i+1) for i in range(9)])

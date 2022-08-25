@@ -5,7 +5,6 @@ import pygame
 from pygame import Vector2
 
 from TD.assetmanager import asset_manager
-from TD.paths import PathFollowerOld
 from TD.debuging import game_debugger
 # from TD.bullets import Bullet
 from TD.utils import fast_round_point

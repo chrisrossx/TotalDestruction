@@ -40,6 +40,7 @@ class Enemy:
         self.health -= bullet.damage
         if self.health <= 0:
             self.killed()
+            current_app.mixer.play("enemy hit")
         # print("enemy hit", bullet)
 
     def collision(self):
@@ -56,24 +57,12 @@ class Enemy:
     def set_gun(self, gun):
         self.gun = gun
         self.gun.parent = self 
-
-
-class EnemyPathFollower(EntityPathFollower, Enemy):
-    def __init__(self, path):
-        super().__init__(path)
-        self._enemy_init()
-        self.chain = None
-
-    def on_end_of_path(self, sender):
-        self.enemy_missed()
-
-    def tick(self, elapsed):
+    
+    def _enemy_tick(self, elapsed):
         if self.gun:
             self.gun.tick(elapsed)
-        super().tick(elapsed)
 
-    def draw(self, elapsed, surface):
-        super().draw(elapsed, surface)
+    def _enemy_draw(self, elapsed, surface):
         if game_debugger.show_hitboxes:
             for i in range(len(self.gun_points)):
                 pygame.draw.circle(surface, (0,255,0), self.pos + self.gun_points[i], 5, 1)
@@ -84,6 +73,23 @@ class EnemyPathFollower(EntityPathFollower, Enemy):
             surface.blit(line, pos)
 
 
+class EnemyPathFollower(EntityPathFollower, Enemy):
+    def __init__(self, path):
+        super().__init__(path)
+        self._enemy_init()
+        self.chain = None
+
+    def on_end_of_path(self):
+        self.enemy_missed()
+
+    def tick(self, elapsed):
+        super().tick(elapsed)
+        self._enemy_tick(elapsed)
+
+    def draw(self, elapsed, surface):
+        super().draw(elapsed, surface)
+        self._enemy_draw(elapsed, surface)
+
 
 class EnemyVectorMovement(Enemy, EntityVectorMovement):
     def __init__(self):
@@ -92,12 +98,14 @@ class EnemyVectorMovement(Enemy, EntityVectorMovement):
         self.chain = None
 
     def tick(self, elapsed):
-        if self.gun:
-            self.gun.tick(elapsed)
         super().tick(elapsed)
+        self._enemy_tick(elapsed)
+        if self.pos.y <= -40:
+            self.on_off_screen()
+
+    def on_off_screen(self):
+        self.enemy_missed()
 
     def draw(self, elapsed, surface):
         super().draw(elapsed, surface)
-        for i in range(len(self.gun_points)):
-            if game_debugger.show_hitboxes:
-                pygame.draw.circle(surface, (0,255,0), self.pos + self.gun_points[i], 5, 1)
+        self._enemy_draw(elapsed, surface)

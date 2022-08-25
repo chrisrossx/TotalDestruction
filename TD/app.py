@@ -54,8 +54,8 @@ class App:
 
     def run(self):
 
-        # self._set_scene(Level_001())
-        self._set_scene(MainMenu())
+        self._set_scene(Level_001())
+        # self._set_scene(MainMenu())
         
         self.clock.tick()
         self.running = True

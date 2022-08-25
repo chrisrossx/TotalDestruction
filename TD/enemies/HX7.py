@@ -4,7 +4,7 @@ from TD.enemies.enemy import EnemyPathFollower
 from TD.assetmanager import asset_manager
 
 
-class EnemyD2(EnemyPathFollower):
+class EnemyHX7(EnemyPathFollower):
     def __init__(self, path_index):
         super().__init__(path_index)
         self.frames = asset_manager.sprites["HX7"]

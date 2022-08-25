@@ -2,6 +2,11 @@ import time
 import functools
 
 import pygame 
+from pygame import Vector2
+from TD import current_scene
+from TD.assetmanager import asset_manager
+from TD import current_app
+
 
 class GameDebugger:
     def __init__(self):
@@ -23,7 +28,7 @@ class GameDebugger:
         self.show_paths = not True
         self.show_bounds = not True 
         self.print_app_timits = not True 
-        self.god_mode = not True 
+        self.god_mode = True 
 
         self._disable_input = 0
 
@@ -173,7 +178,53 @@ class GameDebugger:
             if event.key == pygame.K_g:
                 if self.show_panel:
                     self.god_mode = not self.god_mode
-    
+                    print("DEBUGGER.god_mode = {}".format(self.god_mode))
+
+
+            if event.key == pygame.K_u:
+                if self.show_panel:
+                    from TD.particles.explosions import ExplosionMedium, ExplosionSmall
+                    from TD.particles.spoofs import SpoofHitFollow
+                    from TD.bullets import Missile, Missile002
+                    from TD.assetmanager import asset_manager
+                    # from TD.entity import Entity
+                    # current_scene.em.add(ExplosionSmall(Vector2(512,250)))
+                    # current_scene.em.add(ExplosionMedium(Vector2(512,350)))
+                    import random 
+                    a = random.randint(0,359)
+                    m = Missile(Vector2(512, 300), a)
+                    current_scene.em.add(m)
+                    current_app.mixer.play("missile launch")
+                    # m = Missile(Vector2(512, 300), 0)
+                    # current_scene.em.add(m)
+                    # from TD.bullets import Bullet001
+                    # for i in range(0,359, 5):
+                    #     bullet = Bullet001([512, 300], i)
+                    #     current_scene.em.add(bullet)
+
+                    # import random
+
+            if event.key == pygame.K_i:
+                if self.show_panel:
+                    from TD.particles.explosions import ExplosionMedium, ExplosionSmall
+                    from TD.particles.spoofs import SpoofHitFollow
+                    from TD.bullets import Missile
+                    # from TD.entity import Entity
+                    # current_scene.em.add(ExplosionSmall(Vector2(512,250)))
+                    # current_scene.em.add(ExplosionMedium(Vector2(512,350)))
+                    import random 
+                    a = random.randint(0,359)
+                    m = Missile(Vector2(512, 300), a)
+                    current_scene.em.add(m)
+                    current_app.mixer.play("missile launch 002")
+                    # import random
+                    # for i in range(1000):
+                    #     a = ExplosionMedium(Vector2(random.randint(100,924), random.randint(100,500)))
+                    #     a.frame_loop_end = -1
+                    #     a.frame_duration = -1
+                    #     a.velocity = 0
+                    #     current_scene.em.add(a)
+                    # current_scene.em.add(SpoofHitFollow(Vector2(612,350)))
 
             self.show_panel = bypass_show_panel_lock_out 
 

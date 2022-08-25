@@ -56,9 +56,14 @@ class EntityManager:
         """
         if entity_type=None, then draw all entities
         """
+
+        # surfaces = []
         if entity_type:
             for e in [e for e in self.entities_by_type[entity_type] if e.enabled]:
-                e.draw(elapsed, surface)
+                if e.enabled:
+                    # surfaces.append((e.surface, e.pos))
+                    e.draw(elapsed, surface)
+            # surface.blits(surfaces)
         else:
             for e in [e for e in self.entities if e.enabled]:
                 e.draw(elapsed, surface)
@@ -249,14 +254,14 @@ class Entity:
 
 
 class EntityPathFollower(Entity):
-    def __init__(self, path_index):
+    def __init__(self, path_index): 
         super().__init__()
 
         self.path = PathFollower(path_index)
         self.path.on_end_of_path.append(self.on_end_of_path)
         self.pos = self.path.pos #this is a reference to a vector2, so update to path will update position of entity. 
 
-    def on_end_of_path(self, sender):
+    def on_end_of_path(self):
         """
         Default Behavior is to delete self when it reaches end of path
         """

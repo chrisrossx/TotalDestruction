@@ -1,7 +1,7 @@
 from enum import Enum
 import pygame 
 
-from TD.particles.explosions import ExplosionMedium
+from TD.particles.explosions import ExplosionMedium, ExplosionSmall, ExplosionSmallFollow
 from TD.scenes.levels.level_state import LevelState
 import random 
 from pygame import Vector2
@@ -11,7 +11,7 @@ from TD.assetmanager import asset_manager
 from TD.paths import PathFollower
 from TD.debuging import game_debugger
 from TD import current_app, current_scene
-
+from TD.particles.spoofs import SpoofHitFollow
 
 SPRITE_OFFSET = Vector2(-64,-70) 
 
@@ -239,6 +239,8 @@ class BossState_LASER_TWO(BossState):
 
     def start(self):
         current_app.mixer.play("explosion sm")
+        current_scene.em.add(ExplosionSmallFollow(self.parent, Vector2(-16, 2)))
+
         super().start()
         self.set_laser_sprite(4, 8, 100)
         
@@ -248,12 +250,6 @@ class BossState_LASER_TWO(BossState):
         # current_scene.change_state(LevelState.WON)
         # self.killed()
     
-    # def tick(self, elapsed):
-    #     super().tick(elapsed)
-    #     if self.total_elapsed >= 2500:
-    #         self.next_state()
-
-
 class BossState_LASER_ONE(BossState):
     state = Boss001State.LASER_ONE
     def __init__(self, parent):
@@ -263,11 +259,7 @@ class BossState_LASER_ONE(BossState):
         super().start()
         self.set_laser_sprite(8, 12, 100)
         current_app.mixer.play("explosion sm")
-    
-    # def tick(self, elapsed):
-    #     super().tick(elapsed)
-    #     if self.total_elapsed >= 2500:
-    #         self.next_state()
+        current_scene.em.add(ExplosionSmallFollow(self.parent, Vector2(0, 2)))
 
 
 class BossState_LASER_DEAD(BossState):
@@ -288,7 +280,10 @@ class BossState_LASER_DEAD(BossState):
         # So if distance is 800 pixels
         # 0.1 at 800 pixels would take 8 seconds 8000
         self.lerp_rate = (1 / self.pos_start.distance_to(self.pos_finish)) * 0.1
+        
         current_app.mixer.play("explosion sm")
+        current_scene.em.add(ExplosionSmallFollow(self.parent, Vector2(16, 2)))
+
 
     def tick(self, elapsed):
         super().tick(elapsed)
@@ -340,10 +335,10 @@ class BossState_LAUNCHERS_ALL(BossState):
         self.parent.start_path("boss 001 launchers")
         self.set_launchers_sprite(6, 7)
 
-    def tick(self, elapsed):
-        super().tick(elapsed)
-        if self.total_elapsed >= 2500:
-            self.next_state()
+    # def tick(self, elapsed):
+    #     super().tick(elapsed)
+    #     if self.total_elapsed >= 2500:
+    #         self.next_state()
 
 
 class BossState_LAUNCHERS_ONE(BossState):
@@ -357,11 +352,13 @@ class BossState_LAUNCHERS_ONE(BossState):
         super().start()
         self.set_launchers_sprite(self.sprite_start, self.sprite_end)
         current_app.mixer.play("explosion sm")
+        current_scene.em.add(ExplosionSmallFollow(self.parent, Vector2(-27, -12)))
 
-    def tick(self, elapsed):
-        super().tick(elapsed)
-        if self.total_elapsed >= 2500:
-            self.next_state()
+
+    # def tick(self, elapsed):
+    #     super().tick(elapsed)
+    #     if self.total_elapsed >= 2500:
+    #         self.next_state()
 
 
 class BossState_LAUNCHERS_DEAD(BossState):
@@ -373,12 +370,12 @@ class BossState_LAUNCHERS_DEAD(BossState):
         super().start()
         self.set_launchers_sprite(8, 9)
         current_app.mixer.play("explosion sm")
+        current_scene.em.add(ExplosionSmallFollow(self.parent, Vector2(27, -12)))
 
     def tick(self, elapsed):
         super().tick(elapsed)
         if self.total_elapsed >= 250:
             self.next_state()
-            # print("finished")
 
 
 class BossState_THRUSTERS_ALL(BossState):
@@ -390,11 +387,11 @@ class BossState_THRUSTERS_ALL(BossState):
         super().start()
         # self.set_launchers_sprite(8, 9)
 
-    def tick(self, elapsed):
-        super().tick(elapsed)
-        if self.total_elapsed >= 2500:
-            self.next_state()
-            # print("finished")
+    # def tick(self, elapsed):
+    #     super().tick(elapsed)
+    #     if self.total_elapsed >= 2500:
+    #         self.next_state()
+    #         # print("finished")
 
 
 class BossState_THRUSTERS_TWO(BossState):
@@ -406,11 +403,7 @@ class BossState_THRUSTERS_TWO(BossState):
         super().start()
         self.set_parent_sprite(3, 6, 100)
         current_app.mixer.play("explosion sm")
-
-    def tick(self, elapsed):
-        super().tick(elapsed)
-        if self.total_elapsed >= 2500:
-            self.next_state()
+        current_scene.em.add(ExplosionSmallFollow(self.parent, Vector2(-27, 12)))
 
 
 class BossState_THRUSTERS_ONE(BossState):
@@ -422,11 +415,7 @@ class BossState_THRUSTERS_ONE(BossState):
         super().start()
         self.set_parent_sprite(6, 9, 100)
         current_app.mixer.play("explosion sm")
-
-    def tick(self, elapsed):
-        super().tick(elapsed)
-        if self.total_elapsed >= 2500:
-            self.next_state()
+        current_scene.em.add(ExplosionSmallFollow(self.parent, Vector2(27, 12)))
 
 
 class BossState_THRUSTERS_DEAD(BossState):
@@ -440,11 +429,13 @@ class BossState_THRUSTERS_DEAD(BossState):
         self.stop_path()
         self.heading = Vector2(0, 1)
         self.velocity = 0.2
-        # current_app.mixer.play("explosion sm")
+        current_app.mixer.play("explosion sm")
+        current_scene.em.add(ExplosionSmallFollow(self.parent, Vector2(0, 22)))
+        # pygame.draw.circle(surface, (255,0,255),self.pos + Vector2(0,22), 5, 1)
 
     def tick(self, elapsed):
         super().tick(elapsed)
-        if self.total_elapsed >= 250:
+        if self.total_elapsed >= 350:
             current_scene.em.add(ExplosionMedium(self.pos))
             current_scene.em.add(ExplosionMedium(self.pos + Vector2(random.randint(-35,35), random.randint(-35,35))))
             current_scene.em.add(ExplosionMedium(self.pos + Vector2(random.randint(-35,35), random.randint(-35,35))))
@@ -532,7 +523,9 @@ class Boss001(EntityVectorMovement):
         self.states[self.state].start()
 
     def hit(self, bullet):
-        # self.health -= bullet.damage
+        l = (bullet.pos.lerp(self.pos, 0.8) - bullet.pos) * -1
+        current_scene.em.add(SpoofHitFollow(self, l))
+        current_app.mixer.play("enemy hit")
         self.states[self.state].hit(bullet)
 
     def killed(self):
@@ -542,7 +535,7 @@ class Boss001(EntityVectorMovement):
         """Collision with Player"""
         pass
 
-    def on_end_of_path(self, sender):
+    def on_end_of_path(self):
         self.path.distance = 0
     
     def start_path(self, index=None):
@@ -579,6 +572,13 @@ class Boss001(EntityVectorMovement):
         super().draw(elapsed, surface)
         self.laser_sprite.draw(elapsed, surface)
         self.launchers_sprite.draw(elapsed, surface)
+
+
+        # pygame.draw.circle(surface, (255,0,255),self.pos + Vector2(-27,12), 5, 1)
+        # pygame.draw.circle(surface, (255,0,255),self.pos + Vector2(27,12), 5, 1)
+        # pygame.draw.circle(surface, (255,0,255),self.pos + Vector2(0,22), 5, 1)
+
+
         if game_debugger.show_paths:
             self.path.draw(elapsed, surface)
         if game_debugger.show_hitboxes:
