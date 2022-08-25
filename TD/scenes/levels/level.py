@@ -188,25 +188,23 @@ class PlayingState(LevelStateMachine):
         self.runtime += elapsed
         self.player.tick(elapsed)
 
-        # game_debugger.timeit_start("tick.hitboxes")
+        # for enemy in self.em.collidetype(self.player, EntityType.ENEMY):
+            # self.player.collision(enemy)
+            # enemy.collision(player)
 
-        for enemy in self.em.collidetypes(EntityType.PLAYER, EntityType.ENEMY).keys():
-            enemy.collision()
-            self.player.collision()
-
-        for pickup in self.em.collidetypes(EntityType.PLAYER, EntityType.PICKUP).keys():
+        for pickup in self.em.collidetype(self.player, EntityType.PICKUP):
             pickup.pickedup()
 
-        for enemy, bullets in self.em.collidetypes(EntityType.PLAYERBULLET, EntityType.ENEMY, True).items():
-            for b in bullets:
-                if b.deleted == False: 
-                    b.delete()
-                    enemy.hit(b)
-
-        for bullets in self.em.collidetypes(EntityType.ENEMYBULLET, EntityType.PLAYER, True).values():
-            for b in bullets:
-                self.player.hit(b)
-                b.delete()
+        for enemy, bullets in self.em.collidetypes(EntityType.ENEMY, EntityType.PLAYERBULLET, True).items():
+            bullet = bullets[0]
+            if not bullet.deleted:
+                bullet.delete()
+                enemy.hit(bullet)
+        
+        for bullet in self.em.collidetype(self.player, EntityType.ENEMYBULLET):
+            if not bullet.deleted:
+                self.player.hit(bullet)
+                bullet.delete()
 
         # game_debugger.timeit_end("tick.hitboxes")
 

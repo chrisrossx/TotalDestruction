@@ -1,5 +1,5 @@
 {
-  "sounds_mute": false,
+  "sounds_mute": true,
   "music_mute": true,
   "slots": [
     {
@@ -23,7 +23,7 @@
       "level_state": {}
     },
     {
-      "name": null,
+      "name": "asd",
       "coins": 0,
       "level_state": {}
     },

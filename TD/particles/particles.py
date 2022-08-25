@@ -14,12 +14,7 @@ class ParticleEntityFollower(Entity):
         super().__init__()
         self.follow_entity = follow_entity
         self.follow_offset = follow_offset
-
         self.type = EntityType.PARTICLE
-        self.frames = asset_manager.sprites["Spoof Hit 001"]
-        self.frame_duration = 1000/15
-        self.sprite_offset = [-8, -8]
-        self.frame_loop_end = 1
 
     def tick(self, elapsed):
         super().tick(elapsed)

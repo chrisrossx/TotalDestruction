@@ -51,8 +51,9 @@ class MainMenu(Scene):
                 self.screen = self.menu_screens["level_return"]
                 self.screen.set_data(level_data)
         else:
-            self.screen = self.menu_screens["start_screen"]
-            # self.screen = self.menu_screens["credits_screen"]
+            # self.screen = self.menu_screens["start_screen"]/
+            # self.screen = self.menu_screens["select_player"]
+            self.screen = self.menu_screens["credits_screen"]
         self.screen.pos = Vector2(0,0)
 
         current_app.mixer.play_music("menu")

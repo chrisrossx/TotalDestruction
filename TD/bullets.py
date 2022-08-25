@@ -149,10 +149,7 @@ class Missile(RotatingBullet):
         self.emmit_smoke_elapsed = 0
         self.smoke_point = Vector2(0, 0)
         self.turning_rate = 0.20
-
-
     
-
     def on_rotated(self, force):
         self.calc_smoke_point()
 
@@ -201,4 +198,28 @@ class Missile(RotatingBullet):
 
 
 class Missile002(Missile):
-    frame_source = "Missile 002"
+    frame_source = "Missile 001"
+    def tick(self, elapsed):
+
+        #Don't home missle for ever, after elapsed time start to reduce turning ability
+        if self.total_elapsed >= 1000:
+            #Start to reduce turning rate
+            self.turning_rate -= elapsed * 0.0002
+
+        if self.turning_rate > 0:
+            a = self.get_angle()
+            a = (a - self.angle) % 360 #Diference of angle, normalized
+            if a > 180: #Turn Left
+                self.angle -= elapsed * self.turning_rate
+                self.rotated()
+            else: #Turn Right
+                self.angle += elapsed * self.turning_rate
+                self.rotated()
+
+        self.emmit_smoke_elapsed += elapsed 
+        if self.emmit_smoke_elapsed >= 36:
+            self.emmit_smoke_elapsed = 0
+            a = Vector2(random.randint(-2, 2),random.randint(-2, 2))
+            from TD.particles.smoke import MissileSmoke2
+            current_scene.em.add(MissileSmoke2(self.smoke_point + self.pos+a))
+        super().tick(elapsed)

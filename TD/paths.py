@@ -156,6 +156,23 @@ class PathFollower:
         if self.on_path:
             pygame.draw.circle(surface, (255, 0, 255), self.pos, 5)
 
+    def loop(self):
+        
+        step = self.data.total_length
+        # if self.velocity >= 0:
+            # step *= -1
+        while True:
+            if self.velocity >= 0:
+                if self.distance < step:
+                    break
+                self.distance -= step
+            else:
+                if self.distance > 0:
+                    break
+                self.distance += step
+
+            
+
     def tick(self, elapsed):
         self.distance += elapsed * self.velocity
         self.on_path = False

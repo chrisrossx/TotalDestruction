@@ -97,7 +97,113 @@ class EntityManager:
     #                     count += 1
     #     return count 
 
+    def XXXcollidetypex(self, entity_b, type_a, multiple_hits=True):
+        """
+        multiple_hits: If set to True then type_a can collide with many type_b. If set 
+        to false then type_a can only strike the first type_b, then will not hit anymore
+        type_bs. Example, if type_a is bullets, only strike first type_b, don't keep kitting type_b
+        if there are multiple type_b collisions. 
+        """
+
+        # {type_b: [type_a, type_a]},
+
+        collisions = []
+
+        ignore_type_a = []
+
+
+        type_a_hitboxes = [e.hitboxes[0] for e in self.entities_by_type[type_a] if (not e.deleted and e not in ignore_type_a and len(e.hitboxes) > 0)]
+        type_a_hitboxes = []
+        for e in self.entities_by_type[type_a]:
+            if (not e.deleted and e not in ignore_type_a and len(e.hitboxes) > 0):
+                type_a_hitboxes.append(e.hitboxes[0])
+            else:
+                type_a_hitboxes.append(pygame.Rect(-1000,-1000,0,0))
+
+        if not entity_b.deleted:
+            for entity_b_hitbox in entity_b.hitboxes:
+                hits = entity_b_hitbox.collidelistall(type_a_hitboxes)
+                if len(hits) > 0:
+                    
+                    entities_a = [self.entities_by_type[type_a][i] for i in hits]
+                    for entity_a in entities_a:
+                        collisions.append(entity_a)
+                        if not multiple_hits:
+                            ignore_type_a.append(entity_a)
+                    break # Don't keep looping through enemy hitboxes because already hit
+        return collisions
+
+    def collidetype(self, entity_a, type_b, multiple_hits=True):
+        """
+        :returns: [type_b, type_b,]
+
+        Checks if entity_a collides with any type_b entities.
+        Will return a list of each type_b that the entity_a collides with. 
+        If multiple_hits = False, then will only return the first type_b that entity_a collides with. 
+        """
+        collisions = []
+        type_b_hitboxes = {}
+        for e in self.entities_by_type[type_b]:
+            if not e.deleted:
+                for hitbox in e.hitboxes:
+                    type_b_hitboxes[tuple(hitbox)] = e
+
+        if not entity_a.deleted:
+            for entity_a_hitbox in entity_a.hitboxes:
+                hits = entity_a_hitbox.collidedictall(type_b_hitboxes)
+
+                if len(hits) > 0:
+                    entities_b = [hit[1] for hit in hits]
+                    for entity_b in entities_b:
+                        if entity_b not in collisions: #Don't add a entity twice if it has more than one of its hitboxes colliding.
+                            if multiple_hits or len(collisions) == 0:
+                                collisions.append(entity_b)
+                    break # Don't keep looping through enemy hitboxes because already hit
+        return collisions
+                        
+
     def collidetypes(self, type_a, type_b, multiple_hits=True):
+        """
+        :returns: {type_a: [type_b, type_b,], type_a: [type_b, type_b,],}
+
+        Loops through type_a entities and checks if it collides with any type_b's
+        Will return a list of each type_b that the type_a collides with. 
+        If multiple_hits = False, then will only return the first type_b that type_a collides with. 
+        """
+
+        collisions = {}
+
+        type_b_hitboxes = {}
+        for e in self.entities_by_type[type_b]:
+            if not e.deleted:
+                for hitbox in e.hitboxes:
+                    type_b_hitboxes[tuple(hitbox)] = e
+
+        for entity_a in self.entities_by_type[type_a]:
+            if not entity_a.deleted:
+
+                for entity_a_hitbox in entity_a.hitboxes:
+                    hits = entity_a_hitbox.collidedictall(type_b_hitboxes)
+                    if len(hits) > 0:
+                        _collisions = []
+                        entities_b = [hit[1] for hit in hits]
+                        for entity_b in entities_b:
+                            if entity_b != entity_a:
+                                _collisions.append(entity_b)
+                        
+                        if len(_collisions) > 0:
+                            collisions.setdefault(entity_a, [])
+                            for _c in _collisions:
+                                if _c not in collisions[entity_a]: #Don't add a entity twice if it has more than one of its hitboxes colliding.
+                                    if multiple_hits or len(collisions[entity_a]) == 0:
+                                        collisions[entity_a].append(_c)
+                        
+                            # collisions[entity_b].extend(_collisions)
+                        break # Don't keep looping through enemy hitboxes because already hit
+        return collisions
+
+
+    def XXXcollidetypes(self, type_a, type_b, multiple_hits=True):
         """
         multiple_hits: If set to True then type_a can collide with many type_b. If set 
         to false then type_a can only strike the first type_b, then will not hit anymore
@@ -112,6 +218,8 @@ class EntityManager:
         ignore_type_a = []
 
         for entity_b in self.entities_by_type[type_b]:
+            #TODO
+            #THIS IS ONLY CAPTURING FIRST HITBOX!!!!
             type_a_hitboxes = [e.hitboxes[0] for e in self.entities_by_type[type_a] if (not e.deleted and e not in ignore_type_a)]
             if not entity_b.deleted:
                 for entity_b_hitbox in entity_b.hitboxes:
@@ -125,6 +233,7 @@ class EntityManager:
                                 ignore_type_a.append(entity_a)
                         break # Don't keep looping through enemy hitboxes because already hit
         return collisions
+
 
 class Entity:
     """

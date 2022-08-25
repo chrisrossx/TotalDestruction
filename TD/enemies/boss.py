@@ -536,7 +536,8 @@ class Boss001(EntityVectorMovement):
         pass
 
     def on_end_of_path(self):
-        self.path.distance = 0
+        # self.path.distance = 0
+        self.path.loop()
     
     def start_path(self, index=None):
         if index:

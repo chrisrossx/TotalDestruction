@@ -11,7 +11,7 @@ class EnemyHX7(EnemyPathFollower):
         self.frame_duration = 30    
         self.velocity = 0.15
         #TODO
-        self.sprite_offset = Vector2(-70, -50)
+        self.sprite_offset = Vector2(-22, -42)
 
         self.add_hitbox((0, 0, 70, 32), Vector2(-35, -28))
         self.add_hitbox((0, 0, 40, 15), Vector2(-20, 4))

@@ -125,7 +125,7 @@ class AssetManager:
             (192,0,64,64),
         ])
 
-        self.sprites["D2"] = load_sprite_from_files(Path("TD/assets/D2/TD D-2 .png"), ["001", "002", "003", "004"])
+        self.sprites["D2"] = load_sprite_from_files(Path("TD/assets/D2/TD_D2.png"), ["-{}".format(i+1) for i in range(4)])
 
         self.sprites["BT1"] = load_sprite_from_files(Path("TD/assets/BT1/TD_BT1.png"), ["-{}".format(i+1) for i in range(18)])
 
@@ -156,6 +156,8 @@ class AssetManager:
         self.sprites["Missile 001"] = rotate_sprites(self.sprites["Missile 001"], -90)
 
         self.sprites["Missile Smoke 004"] =  load_sprite_from_files(Path("TD/assets/missile smoke/TD_Missile_Smoke_004.png"), ["-{}".format(i+1) for i in range(2,8)])
+        self.sprites["Missile Smoke 002"] =  load_sprite_from_files(Path("TD/assets/missile smoke/TD_Missile_Smoke_004.png"), ["-{}".format(i+1) for i in range(4,5)])
+
 
         self.sprites["Spoof 001"] =  load_sprite_from_files(Path("TD/assets/Spoof 001/TD_Spoof.png"), ["-{}".format(i+1) for i in range(4)])
         self.sprites["Spoof Hit 001"] =  load_sprite_from_files(Path("TD/assets/Spoof Hit 001/TD_Spoof_Hit_002.png"), ["-{}".format(i+1) for i in range(6)])
@@ -170,6 +172,10 @@ class AssetManager:
         self.sprites["HUD Hurt"] = load_sprite_from_file(Path("TD/assets/HUD hurt.png"))
         self.sprites["HUD Hurt"][0].set_alpha(50)
         self.sprites["title"] = load_sprite_from_file(Path("TD/assets/Title_Art_001.png"))
+
+        self.sprites["Sawyer"] = load_sprite_from_file(Path("TD/assets/TD_Sawyer.png"))
+        self.sprites["Elle"] = load_sprite_from_file(Path("TD/assets/TD_Elle.png"))
+        self.sprites["Balloons"] = load_sprite_from_file(Path("TD/assets/TD_Balloons.png"))
 
 # Singleton Pattern - Stinky, but practical for a game environment
 asset_manager = AssetManager()

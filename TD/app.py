@@ -1,5 +1,7 @@
 import pygame
 
+from TD.scenes.test_scene import TestScene
+
 from .assetmanager import asset_manager
 from .debuging import game_debugger
 from .scenes.main_menu.main_menu import MainMenu
@@ -56,6 +58,7 @@ class App:
 
         self._set_scene(Level_001())
         # self._set_scene(MainMenu())
+        # self._set_scene(TestScene())
         
         self.clock.tick()
         self.running = True

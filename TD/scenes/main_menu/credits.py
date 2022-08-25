@@ -6,6 +6,7 @@ from TD.config import SCREEN_RECT
 from TD import gui
 from .screen import MenuScreen
 from TD.entity import Entity, EntityType
+from TD.particles.particles import ParticleEntityFollower
 from TD.assetmanager import asset_manager
 from TD.globals import current_app, current_scene
 
@@ -14,7 +15,16 @@ from TD.enemies.CX5B import EnemyCX5B
 from TD.enemies.D2 import EnemyD2
 from TD.enemies.T8 import EnemyT8
 from TD.enemies.HX7 import EnemyHX7
+from TD.characters import Sawyer, Elle
 
+class Balloons(ParticleEntityFollower):
+    def __init__(self, follow_entity, follow_offset):
+        super().__init__(follow_entity, follow_offset)
+        self.frames = asset_manager.sprites["Balloons"]
+        self.sprite_offset = Vector2(-20, -26)
+
+    def tick(self, elapsed):
+        super().tick(elapsed)
 
 class CreditScreen(MenuScreen):
 
@@ -44,17 +54,10 @@ class CreditScreen(MenuScreen):
         dark_panel.pos.y = 150
         self.em.add(dark_panel)
 
-
-        show_enemy_name = Entity()
-        show_enemy_name.type = EntityType.PARTICLE
-        show_enemy_name.pos = Vector2(512+75, 460)
-        show_enemy_name.add_hitbox(pygame.Rect(0, 0, 10, 50), Vector2(-5, 0))
-        self.em.add(show_enemy_name)
-
-        lines = ["A Python pygame created by Christopher Ross with love",
+        lines = ["A game created by Christopher Ross with love",
                  "for his children Sawyer and Elle!",
-                 "Written in 2022",
-                 "Produced by: Circuit Nerd Studios"]
+                 "Written in 2022 with python and pygame",
+                 "Circuit Nerd Studios, chris.rossx@gmail.com"]
 
         for i, line in enumerate(lines):
             lbl = gui.GUILabel(line, self.font_s, (255,255,255))
@@ -62,25 +65,42 @@ class CreditScreen(MenuScreen):
             lbl.pos.y = dark_panel.pos.y + 25 + (i * 40)
             self.em.add(lbl)
 
-        def on_end_of_path(entity):
-            entity.path.distance = 0
+        # Trigger Showing Enemy Name Labels
+        self.show_enemy_name = Entity()
+        self.show_enemy_name.type = EntityType.PARTICLE
+        self.show_enemy_name.pos = Vector2(512+35, 460)
+        self.show_enemy_name.add_hitbox(pygame.Rect(0, 0, 10, 50), Vector2(-5, 0))
+        self.em.add(self.show_enemy_name)
 
-        spacing = path_data["credits"].total_length / 5
+        enemies = [
+            (Elle, "Elle"),
+            (Sawyer, "Sawyer"), 
+            (EnemyD2, "D2"), 
+            (EnemyBT1, "BT1"), 
+            (EnemyHX7, "HX7"), 
+            (EnemyCX5B, "CX5B"), 
+            (EnemyT8, "T8"), 
+        ]
+        spacing = path_data["credits"].total_length / (len(enemies) + 0)
 
-        for i, entity in enumerate([EnemyBT1, EnemyHX7, EnemyCX5B, EnemyD2, EnemyT8]):
+        for i, entity in enumerate([e[0] for e in enemies]):
             instance = entity("credits")
-            instance.velocity = 0.1
+            instance.velocity = 0.081
             instance.path.distance = spacing * i
             instance.path.on_end_of_path.remove(instance.on_end_of_path)
-            instance.on_end_of_path = lambda entity=instance: on_end_of_path(entity)
+            instance.on_end_of_path = lambda entity=instance: entity.path.loop()
             instance.path.on_end_of_path.append(instance.on_end_of_path)
             self.em.add(instance)
+            if entity in [Sawyer, Elle]:
+                balloons = Balloons(instance, Vector2(-2,-56))
+                self.balloons = balloons
+                self.em.add(balloons)
 
         self.enemy_lables = {}
-        for entity, label in [(EnemyBT1, "BT1"), (EnemyHX7, "HX7"), (EnemyCX5B, "CX5B"), (EnemyD2, "D2"), (EnemyT8, "T8")]:
+        for entity, label in enemies:
             lbl = gui.GUILabel(label, self.font_s, (255,255,255), shadow_color=(80,80,80))
             lbl.centerx_in_rect(SCREEN_RECT)
-            lbl.pos.y = 395
+            lbl.pos.y = 519
             lbl.surface.set_alpha(0)
             self.em.add(lbl)
             self.enemy_lables[entity] = lbl
@@ -94,12 +114,11 @@ class CreditScreen(MenuScreen):
     def tick(self, elapsed):
         super().tick(elapsed)
 
-
         if self.current_enemy_label:
 
             self.fade_in_elapsed += elapsed
             fd = 500
-            fo = 1500
+            fo = 1250
             if self.fade_in_elapsed <= fd:
                 t = self.fade_in_elapsed / fd
                 t = t * 255
@@ -113,10 +132,12 @@ class CreditScreen(MenuScreen):
                 self.current_enemy_label = None
 
 
-        hits = self.em.collidetypes(EntityType.PARTICLE, EntityType.ENEMY)
+        hits = self.em.collidetype(self.show_enemy_name, EntityType.ENEMY, False)
+        hits2 = self.em.collidetype(self.show_enemy_name, EntityType.GUI, False)
+        hits = hits + hits2
         if len(hits) > 0:
             for enemy in hits:
-                if not self.current_enemy_label:
+                if type(enemy) in self.enemy_lables and not self.current_enemy_label:
                     self.enemy_lables[type(enemy)].enabled = True
                     self.enemy_lables[type(enemy)].surface.set_alpha(0)
                     self.fade_in = 0

@@ -49,7 +49,7 @@ class SaveData:
     def __init__(self) -> None:
         self._file = SAVE_FILENAME
         self.slots = []
-        self.index = None
+        self._index = None
         self.sounds_muted = None
         self.music_muted = None
         for i in range(8):
@@ -58,9 +58,19 @@ class SaveData:
 
         self.load()
 
+
+    @property
+    def index(self):
+        return self._index
+    
+    @index.setter
+    def index(self, value):
+        print("Player Save Data Index Set", value)
+        self._index = value
+
     def load_failed(self):
         self.slots = []
-        self.index = None
+        self._index = None
         self.sounds_muted = False
         self.music_muted = False
         for i in range(8):
@@ -96,8 +106,8 @@ class SaveData:
 
     @property
     def name(self):
-        return self.slots[self.index].name
+        return self.slots[self._index].name
 
     @property
     def percent(self):
-        return self.slots[self.index].percent
+        return self.slots[self._index].percent

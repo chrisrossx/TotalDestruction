@@ -187,20 +187,23 @@ class GameDebugger:
                     from TD.particles.spoofs import SpoofHitFollow
                     from TD.bullets import Missile, Missile002
                     from TD.assetmanager import asset_manager
+                    from TD.pickups import PickupCoin, PickupHeart
                     # from TD.entity import Entity
                     # current_scene.em.add(ExplosionSmall(Vector2(512,250)))
                     # current_scene.em.add(ExplosionMedium(Vector2(512,350)))
                     import random 
-                    a = random.randint(0,359)
-                    m = Missile(Vector2(512, 300), a)
-                    current_scene.em.add(m)
-                    current_app.mixer.play("missile launch")
+                    # a = random.randint(0,359)
+                    # m = Missile002(Vector2(512, 300), a)
+                    # current_scene.em.add(m)
+                    # current_app.mixer.play("missile launch")
                     # m = Missile(Vector2(512, 300), 0)
                     # current_scene.em.add(m)
                     # from TD.bullets import Bullet001
-                    # for i in range(0,359, 5):
-                    #     bullet = Bullet001([512, 300], i)
-                    #     current_scene.em.add(bullet)
+                    for i in range(0,359, 5):
+                        pos = Vector2(random.randint(200,900), random.randint(100,500))
+                        p = PickupCoin(pos)
+                        # bullet = Bullet001([512, 300], i)
+                        current_scene.em.add(p)
 
                     # import random
 

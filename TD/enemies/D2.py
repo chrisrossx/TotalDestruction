@@ -10,8 +10,8 @@ class EnemyD2(EnemyPathFollower):
         self.frames = asset_manager.sprites["D2"]
         self.frame_duration = 30    
         self.velocity = 0.15
-        self.sprite_offset = Vector2(-70, -50)
+        self.sprite_offset = Vector2(-59, -32)
 
-        self.add_hitbox((0, 0, 70, 32), Vector2(-35, -28))
-        self.add_hitbox((0, 0, 40, 15), Vector2(-20, 4))
-        self.gun_points = [Vector2(-16, 20), Vector2(16, 20),]
+        self.add_hitbox((0, 0, 70, 32), Vector2(-35, -24))
+        self.add_hitbox((0, 0, 40, 15), Vector2(-20, 10))
+        self.gun_points = [Vector2(-16, 25), Vector2(16, 25),]
