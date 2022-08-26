@@ -13,7 +13,7 @@ class StartScreen(MenuScreen):
     def render(self):
         menu_rect = SCREEN_RECT.copy()
 
-        sprite_title = gui.GUISprite(asset_manager.sprites["title"])
+        sprite_title = gui.Sprite(asset_manager.sprites["title"])
         sprite_title.center_in_rect(menu_rect)
         sprite_title.tjust_in_rect(menu_rect, 100)
         self.em.add(sprite_title)

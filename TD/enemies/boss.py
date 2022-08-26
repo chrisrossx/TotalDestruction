@@ -449,6 +449,7 @@ class BossState_THRUSTERS_DEAD(BossState):
             current_app.mixer.play("explosion md")
             current_scene.change_state(LevelState.WON)
             self.killed()
+            current_scene.enemies_killed += 1
             # print("DEAD!")
 
 
@@ -583,12 +584,12 @@ class Boss001(EntityVectorMovement):
         if game_debugger.show_paths:
             self.path.draw(elapsed, surface)
         if game_debugger.show_hitboxes:
-            line = asset_manager.fonts["xs"].render("[  H={}  ]".format(self.health), True, (255,0,0))
+            line = asset_manager.fonts["xxs"].render("[  H={}  ]".format(self.health), True, (255,0,0))
             pos = self.pos + self.sprite_offset
             pos.y -= line.get_rect().h
             surface.blit(line, pos)
 
-            line = asset_manager.fonts["xs"].render("[  S={}, S={}  ]".format(self.state.name, self.states[self.state].health), True, (255,0,0))
+            line = asset_manager.fonts["xxs"].render("[  S={}, S={}  ]".format(self.state.name, self.states[self.state].health), True, (255,0,0))
             pos = self.pos + self.sprite_offset
             pos.y -= line.get_rect().h
             pos.y -= 20

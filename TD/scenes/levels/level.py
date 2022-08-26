@@ -5,7 +5,7 @@ from .hud import HUDMedal100, HUDMedal70 , HUDMedalHeart, HUDLife
 from .level_state import LevelState, LevelStateMachine
 from TD.scenes.scene import Scene
 from TD.entity import Entity, EntityManager, EntityType, EntityVectorMovement
-from TD.gui import GUIPanel, GUILabel, GUISprite
+from TD.gui import GUIPanel, GUILabel, Sprite
 from TD.assetmanager import asset_manager
 from TD.config import SCREEN_RECT, SCREEN_SIZE
 from TD.scenes.levels.pause_menu import PauseMenu
@@ -30,7 +30,7 @@ class DeadState(LevelStateMachine):
         current_scene.em.add(ExplosionMedium(self.player.pos + Vector2(-35, 0)))
         current_scene.em.add(ExplosionMedium(self.player.pos + Vector2(0, 15)))
         current_scene.em.add(ExplosionMedium(self.player.pos + Vector2(-15, -5)))
-        self.red_sprite = GUISprite(asset_manager.sprites["HUD Hurt"])
+        self.red_sprite = Sprite(asset_manager.sprites["HUD Hurt"])
         self.red_sprite.surface.set_alpha(50)
         current_scene.em.add(self.red_sprite)
         current_app.mixer.play("explosion player")
@@ -234,14 +234,17 @@ class Level(Scene):
     """
     """
 
-    def __init__(self, level):
+    level = None
+
+    def __init__(self):
         super().__init__()
 
         self.paused = False
-        self.level = level
         # self.timed_add = []
 
         self.player = PlayerShip()
+        self.total_coins = 0
+        self.enemies_killed = 0
         # current_player.__wrapped__ = self.player
 
         self.em.add(self.player)
@@ -273,6 +276,16 @@ class Level(Scene):
         for hud in self.hud.values():
             self.em.add(hud)
 
+        
+        #Load The Level Data
+        self.load()
+
+        # Cound Total Enemies
+        self.total_enemies = len(self.em.entities_by_type[EntityType.ENEMY])
+        for time, entity in self.state_machines[LevelState.PLAYING].timed_add:
+            if entity.type == EntityType.ENEMY:
+                self.total_enemies += 1
+
     def enemy_missed(self, enemy):
         self.state_machines[LevelState.PLAYING].enemy_missed(enemy)
 
@@ -283,12 +296,33 @@ class Level(Scene):
         self.state_machines[LevelState.PLAYING].timed_add.append((time, entity))
 
     def exit(self, data=None):
+
+        if data["condition"] in ["won", "died"]:
+            #Save State
+            finished = True if data["condition"] == "won" else False
+            medalHeart = not self.player.been_hit
+            if self.total_enemies > 0:
+                enemies = self.enemies_killed / self.total_enemies
+            else:
+                enemies = 0
+            if self.total_coins > 0:
+                coins = self.player.coins / self.total_coins
+            else:
+                coins = 0
+            current_app.save_data.set_level_data(self.level, {
+                "finished": finished,
+                "medalHeart": medalHeart,
+                "enemies": enemies,
+                "coins": coins,
+
+            })
+            current_app.save_data.save()
+
         current_app.change_scene({
             "scene": "main_menu",
             "return_from_level": True,
             "level_data": {
                 "condition": data["condition"],
-                "score": 100000,
                 "level": self.level,
             },
             "sky_offset": self.background.offset,

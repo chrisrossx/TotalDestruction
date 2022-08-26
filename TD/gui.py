@@ -13,32 +13,32 @@ class GUIEntity(Entity):
 
     def bjust_in_rect(self, rect, offset=0):
         surface_rect = self.get_rect()
-        self.y = rect.h + offset - surface_rect.h
+        self.y = rect.h - surface_rect.h - self.sprite_offset.y - offset
 
     def tjust_in_rect(self, rect, offset=0):
         surface_rect = self.get_rect()
-        self.y = rect.y + offset 
+        self.y = rect.y + offset  - self.sprite_offset.y
 
     def rjust_in_rect(self, rect, offset=0):
         surface_rect = self.get_rect()
-        self.x = rect.w + offset - surface_rect.w
+        self.x = rect.w - offset - surface_rect.w + self.sprite_offset.x
 
     def ljust_in_rect(self, rect, offset=0):
         surface_rect = self.get_rect()
-        self.x = rect.x + offset 
+        self.x = rect.x + offset - self.sprite_offset.x
 
     def centerx_in_rect(self, rect):
         surface_rect = self.get_rect()
-        self.pos.x = rect.centerx - (surface_rect.w/2)
+        self.pos.x = rect.centerx - (surface_rect.w/2) - self.sprite_offset.x
 
     def centery_in_rect(self, rect):
         surface_rect = self.get_rect()
-        self.pos.y = rect.centery - (surface_rect.h/2)
+        self.pos.y = rect.centery - (surface_rect.h/2) - self.sprite_offset.y
 
     def center_in_rect(self, rect):
         surface_rect = self.get_rect()
-        self.pos.x = rect.centerx - (surface_rect.w/2)
-        self.pos.y = rect.centery - (surface_rect.h/2)
+        self.pos.x = rect.centerx - (surface_rect.w/2) - self.sprite_offset.x
+        self.pos.y = rect.centery - (surface_rect.h/2) - self.sprite_offset.y
 
 
 
@@ -111,7 +111,7 @@ class MenuCursor(GUIEntity):
             self.frames = asset_manager.sprites["Menu Cursor Left"]
             self.sprite_offset = [-24, -16]
 
-class GUISprite(GUIEntity):
+class Sprite(GUIEntity):
     def __init__(self, frames):
         super().__init__()
         self.type = EntityType.GUI
@@ -162,11 +162,15 @@ class GuiButtonGroup(GUIEntity):
             if self.buttons[self.selected].bottom:
                 current_app.mixer.play("menu move")
                 self.select(self.buttons[self.selected].bottom)
+            else:
+                current_app.mixer.play("menu error")
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
             if self.buttons[self.selected].top:
                 current_app.mixer.play("menu move")
                 self.select(self.buttons[self.selected].top)
+            else:
+                current_app.mixer.play("menu error")
     
     def draw(self, elapsed, surface):
         self.em.draw(elapsed, surface)

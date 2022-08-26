@@ -1,6 +1,6 @@
 import json 
 
-from TD.config import SAVE_FILENAME
+from TD.config import SAVE_FILENAME, NUMBER_OF_LEVELS
 from TD.globals import current_app
 
 
@@ -13,19 +13,57 @@ class SaveSlot:
         if file_data != None:
             self.set_data(file_data)
 
-    def get_level_(self, level):
+    def get_level(self, level):
+        if type(level) == int:
+            level = str(level)
         if level not in self.level_state.keys():
+            # if level == 10:
+            #     self.level_state[level] = {
+            #         "finished": True,
+            #         "medalHeart": True,
+            #         "enemies": 1.0,
+            #         "coins": 0.99,
+            #     }
+            # elif level == 1:
+            #     self.level_state[level] = {
+            #         "finished": False,
+            #         "medalHeart": False,
+            #         "enemies": 0.0,
+            #         "coins": 1.0,
+            #     }
+            # else:
             self.level_state[level] = {
                 "finished": False,
                 "medalHeart": False,
-                "medal70": False, 
-                "medal100": False,
+                "enemies": 0.0,
+                "coins": 0.0,
             }
+
         return self.level_state[level]
+
+    def set_level(self, level, data):
+        if type(level) == int:
+            level = str(level)
+        self.level_state[level] = {
+            "finished": data["finished"],
+            "medalHeart": data["medalHeart"],
+            "enemies": data["enemies"],
+            "coins": data["coins"],
+        }
 
     @property
     def percent(self):
-        return 0.42
+        score = 0
+        for i in range(NUMBER_OF_LEVELS):
+            data = self.get_level(i)
+            pfinished = 1 if data["finished"] else 0
+            p70 = 1 if data["enemies"] >= 0.7 else 0
+            p100 = 1 if data["enemies"] >= 1.0 else 0
+            pHealth = 1 if data["medalHeart"] else 0
+            score += pfinished + p70 + p100 + pHealth
+
+        return score / (4 * NUMBER_OF_LEVELS)
+
 
     def clear(self):
         self.name = None 
@@ -65,7 +103,7 @@ class SaveData:
     
     @index.setter
     def index(self, value):
-        print("Player Save Data Index Set", value)
+        # print("Player Save Data Index Set", value)
         self._index = value
 
     def load_failed(self):
@@ -103,6 +141,12 @@ class SaveData:
         }
         with open(self._file, "w") as f:
             json.dump(data, f, indent=2)
+
+    def get_level_data(self, level_index):
+        return self.slots[self._index].get_level(level_index)
+
+    def set_level_data(self, level_index, data):
+        return self.slots[self._index].set_level(level_index, data)
 
     @property
     def name(self):

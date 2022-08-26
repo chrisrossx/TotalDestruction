@@ -2,6 +2,7 @@ from pygame import Vector2
 
 from TD.bullets import Bullet002, Bullet003
 from TD import current_scene
+from TD.config import SCREEN_RECT
 
 
 class ConstantFireGun:
@@ -79,10 +80,12 @@ class GenericGun():
             return self.pattern_angle
 
     def fire(self):
-        angle = self.get_angle()
-        b = self.bullet_factory(angle)
-        current_scene.em.add(b)
-        self.fired += 1
+        #Paths go off screen, don't fire bullets if enemy pos is off screen
+        if SCREEN_RECT.collidepoint(self.parent.pos):
+            angle = self.get_angle()
+            b = self.bullet_factory(angle)
+            current_scene.em.add(b)
+            self.fired += 1
 
     def tick_pattern(self, elapsed):
         if self.enabled:

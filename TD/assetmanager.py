@@ -61,7 +61,8 @@ class AssetManager:
 
     def load(self):
 
-        self.fonts["xs"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 14)
+        self.fonts["xxs"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 14)
+        self.fonts["xs"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 18)
         self.fonts["sm"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 24)
         self.fonts["md"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 48)
         self.fonts["lg"] = pygame.font.Font(Path("TD/assets/BebasNeue-Regular.ttf"), 96)
@@ -96,7 +97,20 @@ class AssetManager:
         self.sounds["menu click"] = pygame.mixer.Sound(str(Path("TD/assets/CatchOpen.wav")))
         # self.sounds["menu type"] = pygame.mixer.Sound(str(Path("TD/assets/HitMetalBash.wav")))
         self.sounds["menu type"] = pygame.mixer.Sound(str(Path("TD/assets/UI_Button_Click.wav")))
+        self.sounds["menu error"] = pygame.mixer.Sound(str(Path("TD/assets/Tinyclick1.wav")))
+
+        self.sounds["menu score coins"] = pygame.mixer.Sound(str(Path("TD/assets/BonusBeep.wav")))
+        self.sounds["menu score 0"] = pygame.mixer.Sound(str(Path("TD/assets/KnockDeep.wav")))
+        self.sounds["menu score 1"] = pygame.mixer.Sound(str(Path("TD/assets/SlamCool.wav")))
+        self.sounds["menu score 2"] = pygame.mixer.Sound(str(Path("TD/assets/SlamCooltoo.wav")))
+        self.sounds["menu score 3"] = pygame.mixer.Sound(str(Path("TD/assets/SlamCooltree.wav")))
+
+        self.sounds["menu error"] = self.sounds["menu score 0"]
+
+        # self.sounds["menu error"].set_volume(0.3)
         
+
+
         self.music["menu"] = {"filename": str(Path("TD/assets/sabotage_loop.flac")), "volume": 1}
         self.music["level 001"] = {"filename": str(Path("TD/assets/lootedvillage_orc_vox.mp3")), "volume": 0.2}
         self.music["level 002"] = {"filename": str(Path("TD/assets/battle_zero_2022_remaster_update.mp3")), "volume": 0.2}
@@ -166,6 +180,21 @@ class AssetManager:
         self.sprites["Menu Cursor Left"] = load_sprite_from_files(Path("TD/assets/menu cursor/TD_Menu_Cursor.png"), ["-{}".format(i+1) for i in range(9)])
         self.sprites["Menu Cursor Left"] = rotate_sprites(self.sprites["Menu Cursor Left"], -90)
         self.sprites["Menu Cursor Right"] = flip_sprites(self.sprites["Menu Cursor Left"], flip_x=True)
+
+        self.sprites["Menu Level Select Cursor"] = load_sprite_from_files(Path("TD/assets/level select/TD_Level_Badge_Select_002.png"), ["-{}".format(i+1) for i in range(8)])
+        self.sprites["Menu Level Select Badges"] = load_sprite_from_files(Path("TD/assets/level select/TD_Level_Badge.png"), ["-{}".format(i+1) for i in range(12)])
+        self.sprites["Menu Level Select Lines"] = load_sprite_from_file(Path("TD/assets/level select/TD_Level_Select_Lines.png"))
+
+        self.sprites["Menu Level Score Confetti"] = load_sprite_from_files(Path("TD/assets/score confetti/TD_Score_Confetti.png"), ["-{}".format(i+1) for i in range(6)])
+        self.sprites["Menu Level Score Confetti 2"] = load_sprite_from_files(Path("TD/assets/score confetti/TD_Score_Confetti.png"), ["-{}".format(i+1) for i in range(6)])
+        self.sprites["Menu Level Score Confetti 2"] = rotate_sprites(self.sprites["Menu Level Score Confetti 2"], 130)
+        self.sprites["Menu Level Score Confetti 2"] = scale_sprites(self.sprites["Menu Level Score Confetti 2"], (48, 48))
+
+        self.sprites["Menu Level Score Confetti Grey"] = load_sprite_from_files(Path("TD/assets/score confetti/TD_Score_Confetti_Grey.png"), ["-{}".format(i+1) for i in range(6)])
+        self.sprites["Menu Level Score Confetti Grey 2"] = load_sprite_from_files(Path("TD/assets/score confetti/TD_Score_Confetti_Grey.png"), ["-{}".format(i+1) for i in range(6)])
+        self.sprites["Menu Level Score Confetti Grey 2"] = rotate_sprites(self.sprites["Menu Level Score Confetti Grey 2"], 130)
+        self.sprites["Menu Level Score Confetti Grey 2"] = scale_sprites(self.sprites["Menu Level Score Confetti Grey 2"], (48, 48))
+
 
         self.sprites["HUD"] = load_sprite_from_files(Path("TD/assets/HUD/TD_HUD.png"), ["-{}".format(i+1) for i in range(16)])
 

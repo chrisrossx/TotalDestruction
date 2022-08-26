@@ -25,7 +25,7 @@ class ConfirmExit(MenuScreen):
         self.em.add(lbl_press_esc)
 
         lbl_press_delete = gui.GUILabel("Enter: Confirm", self.font_s, (255,255,255), shadow_color=(80,80,80))
-        lbl_press_delete.rjust_in_rect(menu_rect, -40)
+        lbl_press_delete.rjust_in_rect(menu_rect, 40)
         lbl_press_delete.tjust_in_rect(menu_rect, 550)
         self.em.add(lbl_press_delete)
 

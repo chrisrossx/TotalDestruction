@@ -34,6 +34,8 @@ class Enemy:
         for pickup in self.drops:
             p = pickup(self.pos)
             current_scene.em.add(p)
+
+        current_scene.enemies_killed += 1
         self.delete()
 
     def hit(self, bullet):
@@ -67,7 +69,7 @@ class Enemy:
             for i in range(len(self.gun_points)):
                 pygame.draw.circle(surface, (0,255,0), self.pos + self.gun_points[i], 5, 1)
 
-            line = asset_manager.fonts["xs"].render("[  H={} ]".format(self.health), True, (255,0,0))
+            line = asset_manager.fonts["xxs"].render("[  H={} ]".format(self.health), True, (255,0,0))
             pos = self.pos + self.sprite_offset
             pos.y -= line.get_rect().h
             surface.blit(line, pos)

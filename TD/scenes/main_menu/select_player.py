@@ -59,7 +59,7 @@ class PlayerSlot(Entity):
             percent = "-- %"
         else:
             name = self.player_slot.name 
-            percent = "{}%".format(self.player_slot.percent * 100)
+            percent = "{:.1%}".format(self.player_slot.percent)
         
         line = self.font_s.render(name, True, (255,255,255))
         surface.blit(line, (10, 2))
@@ -94,7 +94,7 @@ class SelectPlayerScreen(MenuScreen):
         self.em.add(lbl_press_esc)
 
         lbl_press_delete = gui.GUILabel("Delete: Delete Player", self.font_s, (255,255,255), shadow_color=(80,80,80))
-        lbl_press_delete.rjust_in_rect(menu_rect, -40)
+        lbl_press_delete.rjust_in_rect(menu_rect, 40)
         lbl_press_delete.tjust_in_rect(menu_rect, 550)
         self.em.add(lbl_press_delete)
 
@@ -166,11 +166,15 @@ class SelectPlayerScreen(MenuScreen):
                 self.slot_index += 1
                 if self.slot_index >= len(current_app.save_data.slots):
                     self.slot_index = len(current_app.save_data.slots) - 1
+                    current_app.mixer.play("menu error")
+                else:
+                    current_app.mixer.play("menu move")
                 self.update_select_slot()
-                current_app.mixer.play("menu move")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
                 self.slot_index -= 1
                 if self.slot_index < 0:
                     self.slot_index = 0
+                    current_app.mixer.play("menu error")
+                else:
+                    current_app.mixer.play("menu move")
                 self.update_select_slot()
-                current_app.mixer.play("menu move")

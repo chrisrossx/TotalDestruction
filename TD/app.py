@@ -6,6 +6,7 @@ from .assetmanager import asset_manager
 from .debuging import game_debugger
 from .scenes.main_menu.main_menu import MainMenu
 from .config import SCREEN_SIZE
+from .scenes.levels.level_000 import Level_000
 from .scenes.levels.level_001 import Level_001
 from .mixer import Mixer
 from .savedata import SaveData
@@ -40,7 +41,11 @@ class App:
         self.scene.on_delete()
         del self.scene
         if data["scene"] == "play":
-            self._set_scene(Level_001())
+            # print("app.change_scene Play Level: ", data["level"])
+            if data["level"] == 0:
+                self._set_scene(Level_000())
+            if data["level"] == 1:
+                self._set_scene(Level_001())
             self.scene.background.offset = data["sky_offset"]
         if data["scene"] == "main_menu":
             if "return_from_level" in data:
@@ -56,8 +61,8 @@ class App:
 
     def run(self):
 
-        self._set_scene(Level_001())
-        # self._set_scene(MainMenu())
+        # self._set_scene(Level_001())
+        self._set_scene(MainMenu())
         # self._set_scene(TestScene())
         
         self.clock.tick()

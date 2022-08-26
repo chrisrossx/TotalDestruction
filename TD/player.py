@@ -62,7 +62,6 @@ class PlayerShip(Entity):
                 current_scene.hud_lives(self.health)
         
         if pickup.pickup_type == PickupType.COIN:
-            print("coin pickedup", self.coins)
             current_app.mixer.play("coin pickup")
             self.coins += 1
 
@@ -161,7 +160,7 @@ class PlayerShip(Entity):
         super().draw(elapsed, surface)
         if game_debugger.show_hitboxes:
             health = "{}(GOD)".format(self.health) if game_debugger.god_mode else self.health
-            line = asset_manager.fonts["xs"].render("[  H={}  ]".format(health), True, (255,0,0))
+            line = asset_manager.fonts["xxs"].render("[  H={}  ]".format(health), True, (255,0,0))
             pos = self.pos + self.sprite_offset
             pos.y -= line.get_rect().h
             surface.blit(line, pos)

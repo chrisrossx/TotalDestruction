@@ -10,6 +10,8 @@ class MenuScreen:
         self.transitioning = False
         self.surface = pygame.Surface(SCREEN_SIZE, pygame.SRCALPHA)
 
+
+        self.font_xs = asset_manager.fonts["xs"]
         self.font_s = asset_manager.fonts["sm"]
         self.font_m = asset_manager.fonts["md"]
         self.font_l = asset_manager.fonts["lg"]

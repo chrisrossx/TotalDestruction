@@ -1,6 +1,7 @@
 from enum import IntEnum
 
 import pygame
+from pygame import Vector2
 
 from TD.paths import PathFollower
 from TD.utils import fast_round_point, fast_round, fast_round_vector2
@@ -360,6 +361,12 @@ class Entity:
     def add_hitbox(self, rect, offset):
         self.hitboxes.append(pygame.Rect(rect))
         self.hitbox_offsets.append(offset)
+
+    def center_sprite_offset(self):
+        r = self.surface.get_rect()
+        x = (r.width / 2) * -1
+        y = (r.height / 2) * -1
+        self.sprite_offset = Vector2(x, y)
 
 
 class EntityPathFollower(Entity):

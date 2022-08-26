@@ -71,7 +71,6 @@ class PickupHeart(PickupEntity):
         self.add_hitbox((0,0,32,32), Vector2(-16, -16))
 
 
-
 class PickupCoin(PickupEntity):
 
     def __init__(self, pos):
@@ -82,4 +81,6 @@ class PickupCoin(PickupEntity):
         self.sprite_offset = Vector2(-16, -16)
         self.add_hitbox((0,0,32,32), Vector2(-16, -16))
         self.frame_index = random.randrange(0, len(self.frames))
+
+        current_scene.total_coins += 1
 

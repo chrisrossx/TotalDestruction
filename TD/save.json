@@ -5,25 +5,38 @@
     {
       "name": "christopher",
       "coins": 0,
-      "level_state": {}
+      "level_state": {
+        "0": {
+          "finished": true,
+          "medalHeart": true,
+          "enemies": 1.0,
+          "coins": 1.0
+        },
+        "1": {
+          "finished": false,
+          "medalHeart": false,
+          "enemies": 0.0,
+          "coins": 0
+        }
+      }
     },
     {
-      "name": "hello world my name is",
+      "name": null,
       "coins": 0,
       "level_state": {}
     },
     {
-      "name": "ads",
+      "name": null,
       "coins": 0,
       "level_state": {}
     },
     {
-      "name": "hellow rold typwriter",
+      "name": null,
       "coins": 0,
       "level_state": {}
     },
     {
-      "name": "asd",
+      "name": null,
       "coins": 0,
       "level_state": {}
     },

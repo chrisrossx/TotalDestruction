@@ -12,40 +12,19 @@ from TD.enemies.boss import Boss001
 
 class Level_001(Level):
 
-    def __init__(self):
-        super().__init__(level=1)
+    level = 1
+
+    def load(self):
         current_app.mixer.play_music("level 001")
 
         t = 0
 
 
-        boss = Boss001()
-        self.em.add(boss)
-        # boss.pos = Vector2(800, 300)
-        c = BT1Chain(self, t, path_index="straight 300")
-        c.set_guns(ChainGunFactory(AimingGun))
-        return 
-        
-        # # c.set_guns(ChainGunFactory(GenericGun))
-        # return
-        # t += 1400
-        # c = BT1Chain(self, t, path_index="straight 100")
-        # c = BT1Chain(self, t, path_index="straight 500")
-        # c = CX5BChain(self, t, "slant bottom 1")
-        # # c.set_guns(ChainGunFactory(Gun))
 
-        # # t += 1000 
-        # c = BT1Chain(self, t, "slant bottom 1")
-        # # c.set_guns(ChainGunFactory(Gun))
-
-        # c = D2Chain(self, t, path_index="straight")
-
-        # return 
         t = 1000
         c = CX5BChain(self, t, "slant top 1")
         c.add_drops([PickupHeart, ], [2,])
         c.set_guns(ChainGunFactory(AimingGun))
-        # c.set_guns(ChainGunFactory(SingleShotGun, delay=1000), [1,])
 
         t += 1200 + 100
         c = CX5BChain(self, t, "slant top 2")
@@ -66,12 +45,7 @@ class Level_001(Level):
 
         t+= 11200
 
+        boss = Boss001()
+        self.add_level_entity(t, boss)
+
         print("Level Length", t)
-        # t += 1200
-        # c = T8Chain(self, t, "slant bottom 3")
-
-        # c = T8Chain(self, t, "alpha pattern MX", gun=ChainGunFactory(SingleShotGun, delay=1000))
-
-        # t += 5000
-
-        # c = T8Chain(self, t, 2, gun=ChainGunFactory(SingleShotGun, delay=1000))

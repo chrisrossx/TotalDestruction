@@ -53,4 +53,3 @@ class HUDMedalHeart(Medal):
     def __init__(self, pos):
         super().__init__(pos)
         self.frames = [asset_manager.sprites["HUD"][i+4] for i in range(3)]
-        
