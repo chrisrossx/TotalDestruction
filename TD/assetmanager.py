@@ -107,11 +107,14 @@ class AssetManager:
 
         self.sounds["menu error"] = self.sounds["menu score 0"]
 
+
         # self.sounds["menu error"].set_volume(0.3)
         
 
 
         self.music["menu"] = {"filename": str(Path("TD/assets/sabotage_loop.flac")), "volume": 1}
+        self.music["the net"] = {"filename": str(Path("TD/assets/the net.mp3")), "volume": 1}
+
         self.music["level 001"] = {"filename": str(Path("TD/assets/lootedvillage_orc_vox.mp3")), "volume": 0.2}
         self.music["level 002"] = {"filename": str(Path("TD/assets/battle_zero_2022_remaster_update.mp3")), "volume": 0.2}
 
@@ -194,6 +197,9 @@ class AssetManager:
         self.sprites["Menu Level Score Confetti Grey 2"] = load_sprite_from_files(Path("TD/assets/score confetti/TD_Score_Confetti_Grey.png"), ["-{}".format(i+1) for i in range(6)])
         self.sprites["Menu Level Score Confetti Grey 2"] = rotate_sprites(self.sprites["Menu Level Score Confetti Grey 2"], 130)
         self.sprites["Menu Level Score Confetti Grey 2"] = scale_sprites(self.sprites["Menu Level Score Confetti Grey 2"], (48, 48))
+
+
+        self.sprites["the net"] = load_sprite_from_file(Path("TD/assets/net.png"))
 
 
         self.sprites["HUD"] = load_sprite_from_files(Path("TD/assets/HUD/TD_HUD.png"), ["-{}".format(i+1) for i in range(16)])
