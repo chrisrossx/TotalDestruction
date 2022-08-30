@@ -1,30 +1,41 @@
-from enum import Enum 
+from enum import Enum
 
 import pygame
 
 from TD.assetmanager import asset_manager
-from TD import config 
+from TD import config
 from TD.globals import current_app
+
 
 class MixerChannels(Enum):
     PLAYERFIRE = 0
     COINPICKUP = 1
     HEARTPICKUP = 2
+    VOICE = 3
+
 
 class Mixer:
-    pass 
+    pass
+
     def __init__(self):
         self.sounds_muted = current_app.save_data.sounds_muted
         self.music_muted = current_app.save_data.music_muted
         self.music_playing = False
-       
+
         pygame.mixer.set_num_channels(16)
-        pygame.mixer.set_reserved(3)
+        pygame.mixer.set_reserved(4)
 
         self.channels = {
-            MixerChannels.PLAYERFIRE: pygame.mixer.Channel(MixerChannels.PLAYERFIRE.value),
-            MixerChannels.COINPICKUP: pygame.mixer.Channel(MixerChannels.COINPICKUP.value),
-            MixerChannels.HEARTPICKUP: pygame.mixer.Channel(MixerChannels.COINPICKUP.value),
+            MixerChannels.PLAYERFIRE: pygame.mixer.Channel(
+                MixerChannels.PLAYERFIRE.value
+            ),
+            MixerChannels.COINPICKUP: pygame.mixer.Channel(
+                MixerChannels.COINPICKUP.value
+            ),
+            MixerChannels.HEARTPICKUP: pygame.mixer.Channel(
+                MixerChannels.HEARTPICKUP.value
+            ),
+            MixerChannels.VOICE: pygame.mixer.Channel(MixerChannels.VOICE.value),
         }
 
     def play_music(self, file):
@@ -35,7 +46,7 @@ class Mixer:
             pygame.mixer.music.play(loops=-1)
 
     def stop_music(self):
-        self.music_playing = False 
+        self.music_playing = False
         pygame.mixer.music.stop()
 
     def is_sounds_muted(self):
@@ -43,7 +54,7 @@ class Mixer:
 
     def is_music_muted(self):
         return self.music_muted
-    
+
     def mute_sounds(self, value):
         self.sounds_muted = value
         current_app.save_data.save()
@@ -69,5 +80,8 @@ class Mixer:
             self.channels[MixerChannels.HEARTPICKUP].play(asset_manager.sounds[name])
         elif name == "player gun":
             self.channels[MixerChannels.PLAYERFIRE].play(asset_manager.sounds[name])
+        elif name in ["weapons upgrade", "chain lost"]:
+            if not self.channels[MixerChannels.VOICE].get_busy():
+                self.channels[MixerChannels.VOICE].play(asset_manager.sounds[name])
         else:
             asset_manager.sounds[name].play()

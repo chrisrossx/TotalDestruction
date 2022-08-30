@@ -15,17 +15,18 @@ from .globals import current_app, current_scene
 
 
 class App:
+    """
+    Total Destruction Main Game Loop
+    """
 
     def __init__(self):
         current_app.__wrapped__ = self
-        # self.size = (640, 480)
         self.size = SCREEN_SIZE
 
         pygame.init()
         self.screen = pygame.display.set_mode(self.size)
         self.clock = pygame.time.Clock()
 
-        # self.font = pygame.font.SysFont(None, 24)
         self.save_data = SaveData()
         asset_manager.load()
         self.mixer = Mixer()
@@ -34,14 +35,19 @@ class App:
         self.running = True
 
     def exit(self):
-        print("Thank you, come again!")
+        """
+        Stop the main game loop
+        """
         self.running = False
 
     def change_scene(self, data):
+        """
+        Transition to a new scene. 
+        data
+        """
         self.scene.on_delete()
         del self.scene
         if data["scene"] == "play":
-            # print("app.change_scene Play Level: ", data["level"])
             if data["level"] == 0:
                 self._set_scene(Level_000())
             if data["level"] == 1:
@@ -55,13 +61,17 @@ class App:
             self.scene.background.offset = data["sky_offset"]
 
     def _set_scene(self, scene):
+        """
+        Set the scene and start it. ALso set the singleton proxy
+        """
         self.scene = scene
         current_scene.__wrapped__ = self.scene 
         self.scene.on_start()
 
     def run(self):
 
-        # self._set_scene(Level_001())
+        # self._set_scene(Level_000())
+        self.save_data.index = 0
         self._set_scene(MainMenu())
         # self._set_scene(TestScene())
         
@@ -70,9 +80,11 @@ class App:
 
         while 1:
             game_debugger.timeit_start("app.loop")
-
             elapsed = self.clock.tick()
+            elapsed = elapsed * game_debugger.speed
 
+            # --------------------
+            # Event Handling 
             game_debugger.timeit_start("app.on_event")
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -88,13 +100,17 @@ class App:
             game_debugger.timeit_end("app.pressed")
 
             if self.running:
+                # --------------------
+                # Tick            
                 game_debugger.timeit_start("app.scene.tick")
                 self.scene.tick(elapsed)
                 game_debugger.timeit_end("app.scene.tick")
                 game_debugger.timeit_start("app.debugger.tick")
                 game_debugger.tick(elapsed)
                 game_debugger.timeit_end("app.debugger.tick")
-            
+
+                # --------------------
+                # Draw            
                 game_debugger.timeit_start("app.scene.draw")
                 self.scene.draw(elapsed)
                 game_debugger.timeit_end("app.scene.draw")
@@ -102,6 +118,8 @@ class App:
                 game_debugger.draw(elapsed)
                 game_debugger.timeit_end("app.debugger.draw")
 
+                # --------------------
+                # BLit to Screen     
                 game_debugger.timeit_start("app.flip")
                 self.screen.blit(self.scene.surface, (0,0))
                 self.screen.blit(game_debugger.surface, (10,40))
@@ -112,7 +130,6 @@ class App:
                 break
 
             game_debugger.timeit_end("app.loop")
-
-if __name__ == "__main__":
-    app = App()
-    app.run()
+        
+        #Be Friendly 
+        print("Thank you, come again!")

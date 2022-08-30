@@ -36,6 +36,7 @@ class Scene:
         # self.em.draw(elapsed, self.surface, EntityType.ENEMY)
         self.em.draw(elapsed, self.surface, EntityType.PICKUP)
         self.em.draw(elapsed, self.surface, EntityType.ENEMY)
+        self.em.draw(elapsed, self.surface, EntityType.BOSS)
         self.em.draw(elapsed, self.surface, EntityType.PARTICLE)
         self.em.draw(elapsed, self.surface, EntityType.PLAYER)
         self.em.draw(elapsed, self.surface, EntityType.PLAYERBULLET)

@@ -456,7 +456,7 @@ class BossState_THRUSTERS_DEAD(BossState):
 class Boss001(EntityVectorMovement):
     def __init__(self):
         super().__init__()
-        self.type = EntityType.ENEMY
+        self.type = EntityType.BOSS
 
         self.add_hitbox((0,0,64,30),Vector2(-32, -10))
         self.add_hitbox((0,0,30,15),Vector2(-15, -25))

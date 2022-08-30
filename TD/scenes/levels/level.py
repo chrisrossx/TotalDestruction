@@ -161,11 +161,6 @@ class PlayingState(LevelStateMachine):
         self.runtime = 0.0
         self.timed_add = []
 
-        self.total_enemies = 4
-        self.enemies_missed = 0
-
-        # TODO
-
     def enemy_missed(self, enemy):
         self.enemies_missed += 1
         print("enemy missed")
@@ -186,21 +181,34 @@ class PlayingState(LevelStateMachine):
     def tick_step_000(self, elapsed):
         game_debugger.lines[0] = "Runtime: {}".format(str(round(self.runtime/1000, 1)))
         self.runtime += elapsed
+        
         self.player.tick(elapsed)
 
-        # for enemy in self.em.collidetype(self.player, EntityType.ENEMY):
-            # self.player.collision(enemy)
-            # enemy.collision(player)
+        # Check if player is colliding iwth any enemies
+        for enemy in self.em.collidetype(self.player, EntityType.ENEMY):
+            self.player.collision(enemy)
+            enemy.collision()
 
+        # Check if player has collided with any pickups.
         for pickup in self.em.collidetype(self.player, EntityType.PICKUP):
             pickup.pickedup()
 
+        # Check if any Player Bullets are hitting Enemies
         for enemy, bullets in self.em.collidetypes(EntityType.ENEMY, EntityType.PLAYERBULLET, True).items():
-            bullet = bullets[0]
-            if not bullet.deleted:
-                bullet.delete()
-                enemy.hit(bullet)
-        
+            for bullet in bullets:
+                if not bullet.deleted:
+                    bullet.delete()
+                    enemy.hit(bullet)
+
+        # Check if any Player Bullets are hitting Bosses
+        for enemy, bullets in self.em.collidetypes(EntityType.BOSS, EntityType.PLAYERBULLET, True).items():
+            for bullet in bullets:
+            # bullet = bullets[0]
+                if not bullet.deleted   :
+                    bullet.delete() 
+                    enemy.hit(bullet)
+
+        # Check if any Enemy Bullets are hitting the player
         for bullet in self.em.collidetype(self.player, EntityType.ENEMYBULLET):
             if not bullet.deleted:
                 self.player.hit(bullet)
@@ -220,6 +228,7 @@ class PlayingState(LevelStateMachine):
             else:
                 pickup.set_magnet_force(Vector2(0.0, 0.0), 0.0)
 
+        # Add new entities to the Game
         timed_add = []
         for time_to_add, entity in self.timed_add:
             if time_to_add <= self.runtime:
@@ -245,6 +254,10 @@ class Level(Scene):
         self.player = PlayerShip()
         self.total_coins = 0
         self.enemies_killed = 0
+        self.total_enemies = 0
+        self.enemies_missed = 0
+
+        
         # current_player.__wrapped__ = self.player
 
         self.em.add(self.player)
@@ -282,8 +295,9 @@ class Level(Scene):
 
         # Cound Total Enemies
         self.total_enemies = len(self.em.entities_by_type[EntityType.ENEMY])
+        self.total_enemies += len(self.em.entities_by_type[EntityType.BOSS])
         for time, entity in self.state_machines[LevelState.PLAYING].timed_add:
-            if entity.type == EntityType.ENEMY:
+            if entity.type in [EntityType.BOSS, EntityType.ENEMY,]:
                 self.total_enemies += 1
 
     def enemy_missed(self, enemy):
@@ -379,6 +393,7 @@ class Level(Scene):
             self.state_machine.tick(elapsed)
 
         # game_debugger.lines[0] = "Runtime: {}".format(str(round(self.runtime/1000, 1)))
+        print("tick called after delete")
         game_debugger.lines[1] = "Entities:         {}".format(str(len(self.em.entities)))
         game_debugger.lines[2] = "- Particles:      {}".format(str(len(self.em.entities_by_type[EntityType.PARTICLE])))
         game_debugger.lines[3] = "- Enemies:        {}".format(str(len(self.em.entities_by_type[EntityType.ENEMY])))

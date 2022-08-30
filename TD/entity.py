@@ -13,11 +13,13 @@ class EntityType(IntEnum):
     PARTICLE = 1
     PICKUP = 2
     ENEMY = 3
-    PLAYER = 4
-    ENEMYBULLET = 5
-    PLAYERBULLET = 6
-    GUI = 7
-    DIALOG = 8
+    BOSS = 4
+    PLAYER = 5
+    ENEMYBULLET = 6
+    PLAYERBULLET = 7
+    GUI = 8
+    DIALOG = 9
+
 
 
 class EntityManager:

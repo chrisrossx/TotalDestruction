@@ -62,7 +62,7 @@ class LevelScoreScreen(MenuScreen):
 
     def tick_step_000(self, elapsed):
         
-        if self.step_elapsed >= STEP_DELAY + 650:
+        if self.step_elapsed >= STEP_DELAY + 100:
             if self.level_state["coins"] >= 1.0:
                 self.lbl_coins_result.color = GOLD
                 self.medal_coin.gold()

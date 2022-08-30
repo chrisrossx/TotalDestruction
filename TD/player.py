@@ -46,10 +46,12 @@ class PlayerShip(Entity):
 
         self.firing = False
         self.firing_elapsed = 1000 # start high so fire right away
+        self.firing_rate = 550
 
         self.health = 3
         self.been_hit = False
         self.coins = 0
+        self.weapons_level = 1
 
     def get_pos(self):
         return self.pos.copy()
@@ -60,43 +62,54 @@ class PlayerShip(Entity):
             if self.health < 3:
                 self.health += 1
                 current_scene.hud_lives(self.health)
+                current_app.mixer.play("health restored")
         
         if pickup.pickup_type == PickupType.COIN:
             current_app.mixer.play("coin pickup")
             self.coins += 1
+        
+        if pickup.pickup_type == PickupType.UPGRADE:
+            current_app.mixer.play("coin pickup")
+            current_app.mixer.play("weapons upgrade")
+            self.weapons_upgrade()
 
     def hit(self, bullet):
+        
         if game_debugger.god_mode == False:
-            self.health -= bullet.damage
-            self.been_hit = True 
+            self.take_damage(bullet.damage)
 
-        current_scene.hud_lives(self.health)
-        current_scene.hud_been_hit()
-            
+        current_app.mixer.play("player hit")
+
         if type(bullet) == Missile:
             l = (bullet.pos.lerp(self.pos, 0.8) - bullet.pos) * -1
             current_scene.em.add(ExplosionSmallFollow(self, l))
         else:
             l = (bullet.pos.lerp(self.pos, 0.9) - bullet.pos) * -1
             current_scene.em.add(SpoofHitFollow(self, l))
-        current_app.mixer.play("player hit")
 
+    def take_damage(self, damage):
+        """
+        Player takes damage, if health is below zero, kill player. 
+        Updates HUD
+        Returns True if player died. 
+        """
+        self.health -= damage
+        self.been_hit = True 
+
+        current_scene.hud_lives(self.health)
+        current_scene.hud_been_hit()
 
         if self.health <= 0:
-            current_scene.change_state(LevelState.DEAD)
-        
+            current_scene.change_state(LevelState.DEAD)        
+            return True  
+        return False
 
-    def collision(self):
-        pass
+    def collision(self, enemy):
         "No Damage to Player if Overlapping a Enemy, Bullets Only!"
-        # if game_debugger.god_mode == False:
-        #     self.health -= 1
-        #     signal("scene.hud.lives").send(self.health)
-        #     if self.health == 0:
-        #         signal("scene.change_state").send(LevelState.DEAD)
-        #     self.been_hit = True 
-        #     signal("scene.hud.medal.heart").send(False)
-        #     signal("mixer.play").send("player collision")
+        if game_debugger.god_mode == False:
+            self.take_damage(1)
+            current_app.mixer.play("player collision")
+            # signal("mixer.play").send("player collision")
 
     def render_simple_ship(self, surface):
         #Guns under Wings
@@ -120,14 +133,24 @@ class PlayerShip(Entity):
         points = ((0, 40), (0, 30), (18, 28))
         pygame.draw.polygon(surface, (60,60,60), points)
 
+    def weapons_upgrade(self):
+        self.weapons_level += 1
+        if self.weapons_level == 2:
+            self.firing_rate = 350
+
+
     def fire(self):
         x, y = self.pos
         x += 20
-        bullet = Bullet001([x, y], -15)
-        current_scene.em.add(bullet)
+
+        if self.weapons_level >= 3:
+            bullet = Bullet001([x, y], -15)
+            current_scene.em.add(bullet)
+            bullet = Bullet001([x, y], 15)
+            current_scene.em.add(bullet)
+    
+        #Default Bullet
         bullet = Bullet001([x, y], 0)
-        current_scene.em.add(bullet)
-        bullet = Bullet001([x, y], 15)
         current_scene.em.add(bullet)
         current_app.mixer.play("player gun")
 
@@ -158,12 +181,24 @@ class PlayerShip(Entity):
 
     def draw(self, elapsed, surface):
         super().draw(elapsed, surface)
+
         if game_debugger.show_hitboxes:
             health = "{}(GOD)".format(self.health) if game_debugger.god_mode else self.health
-            line = asset_manager.fonts["xxs"].render("[  H={}  ]".format(health), True, (255,0,0))
+            line = asset_manager.fonts["xxs"].render("[  H={}, W={}  ]".format(health, self.weapons_level), True, (255,0,0))
             pos = self.pos + self.sprite_offset
             pos.y -= line.get_rect().h
             surface.blit(line, pos)
+
+            line = asset_manager.fonts["xxs"].render("[  coins={}/{}, been_hit={} ]".format(self.coins, current_scene.total_coins, self.been_hit), True, (255,0,0))
+            pos = self.pos + self.sprite_offset
+            pos.y -= line.get_rect().h * 2
+            surface.blit(line, pos)
+
+            line = asset_manager.fonts["xxs"].render("[  total={}, missed={}, killed={} ]".format(current_scene.total_enemies, current_scene.enemies_missed, current_scene.enemies_killed), True, (255,0,0))
+            pos = self.pos + self.sprite_offset
+            pos.y -= line.get_rect().h * 3
+            surface.blit(line, pos)
+
 
 
         # pygame.draw.circle(surface, (255,255,0), (self.x, self.y), 4)
@@ -187,7 +222,7 @@ class PlayerShip(Entity):
 
         self.firing_elapsed += elapsed
         if self.firing and self.input_enabled:
-            if self.firing_elapsed > 350:
+            if self.firing_elapsed > self.firing_rate:
                 self.firing_elapsed = 0
                 self.fire()
 

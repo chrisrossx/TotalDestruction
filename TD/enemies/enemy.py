@@ -47,12 +47,13 @@ class Enemy:
 
     def collision(self):
         """Hit by player ship"""
+        self.killed()
 
     def enemy_missed(self):
         current_scene.enemy_missed(self)
         if self.chain != None:
             if self.chain.chain_lost == False:
-                print("Chain Lost!")
+                current_app.mixer.play("chain lost")
             self.chain.chain_lost = True 
         self.delete()
 

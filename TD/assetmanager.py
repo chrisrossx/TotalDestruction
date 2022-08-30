@@ -71,7 +71,10 @@ class AssetManager:
         self.sounds["coin pickup"] = pygame.mixer.Sound(str(Path("TD/assets/CoinBrass.wav")))
         self.sounds["heart pickup"] = pygame.mixer.Sound(str(Path("TD/assets/CoinThree.wav")))
         self.sounds["explosion md"] = pygame.mixer.Sound(str(Path("TD/assets/ExploFuel.wav")))
-        # self.sounds["explosion sm"] = pygame.mixer.Sound(str(Path("TD/assets/ExploBreakage1.wav")))
+        self.sounds["weapons upgrade"] = pygame.mixer.Sound(str(Path("TD/assets/weapons upgrade.wav")))
+        self.sounds["chain lost"] = pygame.mixer.Sound(str(Path("TD/assets/chain lost.wav")))
+        self.sounds["health restored"] = pygame.mixer.Sound(str(Path("TD/assets/health restored.wav")))
+        
         self.sounds["explosion sm"] = pygame.mixer.Sound(str(Path("TD/assets/Dynamite1.wav")))
         self.sounds["explosion sm"].set_volume(0.5)
         
@@ -154,7 +157,8 @@ class AssetManager:
 
         self.sprites["Pickup Heart"] = load_sprite_from_files(Path("TD/assets/pickup heart/TD_Pickup_Heart.png"), ["-{}".format(i+1) for i in range(4)])
         self.sprites["Pickup Heart"] = scale_sprites(self.sprites["Pickup Heart"], (48, 48))
-        self.sprites["Pickup Star"] = load_sprite_from_files(Path("TD/assets/star shadow/TD_Pickup_Star.png"), ["-{}".format(i+1) for i in range(15)])
+        self.sprites["Pickup Coin"] = load_sprite_from_files(Path("TD/assets/pickup coin/TD_Pickup_Star.png"), ["-{}".format(i+1) for i in range(15)])
+        self.sprites["Pickup Upgrade"] = load_sprite_from_files(Path("TD/assets/pickup upgrade/TD_Pickup_Upgrade.png"), ["-{}".format(i+1) for i in range(18)])
 
         self.sprites["Explosion Medium"] = load_sprite_from_files(Path("TD/assets/explosion medium/TD_Explosion_Medium.png"), ["-{}".format(i+1) for i in range(13)])
 
@@ -179,6 +183,9 @@ class AssetManager:
         self.sprites["Spoof 001"] =  load_sprite_from_files(Path("TD/assets/Spoof 001/TD_Spoof.png"), ["-{}".format(i+1) for i in range(4)])
         self.sprites["Spoof Hit 001"] =  load_sprite_from_files(Path("TD/assets/Spoof Hit 001/TD_Spoof_Hit_002.png"), ["-{}".format(i+1) for i in range(6)])
 
+        self.sprites["enemy speech bubble"] =  load_sprite_from_files(Path("TD/assets/speech bubble/TD_Speech_Bubble.png"), ["-{}".format(i+1) for i in range(8)])
+        for surface in self.sprites["enemy speech bubble"]:
+            surface.set_alpha(128)
 
         self.sprites["Menu Cursor Left"] = load_sprite_from_files(Path("TD/assets/menu cursor/TD_Menu_Cursor.png"), ["-{}".format(i+1) for i in range(9)])
         self.sprites["Menu Cursor Left"] = rotate_sprites(self.sprites["Menu Cursor Left"], -90)
@@ -198,7 +205,6 @@ class AssetManager:
         self.sprites["Menu Level Score Confetti Grey 2"] = rotate_sprites(self.sprites["Menu Level Score Confetti Grey 2"], 130)
         self.sprites["Menu Level Score Confetti Grey 2"] = scale_sprites(self.sprites["Menu Level Score Confetti Grey 2"], (48, 48))
 
-
         self.sprites["the net"] = load_sprite_from_file(Path("TD/assets/net.png"))
 
 
@@ -210,6 +216,8 @@ class AssetManager:
 
         self.sprites["Sawyer"] = load_sprite_from_file(Path("TD/assets/TD_Sawyer.png"))
         self.sprites["Elle"] = load_sprite_from_file(Path("TD/assets/TD_Elle.png"))
+        self.sprites["Christopher"] = load_sprite_from_file(Path("TD/assets/TD_Christopher.png"))
+        self.sprites["Mai-Anh"] = load_sprite_from_file(Path("TD/assets/TD_MaiAnh.png"))
         self.sprites["Balloons"] = load_sprite_from_file(Path("TD/assets/TD_Balloons.png"))
 
 # Singleton Pattern - Stinky, but practical for a game environment

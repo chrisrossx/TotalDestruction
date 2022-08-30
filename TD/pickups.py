@@ -15,6 +15,7 @@ from TD import current_scene
 class PickupType(Enum):
     HEART = 0 
     COIN = 1
+    UPGRADE = 2
 
 class PickupEntity(EntityVectorMovement):
     _screen_rect = pygame.Rect(-40 ,-40, SCREEN_SIZE.x+80, SCREEN_SIZE.y+80) # Delete Sprite if it goes off screen
@@ -76,11 +77,22 @@ class PickupCoin(PickupEntity):
     def __init__(self, pos):
         super().__init__(pos)
         self.pickup_type = PickupType.COIN
-        self.frames = asset_manager.sprites["Pickup Star"]
+        self.frames = asset_manager.sprites["Pickup Coin"]
         self.frame_duration = 150
-        self.sprite_offset = Vector2(-16, -16)
+        self.center_sprite_offset()
         self.add_hitbox((0,0,32,32), Vector2(-16, -16))
         self.frame_index = random.randrange(0, len(self.frames))
 
         current_scene.total_coins += 1
 
+
+class PickupUpgrade(PickupEntity):
+    
+    def __init__(self, pos):
+        super().__init__(pos)
+        self.pickup_type = PickupType.UPGRADE
+        self.frames = asset_manager.sprites["Pickup Upgrade"]
+        self.frame_duration = 150
+        self.center_sprite_offset()
+        self.add_hitbox((0,0,32,24), Vector2(-16, -12))
+        self.frame_index = random.randrange(0, len(self.frames))

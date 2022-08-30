@@ -15,7 +15,7 @@ from TD.enemies.CX5B import EnemyCX5B
 from TD.enemies.D2 import EnemyD2
 from TD.enemies.T8 import EnemyT8
 from TD.enemies.HX7 import EnemyHX7
-from TD.characters import Sawyer, Elle
+from TD.characters import SawyerPathFollower, EllePathFollower, MaiAnhPathFollower, ChristopherPathFollower
 
 class Balloons(ParticleEntityFollower):
     def __init__(self, follow_entity, follow_offset):
@@ -82,8 +82,10 @@ class CreditScreen(MenuScreen):
         self.em.add(self.show_enemy_name)
 
         enemies = [
-            (Elle, "Elle"),
-            (Sawyer, "Sawyer"), 
+            (ChristopherPathFollower, "Christopher"),
+            (MaiAnhPathFollower, "Mai-Anh"),
+            (EllePathFollower, "Elle"),
+            (SawyerPathFollower, "Sawyer"), 
             (EnemyD2, "D2"), 
             (EnemyBT1, "BT1"), 
             (EnemyHX7, "HX7"), 
@@ -100,7 +102,7 @@ class CreditScreen(MenuScreen):
             instance.on_end_of_path = lambda entity=instance: entity.path.loop()
             instance.path.on_end_of_path.append(instance.on_end_of_path)
             self.em.add(instance)
-            if entity in [Sawyer, Elle]:
+            if entity in [SawyerPathFollower, EllePathFollower, MaiAnhPathFollower, ChristopherPathFollower]:
                 balloons = Balloons(instance, Vector2(-2,-56))
                 self.balloons = balloons
                 self.em.add(balloons)

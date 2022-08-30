@@ -19,6 +19,18 @@ class LevelStateMachine:
         self.level = level 
 
     @property
+    def enemies_missed(self):
+        return self.level.enemies_missed
+
+    @enemies_missed.setter
+    def enemies_missed(self, value):
+        self.level.enemies_missed = value 
+
+    @property
+    def total_enemies(self):
+        return self.level.total_enemies
+
+    @property
     def em(self):
         return self.level.em
 

@@ -143,6 +143,7 @@ class PathFollower:
         # return self.x, self.y
     
     def set_new_path(self, index):
+
         if type(index) == int:
             self.data = path_data[index]
         if type(index) == str:
