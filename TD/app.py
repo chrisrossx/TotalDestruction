@@ -6,8 +6,9 @@ from .assetmanager import asset_manager
 from .debuging import game_debugger
 from .scenes.main_menu.main_menu import MainMenu
 from .config import SCREEN_SIZE
-from .scenes.levels.level_000 import Level_000
-from .scenes.levels.level_001 import Level_001
+# from .scenes.levels.level_000 import Level_000
+# from .scenes.levels.level_001 import Level_001
+from .scenes.levels.level import Level 
 from .mixer import Mixer
 from .savedata import SaveData
 
@@ -19,9 +20,11 @@ class App:
     Total Destruction Main Game Loop
     """
 
-    def __init__(self):
+    def __init__(self, debug_filename=None, debug_start=None):
         current_app.__wrapped__ = self
         self.size = SCREEN_SIZE
+        self.debug_filename = debug_filename
+        self.debug_start = debug_start
 
         pygame.init()
         self.screen = pygame.display.set_mode(self.size)
@@ -70,9 +73,14 @@ class App:
 
     def run(self):
 
-        # self._set_scene(Level_000())
-        self.save_data.index = 0
-        self._set_scene(MainMenu())
+        if self.debug_filename:
+            print("DEBUG LEVEL FILENAME:", self.debug_filename)
+            self.save_data.index = -1
+            self._set_scene(Level(-1, self.debug_filename, debug_start=self.debug_start))
+        else:
+            pass 
+            self.save_data.index = 0
+            self._set_scene(MainMenu())
         # self._set_scene(TestScene())
         
         self.clock.tick()
@@ -103,6 +111,7 @@ class App:
                 # --------------------
                 # Tick            
                 game_debugger.timeit_start("app.scene.tick")
+                # print("----")
                 self.scene.tick(elapsed)
                 game_debugger.timeit_end("app.scene.tick")
                 game_debugger.timeit_start("app.debugger.tick")

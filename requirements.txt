@@ -1,2 +1,4 @@
 pygame
 wrapt
+python-dotenv
+click

@@ -26,9 +26,9 @@ class Sawyer(Entity):
         if self.dialog == Dialog.TAUNT_1:
             return ("You will be no challenge to me!", "hahaha")
         if self.dialog == Dialog.THREAT:
-            return ("I will defeat you!",)
+            return ("I will defeat you!", None)
         if self.dialog == Dialog.PAIN:
-            return ("Ouch!", )
+            return ("Ouch!", None)
         if self.dialog == Dialog.DYING:
             return ("I was supposed to win!", "meow!")
 
@@ -55,9 +55,9 @@ class Elle(Entity):
         if self.dialog == Dialog.TAUNT_1:
             return ("I will defeat you", "hahaha")
         if self.dialog == Dialog.THREAT:
-            return ("You can't get me!",)
+            return ("You can't get me!", None)
         if self.dialog == Dialog.PAIN:
-            return ("Ouch!", )
+            return ("Ouch!", None)
         if self.dialog == Dialog.DYING:
             return ("How could you!", "ahhhhhhh!")
 

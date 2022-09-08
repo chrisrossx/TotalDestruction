@@ -19,8 +19,6 @@ class Level_001(Level):
 
         t = 0
 
-
-
         t = 1000
         c = CX5BChain(self, t, "slant top 1")
         c.add_drops([PickupHeart, ], [2,])

@@ -1,6 +1,7 @@
 # My Development Environment
 launch.json
 .goproject.py
+TD/levels/tmp/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

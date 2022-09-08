@@ -1,6 +1,6 @@
 {
-  "sounds_mute": true,
-  "music_mute": true,
+  "sounds_mute": false,
+  "music_mute": false,
   "slots": [
     {
       "name": "christopher",

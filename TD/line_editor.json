@@ -131,6 +131,10 @@
       [
         -32,
         212
+      ],
+      [
+        305,
+        126
       ]
     ],
     "hidden": false
@@ -191,7 +195,7 @@
         449
       ]
     ],
-    "hidden": false
+    "hidden": true
   },
   {
     "name": "alpha pattern",

@@ -151,6 +151,8 @@ class PathFollower:
                 if path.name == index:
                     self.data = path
                     break
+            else:
+                self.data = PathItem()
 
     def draw(self, elapsed, surface):
         pygame.draw.lines(surface,(255,0,0), False, self.data.points)

@@ -1,3 +1,4 @@
+import os 
 import time
 import functools
 
@@ -22,7 +23,10 @@ class GameDebugger:
         self.timeits = {}
         self.timeits_callback = []
 
-        self.show_panel = True
+        if "td_show_debugger" in os.environ and os.environ["td_show_debugger"] == "True":
+            self.show_panel = True
+        else:
+            self.show_panel = False 
         self.show_sky = not True
         self.show_hitboxes = not True
         self.show_paths = not True
@@ -60,6 +64,7 @@ class GameDebugger:
         self.timeits_callback.append(self.print_app_timeits_cb)
 
         if self.show_panel:
+            print(__name__, __file__)
             print("[K_~: show_debugger] ", self.show_panel)
             print("[K_s: show_sky]      ", self.show_sky)
             print("[K_g: show_hitboxes] ", self.show_hitboxes)
@@ -168,18 +173,22 @@ class GameDebugger:
         )
 
     def on_event(self, event, elapsed):
-        if (
-            self._disable_input == 0
-            and event.type == pygame.KEYDOWN
-            and self.show_panel
-        ):
-            if event.key == 96:
+
+        if event.type == pygame.KEYDOWN and event.key == 96:
+            if "td_show_debugger" in os.environ and os.environ["td_show_debugger"] == "True":
                 if self.show_panel == None:
                     self.show_panel = 1
                 elif self.show_panel == 1:
                     self.show_panel = 2
                 else:
                     self.show_panel = None
+
+        if (
+            self._disable_input == 0
+            and event.type == pygame.KEYDOWN
+            and self.show_panel
+        ):
+
 
             bypass_show_panel_lock_out = self.show_panel
 

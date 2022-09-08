@@ -13,6 +13,7 @@ from TD.player import PlayerShip
 from TD.debuging import game_debugger
 from TD.particles.explosions import ExplosionMedium
 from TD import current_app, current_scene
+from TD.levels.data import LevelData
 
 
 class DeadState(LevelStateMachine):
@@ -128,7 +129,8 @@ class StartingState(LevelStateMachine):
       
     def tick_step_000(self, elapsed):
         # Skip for now
-        if not False:
+        # Quick Skip Intro, Helpful for Debugging! 
+        if self.level.debug_start > 0 or False:
             self.player.pos.x = 200
             for key, hud in self.hud.items():
                 hud.y = 0
@@ -158,7 +160,10 @@ class StartingState(LevelStateMachine):
 class PlayingState(LevelStateMachine):
     def __init__(self, level) -> None:
         super().__init__(level)
-        self.runtime = 0.0
+        if self.level.debug_start > 0:
+            self.runtime = self.level.debug_start
+        else:
+            self.runtime = 0.0
         self.timed_add = []
 
     def enemy_missed(self, enemy):
@@ -243,10 +248,12 @@ class Level(Scene):
     """
     """
 
-    level = None
-
-    def __init__(self):
+    def __init__(self, level, filename, debug_start):
         super().__init__()
+
+        self.level = level
+        self.filename = filename
+        self.debug_start = debug_start
 
         self.paused = False
         # self.timed_add = []
@@ -288,10 +295,29 @@ class Level(Scene):
         }
         for hud in self.hud.values():
             self.em.add(hud)
-
         
         #Load The Level Data
-        self.load()
+        self.level_data = LevelData(self.filename)
+        self.level_data.add_to_level(self)
+        #If debug_start delete entities before start time
+        if debug_start > 0:
+            timed_add = []
+            for time_to_add, entity in self.state_machines[LevelState.PLAYING].timed_add:
+                #Remove items between zero and start time. Leave below zero for control entities
+                if time_to_add >= debug_start or time_to_add < 0:
+                    timed_add.append((time_to_add, entity))
+            self.state_machines[LevelState.PLAYING].timed_add = timed_add
+
+        #Add Less than Zero Entites to Scene Now
+        # Add new entities to the Game
+        timed_add = []
+        for time_to_add, entity in self.state_machines[LevelState.PLAYING].timed_add:
+            if time_to_add < 0.0:
+                self.em.add(entity)
+            else:
+                timed_add.append((time_to_add, entity))
+        self.state_machines[LevelState.PLAYING].timed_add = timed_add
+            
 
         # Cound Total Enemies
         self.total_enemies = len(self.em.entities_by_type[EntityType.ENEMY])
@@ -310,19 +336,28 @@ class Level(Scene):
         self.state_machines[LevelState.PLAYING].timed_add.append((time, entity))
 
     def exit(self, data=None):
+        finished = True if data["condition"] == "won" else False
+        medalHeart = not self.player.been_hit
+        if self.total_enemies > 0:
+            enemies = self.enemies_killed / self.total_enemies
+        else:
+            enemies = 0
+        if self.total_coins > 0:
+            coins = self.player.coins / self.total_coins
+        else:
+            coins = 0
+
+        if self.level == -1:
+            print("runtime:   ", self.state_machines[LevelState.PLAYING].runtime)
+            print("finished:  ", finished)
+            print("medalHeart:", medalHeart)
+            print("enemies:   ", enemies)
+            print("coins:     ", coins)
+            import sys
+            sys.exit()
 
         if data["condition"] in ["won", "died"]:
             #Save State
-            finished = True if data["condition"] == "won" else False
-            medalHeart = not self.player.been_hit
-            if self.total_enemies > 0:
-                enemies = self.enemies_killed / self.total_enemies
-            else:
-                enemies = 0
-            if self.total_coins > 0:
-                coins = self.player.coins / self.total_coins
-            else:
-                coins = 0
             current_app.save_data.set_level_data(self.level, {
                 "finished": finished,
                 "medalHeart": medalHeart,
@@ -393,7 +428,7 @@ class Level(Scene):
             self.state_machine.tick(elapsed)
 
         # game_debugger.lines[0] = "Runtime: {}".format(str(round(self.runtime/1000, 1)))
-        print("tick called after delete")
+        # print("tick called after delete")
         game_debugger.lines[1] = "Entities:         {}".format(str(len(self.em.entities)))
         game_debugger.lines[2] = "- Particles:      {}".format(str(len(self.em.entities_by_type[EntityType.PARTICLE])))
         game_debugger.lines[3] = "- Enemies:        {}".format(str(len(self.em.entities_by_type[EntityType.ENEMY])))
