@@ -15,7 +15,7 @@ from TD.editor.config import EDITOR_SCREEN_SIZE
 from TD.assetmanager import asset_manager
 from TD.editor.globals import current_scene, current_level
 from TD.editor.editorassets import editor_assets
-from TD.editor.level_scene.level_paths import SelectPathPanel
+# from TD.editor.level_scene.level_paths import SelectPathPanel
 
 
 class GUILevelControlDetails(GUIGroup):

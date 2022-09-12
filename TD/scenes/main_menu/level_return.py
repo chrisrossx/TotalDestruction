@@ -8,7 +8,7 @@ from .screen import MenuScreen
 from TD.entity import Entity, EntityType
 from TD.assetmanager import asset_manager
 from TD import current_scene, current_app
-from TD.scenes.levels.hud import HUDMedal100, HUDMedal70, HUDMedalHeart
+from TD.scenes.level.hud import HUDMedal100, HUDMedal70, HUDMedalHeart
 from TD.scenes.main_menu.components import HUDMedalCoin, ScoreDividerBar, ScoreGoldConfetti, ScoreGoldConfetti2, ScoreGreyConfetti, ScoreGreyConfetti2
 
 GOLD = (255, 196, 0)

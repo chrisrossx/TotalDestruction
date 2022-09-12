@@ -62,6 +62,24 @@ class GUILevelDetails(GUIGroup):
         self.txt_past_end_count.editable = False 
         self.em.add(self.txt_past_end_count)
 
+        self.btn_hide_sky = gui.Button("Hide Sky", self.grid_pos(14,3), self.grid_size(2,1))
+        self.btn_hide_sky.toggled = self.parent.hide_sky
+        self.btn_hide_sky.on_button_1.append(self.on_btn_hide_sky)
+        self.em.add(self.btn_hide_sky)
+
+        self.btn_hide_badge = gui.Button("Hide Bdg", self.grid_pos(16,3), self.grid_size(2,1))
+        self.btn_hide_badge.toggled = self.parent.hide_badge
+        self.btn_hide_badge.on_button_1.append(self.on_btn_hide_badge)
+        self.em.add(self.btn_hide_badge)
+
+    def on_btn_hide_sky(self, btn):
+        self.parent.hide_sky = not self.parent.hide_sky
+        self.btn_hide_sky.toggled = self.parent.hide_sky
+
+    def on_btn_hide_badge(self, btn):
+        self.parent.hide_badge = not self.parent.hide_badge
+        self.btn_hide_badge.toggled = self.parent.hide_badge
+
     def on_btn_show(self, btn):
         btn.toggled = not btn.toggled
 
@@ -71,6 +89,9 @@ class GUILevelDetails(GUIGroup):
 
         if len(current_level.level_entities_by_type[LevelEntityType.BOSS]) != self.txt_boss_count.value:
             self.txt_boss_count.text = len(current_level.level_entities_by_type[LevelEntityType.BOSS])
+
+        if len(current_level.level_entities_by_type[LevelEntityType.CONTROL]) != self.txt_controls_count.value:
+            self.txt_controls_count.text = len(current_level.level_entities_by_type[LevelEntityType.CONTROL])
 
         if current_level.total_enemies != self.txt_enemies_count.value:
             self.txt_enemies_count.text = current_level.total_enemies

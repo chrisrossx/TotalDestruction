@@ -143,7 +143,7 @@ class GUILevelSizeTimeCursor(GUIGroup):
         self.em.add(self.btn_time_window_end)
         self.update_time_curosr_elements()
 
-        self.btn_play = gui.Button("Play Time", self.grid_pos(12,3), self.grid_size(3,1), align="center")
+        self.btn_play = gui.Button("Play", self.grid_pos(12,3), self.grid_size(2,1), align="left")
         self.btn_play.on_button_1.append(self.on_btn_play)
         self.em.add(self.btn_play)
     

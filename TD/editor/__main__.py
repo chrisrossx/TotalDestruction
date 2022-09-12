@@ -1,9 +1,9 @@
 import os 
+import dotenv
 
 if __name__ == "__main__":
-    os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-    # os.environ['SDL_VIDEO_WINDOW_POS'] = '%i,%i' % (220, 80)
-    os.environ['SDL_VIDEO_WINDOW_POS'] = '%i,%i' % (5, 80)
+    dotenv.load_dotenv()
+    os.environ['td_show_debugger'] = "False"
     from TD.editor.editor import App
     app = App()
     app.run()

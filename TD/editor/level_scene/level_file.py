@@ -1,4 +1,8 @@
+import subprocess
+import os 
+import sys
 from pathlib import Path 
+import traceback
 
 from pygame import Vector2
 import pygame
@@ -13,6 +17,9 @@ from TD.editor import gui
 from TD.editor.config import EDITOR_SCREEN_SIZE
 from TD.assetmanager import asset_manager
 from TD.editor.globals import current_level, current_scene
+from TD.paths import path_data
+from TD.levels.data import LevelEntityType
+
 
 class SavePanel(gui.Panel):
     def __init__(self):
@@ -41,7 +48,10 @@ class SavePanel(gui.Panel):
         self.btn_save.on_button_1.append(self.on_btn_save)
         self.em.add(self.btn_save)
 
+
+
         self.update()
+
 
     def on_btn_save(self, btn):
         path = current_level.base_path / self.txt_filename.text
@@ -120,24 +130,97 @@ class GUILevelFile(GUIGroup):
         self.btn_play_start.on_button_1.append(self.on_btn_play_start)
         self.em.add(self.btn_play_start)
 
-        self.btn_play_at_cursor = gui.Button("Play @Crsr", self.grid_pos(3, 2), self.grid_size(3, 1))
+        self.btn_play_at_cursor = gui.Button("Play @win", self.grid_pos(3, 2), self.grid_size(3, 1))
         self.btn_play_at_cursor.on_button_1.append(self.on_btn_play_at_cursor)
         self.em.add(self.btn_play_at_cursor)
+
+        self.proc = None 
+
+        self.btn_reload_paths = gui.Button("Reload Code", self.grid_pos(0,2), self.grid_size(3, 1))
+        self.btn_reload_paths.on_button_1.append(self.on_btn_reload_paths)
+        self.em.add(self.btn_reload_paths)
+       
+
+    def on_btn_reload_paths(self, btn):
+        import importlib 
+
+        def reload_enemies():
+            print("Reloading Enemy Modules")
+            from TD.enemies import HX7
+            from TD.enemies import BT1
+            from TD.enemies import CX5B
+            from TD.enemies import D2
+            from TD.enemies import T8        
+
+            for mod in [HX7, BT1, CX5B, D2, T8]:
+                for attr in dir(mod):
+                    if attr not in ('__name__', '__file__'):
+                        delattr(mod, attr)
+
+            HX7 = importlib.reload(HX7)
+            BT1 = importlib.reload(BT1)
+            CX5B = importlib.reload(CX5B)
+            D2 = importlib.reload(D2)
+            T8 = importlib.reload(T8)
+
+        try:
+            reload_enemies()
+        except Exception as e:
+            print("[ERROR RELOADING GUNS]")
+            traceback.print_exc()
+        
+        def reload_gun():
+            print("Reloading Gun Modules")
+            from TD.guns import HX7
+            from TD.guns import BT1
+            from TD.guns import CX5B
+            from TD.guns import D2
+            from TD.guns import T8        
+
+            for mod in [HX7, BT1, CX5B, D2, T8]:
+                for attr in dir(mod):
+                    if attr not in ('__name__', '__file__'):
+                        delattr(mod, attr)
+
+            HX7 = importlib.reload(HX7)
+            BT1 = importlib.reload(BT1)
+            CX5B = importlib.reload(CX5B)
+            D2 = importlib.reload(D2)
+            T8 = importlib.reload(T8)
+        try:
+            reload_gun()
+        except Exception as e:
+            print("[ERROR RELOADING GUNS]")
+            traceback.print_exc()
+
+        print("Reloading Paths")
+        path_data.load()
+        for chain in current_level.level_entities_by_type[LevelEntityType.ENEMY_CHAIN]:
+            chain.path.set_new_path(chain.path_index)
+
+        
 
     def update(self):
         self.txt_filename.text = current_level.filename
 
-    def on_btn_play_start(self, btn):
-        import subprocess
+    def _start_level(self, start_time):
+        if self.proc:
+            if self.proc.poll() == None:
+                self.proc.kill()
+                self.proc = None                 
         filename = current_level.save_temp()
-        subprocess.Popen("td.py --file {} --start {}".format(filename, 0), shell=True)
+
+        my_env = os.environ.copy()
+        my_env['td_show_debugger'] = "True"
+        print(">>> python.exe td.py --file {} --start {}".format(filename, start_time))
+        self.proc = subprocess.Popen("python.exe td.py --file {} --start {}".format(filename, start_time), text=True, bufsize=1, stdout=sys.stdout, stderr=subprocess.STDOUT, env=my_env)
+
+    def on_btn_play_start(self, btn):
+        self._start_level(1)
 
     def on_btn_play_at_cursor(self, btn):
-        import subprocess
-        filename = current_level.save_temp()
-        subprocess.Popen("td.py --file {} --start {}".format(filename, int(current_scene.gui_level_size.time_cursor)), shell=True)
-        # subprocess.Popen("td.py --file {} --start {}".format(self.txt_filename.text, ), shell=True)
-
+        # self._start_level(int(current_scene.gui_level_size.time_cursor))
+        self._start_level(int(current_scene.time))
 
     def on_txt_filename(self, txt):
         current_level.filename = txt.text

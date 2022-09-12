@@ -2,7 +2,7 @@ from enum import Enum
 import pygame 
 
 from TD.particles.explosions import ExplosionMedium, ExplosionSmall, ExplosionSmallFollow
-from TD.scenes.levels.level_state import LevelState
+from TD.scenes.level.level_state import LevelState
 import random 
 from pygame import Vector2
 

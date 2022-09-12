@@ -24,10 +24,10 @@ class GameDebugger:
         self.timeits_callback = []
 
         if "td_show_debugger" in os.environ and os.environ["td_show_debugger"] == "True":
-            self.show_panel = True
+            self.show_panel = 2
         else:
-            self.show_panel = False 
-        self.show_sky = not True
+            self.show_panel = 0
+        self.show_sky = False if os.environ.get("td_debugger_sky", "True") == "False" else True
         self.show_hitboxes = not True
         self.show_paths = not True
         self.show_bounds = not True
@@ -64,7 +64,6 @@ class GameDebugger:
         self.timeits_callback.append(self.print_app_timeits_cb)
 
         if self.show_panel:
-            print(__name__, __file__)
             print("[K_~: show_debugger] ", self.show_panel)
             print("[K_s: show_sky]      ", self.show_sky)
             print("[K_g: show_hitboxes] ", self.show_hitboxes)
@@ -251,7 +250,7 @@ class GameDebugger:
                 # import random
 
             if event.key == pygame.K_o:
-                from TD.scenes.levels.dialog import EnemyDialog
+                from TD.scenes.level.dialog import EnemyDialog
                 from TD.characters import Dialog, Elle
                 d = EnemyDialog(Elle(Dialog.DYING))
                 current_scene.em.add(d)
@@ -259,7 +258,7 @@ class GameDebugger:
             if event.key == pygame.K_i:
                 from TD.particles.explosions import ExplosionMedium, ExplosionSmall
                 from TD.particles.spoofs import SpoofHitFollow
-                from TD.bullets import Missile
+                from TD.bullets import Missile, Missile002
 
                 # from TD.entity import Entity
                 # current_scene.em.add(ExplosionSmall(Vector2(512,250)))
@@ -268,6 +267,11 @@ class GameDebugger:
 
                 a = random.randint(0, 359)
                 m = Missile(Vector2(512, 300), a)
+                current_scene.em.add(m)
+                current_app.mixer.play("missile launch 002")
+
+                a = random.randint(0, 359)
+                m = Missile002(Vector2(712, 300), a)
                 current_scene.em.add(m)
                 current_app.mixer.play("missile launch 002")
                 # import random

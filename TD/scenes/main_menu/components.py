@@ -5,7 +5,7 @@ from TD.assetmanager import asset_manager
 from TD import gui 
 from pygame import Vector2
 from TD.globals import current_app
-from TD.scenes.levels.hud import HUD, HUDMedal100, HUDMedal70, HUDMedalHeart
+from TD.scenes.level.hud import HUD, HUDMedal100, HUDMedal70, HUDMedalHeart
 from TD.entity import Entity, EntityType
 
 

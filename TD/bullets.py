@@ -32,32 +32,6 @@ class Bullet(EntityVectorMovement):
             self.delete()
 
 
-class Bullet002(Bullet):
-    hitbox_offset = Vector2(-4, -4)
-    hitbox_size = Vector2(8, 8)
-    def __init__(self, pos, angle=180):
-        super().__init__(pos, angle)
-        self.sprite_offset = Vector2(-5, -5)
-        self.frames = asset_manager.sprites["Bullet 002"]
-        self.velocity = 0.55
-
-
-class Bullet003(Bullet):
-    hitbox_offset = Vector2(-5, -5)
-    hitbox_size = Vector2(10, 10)
-    def __init__(self, pos, angle=180):
-        super().__init__(pos, angle)
-        self.sprite_offset = Vector2(-8, -8)
-
-        self.frames = asset_manager.sprites["Bullet 003"]
-        
-        self.frame_index = random.randrange(0, len(self.frames))
-        self.frame_duration = 70
-        self.velocity = 0.25
-        # self.heading = Vector2(-1, 0)
-
-
-
 class RotatingBullet(EntityVectorMovement):
     _screen_rect = pygame.Rect(-40 ,-40, SCREEN_SIZE.x+80, SCREEN_SIZE.y+80) # Delete Sprite if it goes off screen
     hitbox_vectors = []
@@ -128,6 +102,54 @@ class Bullet001(RotatingBullet):
         self.frame_loop_start = 2
         self.frame_duration = 75
         self.velocity = 0.75
+
+
+class Bullet002(Bullet):
+    hitbox_offset = Vector2(-4, -4)
+    hitbox_size = Vector2(8, 8)
+    def __init__(self, pos, angle=180):
+        super().__init__(pos, angle)
+        self.sprite_offset = Vector2(-5, -5)
+        self.frames = asset_manager.sprites["Bullet 002"]
+        self.velocity = 0.55
+
+
+class Bullet003(Bullet):
+    hitbox_offset = Vector2(-5, -5)
+    hitbox_size = Vector2(10, 10)
+    def __init__(self, pos, angle=180):
+        super().__init__(pos, angle)
+        self.sprite_offset = Vector2(-8, -8)
+
+        self.frames = asset_manager.sprites["Bullet 003"]
+        
+        self.frame_index = random.randrange(0, len(self.frames))
+        self.frame_duration = 70
+        self.velocity = 0.25
+        # self.heading = Vector2(-1, 0)
+
+
+class Bullet004(RotatingBullet):
+    hitbox_vectors = [
+        {"size": (10, 10), "angle": 0, "offset": 4},
+    ]
+    frame_source = "Bullet 004"
+    def __init__(self, pos, angle):
+        super().__init__(pos, angle)
+        self.frame_duration = 75
+        self.velocity = 0.75
+
+
+class Bullet005(Bullet):
+    hitbox_offset = Vector2(-4, -4)
+    hitbox_size = Vector2(8, 8)
+    def __init__(self, pos, angle=180):
+        super().__init__(pos, angle)
+        self.sprite_offset = Vector2(-8, -8)
+        self.frames = asset_manager.sprites["Bullet 005"]
+        self.frame_duration = 55
+        self.velocity = 0.55
+
 
 
 class Missile(RotatingBullet):

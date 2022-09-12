@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from enum import IntEnum
+import importlib 
 
 from pygame import Vector2
 import pygame
@@ -12,14 +13,13 @@ from TD.editor.globals import current_scene, current_level
 from TD.editor import gui 
 from TD.assetmanager import asset_manager
 from TD.editor.editorassets import editor_assets
-from TD.enemies import EnemyHX7, EnemyBT1, EnemyCX5B, EnemyD2, EnemyT8
 from TD.enemies.boss import Boss001
 from TD.characters import Christopher, Dialog, Elle, MaiAnh, Sawyer
-from TD.scenes.levels.dialog import EnemyDialog
-from TD.scenes.levels.music import Music
+from TD.scenes.level.dialog import EnemyDialog
+from TD.scenes.level.music import Music
 from TD.pickups import PickupHeart, PickupCoin, PickupUpgrade
-from TD.guns import AimingGun
-
+from TD import enemies
+from TD import guns 
 
 class LevelEntityType(IntEnum):
     ENEMY_CHAIN = 0
@@ -65,10 +65,13 @@ class LevelEntity:
     def editor_on_event(self, event, elapsed):
         self.em.on_event(event, elapsed)
 
-    def editor_tick(self, elapsed, start_time, end_time, x_offset):
+    def editor_tick(self, elapsed, start_time, end_time, x_offset, freeze_badge_at_start=False):
         self.em.tick(elapsed)
         # Set Position of BTN
         self.btn_editor.pos.x = self.pixel_offset + x_offset - (self.btn_editor.rect.w / 2)
+        if freeze_badge_at_start and self.btn_editor.pos.x < 0:
+            if self.has_started and len(self.editor_enemy_points) > 0:
+                self.btn_editor.pos.x = 0
         self.btn_editor.pos.y = 250
       
         spacing_width = self.lbl_editor.rect.w + 32
@@ -95,7 +98,12 @@ class LevelEntity:
         if current_scene.time < self._time:
             self.active = False
         else:
-            self.active = True         
+            self.active = True
+        
+        if current_scene.hide_badge:
+            self.lbl_editor.enabled = False
+        else:
+            self.lbl_editor.enabled = True
 
     def editor_draw(self, elapsed, surface, start_time, end_time, x_offset):
         self.em.draw(elapsed, surface)
@@ -292,6 +300,7 @@ class EnemyChain(LevelEntity):
         self.enemies = []           # Ref to all Enemies spawned from Chain
         self.chain_lost = False     # Keep track if Chain was Lost, avoid audio repeat
         self.guns = []
+        self.gun = None
         self.upgrades = []
         self.hearts = []
         self.coins = [i for i in range(10)]
@@ -299,18 +308,12 @@ class EnemyChain(LevelEntity):
         self._path_index = 255
         self.path = PathFollower(self._path_index)
 
+        self.editor_has_started = False 
+        self.editor_enemy_points = []
+
     def add_to_level(self, level):
 
-        if self.enemy == "T8":
-            entity_class = EnemyT8
-        elif self.enemy == "CX5B":
-            entity_class = EnemyCX5B
-        elif self.enemy == "HX7":
-            entity_class = EnemyHX7
-        elif self.enemy == "D2":
-            entity_class = EnemyD2
-        elif self.enemy == "BT1":
-            entity_class = EnemyBT1
+        entity_class = self.get_enemy_class()
 
         for i in range(self.count):
             entity = entity_class(self._path_index)
@@ -329,7 +332,8 @@ class EnemyChain(LevelEntity):
 
             #Guns
             if i in self.guns:
-                gun = AimingGun()
+                gun_class = self.get_gun_class()
+                gun = gun_class()
                 entity.set_gun(gun)
 
             time = self.time + (i * self.spacing)
@@ -346,16 +350,17 @@ class EnemyChain(LevelEntity):
         self.path.set_new_path(self._path_index)
 
     def load(self, chain_data):
-        self.name = chain_data["name"]
-        self._time = chain_data["time"]
-        self.count = chain_data["count"]
-        self.spacing = chain_data["spacing"]
-        self.enemy = chain_data["enemy"]
-        self.guns = chain_data["guns"]
-        self.upgrades = chain_data["upgrades"]
-        self.hearts = chain_data["hearts"]
-        self.coins = chain_data["coins"]
-        self.path_index = chain_data["path_index"]
+        self.name = chain_data["name"] if "coins" in chain_data else ""
+        self._time = chain_data["time"] if "coins" in chain_data else 0.0
+        self.count = chain_data["count"] if "count" in chain_data else 1
+        self.spacing = chain_data["spacing"] if "spacing" in chain_data else 400.0
+        self.enemy = chain_data["enemy"]  if "enemy" in chain_data else None
+        self.guns = chain_data["guns"] if "guns" in chain_data else []
+        self.upgrades = chain_data["upgrades"] if "upgrades" in chain_data else []
+        self.hearts = chain_data["hearts"] if "hearts" in chain_data else []
+        self.coins = chain_data["coins"] if "coins" in chain_data else []
+        self.path_index = chain_data["path_index"] if "path_index" in chain_data else None
+        self.gun = chain_data["gun"] if "gun" in chain_data else None 
 
     def save(self):
         """dump data into a jsonable object"""
@@ -369,12 +374,14 @@ class EnemyChain(LevelEntity):
             "upgrades": [i for i in self.upgrades],
             "hearts": [i for i in self.hearts],
             "coins": [i for i in self.coins], 
-            "path_index": self._path_index
+            "path_index": self._path_index,
+            "gun": self.gun,
         }
     
     def update_badge(self):
         name = "---" if self.name in [None, ""] else self.name
-        text = "{}: {}-{}@{:0.0f}".format(name, self.enemy, self.count, self.spacing)
+        enemy_name = "None" if self.enemy == None else self.enemy[5:]
+        text = "{}: {}-{}@{:0.0f}".format(name, enemy_name, self.count, self.spacing)
 
         guns = ""
         hearts = ""
@@ -390,16 +397,116 @@ class EnemyChain(LevelEntity):
         text += "\nh[{}] c[{}]".format(hearts, coins)
         self.lbl_editor.text = text
 
+    def get_gun_class(self):
+        if self.gun == None:
+            return None
+
+        if "T8" in self.gun:
+            try:
+                gun_class = getattr(guns.T8, self.gun)
+            except AttributeError:
+                gun_class = None
+        elif "CX5B" in self.gun:
+            try:
+                gun_class = getattr(guns.CX5B, self.gun)
+            except AttributeError:
+                gun_class = None
+        elif "HX7" in self.gun:
+            try:
+                gun_class = getattr(guns.HX7, self.gun)
+            except AttributeError:
+                gun_class = None
+        elif "D2" in self.gun:
+            try:
+                gun_class = getattr(guns.D2, self.gun)
+            except AttributeError:
+                gun_class = None
+        elif "BT1" in self.gun:
+            try:
+                gun_class = getattr(guns.BT1, self.gun)
+            except AttributeError:
+                gun_class = None
+        else:
+            gun_class = None
+
+        return gun_class
+
+
+    def get_enemy_class(self):
+        if self.enemy == None:
+            return None 
+        if "T8" in self.enemy:
+            try:
+                enemy_class = getattr(enemies.T8, self.enemy)
+            except AttributeError:
+                enemy_class = None
+        elif "CX5B" in self.enemy:
+            try:
+                enemy_class = getattr(enemies.CX5B, self.enemy)
+            except AttributeError:
+                enemy_class = None
+        elif "HX7" in self.enemy:
+            try:
+                enemy_class = getattr(enemies.HX7, self.enemy)
+            except AttributeError:
+                enemy_class = None
+        elif "D2" in self.enemy:
+            try:
+                enemy_class = getattr(enemies.D2, self.enemy)
+            except AttributeError:
+                enemy_class = None
+        elif "BT1" in self.enemy:
+            try:
+                enemy_class = getattr(enemies.BT1, self.enemy)
+            except AttributeError:
+                enemy_class = None
+        else:
+            enemy_class = None
+
+        return enemy_class
+
+    def editor_get_enemy_entity(self):
+        enemy_class = self.get_enemy_class()
+        if enemy_class != None:
+            enemy = enemy_class(self.path_index)
+            enemy.path.on_end_of_path = []
+            enemy.frame_index = 0
+            return enemy
+        return None 
+
     def editor_tick(self, elapsed, start_time, end_time, x_offset):
-        super().editor_tick(elapsed, start_time, end_time, x_offset)
+
+        enemy = self.editor_get_enemy_entity()
+
+        self.has_started = (current_scene.time - self.time) > 0 
+        self.editor_enemy_points = []
+        freeze_badge_at_start=False
+        # still_on_path = False
+        if self.has_started and enemy != None:
+            freeze_badge_at_start=True
+            for i in range(self.count):
+                start_time = current_scene.time - self.time - (self.spacing * i)
+                if start_time > 0:
+                    enemy.path.distance = start_time * enemy.path.velocity
+                    enemy.path.tick(0)
+                    pos = enemy.path.pos + Vector2(100, 100)
+                    if enemy.path.on_path == True:
+                        self.editor_enemy_points.append(pos.copy())
+                        # still_on_path = True
+
+        super().editor_tick(elapsed, start_time, end_time, x_offset, freeze_badge_at_start=freeze_badge_at_start)
 
     def editor_draw(self, elapsed, surface, start_time, end_time, x_offset):
-
+        
+        enemy = self.editor_get_enemy_entity()
+        
         points = []
         for point in self.path.data.points:
             point = Vector2(point)
-            point += (x_offset, 100)
-            point.x += self.pixel_offset
+            if self.has_started:
+                point += (100, 100)
+            else:
+                point += (x_offset + self.pixel_offset, 100)
             points.append(point)
 
         if self._selected:
@@ -409,31 +516,21 @@ class EnemyChain(LevelEntity):
         else:
             c = (87, 87, 255)
 
-        if len(points) > 1:
+        if len(points) > 1 and (not self.has_started or len(self.editor_enemy_points) > 0):
             pygame.draw.lines(surface, c, False, points)
         else:
             #Still set at least one point to draw enemy sprite at
-            points = [self.btn_editor.pos - Vector2(0, 0), ]
+            points = [self.btn_editor.pos, ]
 
-        if self.enemy == "T8":
-            pos = points[0] - Vector2(32, 32)
-            surface.blit(asset_manager.sprites["T8"][0], pos)
-        elif self.enemy == "CX5B":
-            pos = points[0] - Vector2(32, 32)
-            surface.blit(asset_manager.sprites["CX5B"][0], pos)
-        elif self.enemy == "HX7":
-            pos = points[0] - Vector2(22, 42)
-            surface.blit(asset_manager.sprites["HX7"][0], pos)
-        elif self.enemy == "D2":
-            pos = points[0] - Vector2(59, 32)
-            surface.blit(asset_manager.sprites["D2"][0], pos)
-        elif self.enemy == "BT1":
-            pos = points[0] - Vector2(32, 32)
-            surface.blit(asset_manager.sprites["BT1"][0], pos)
+        if self.has_started:
+            for point in self.editor_enemy_points:
+                surface.blit(enemy.surface, point + enemy.sprite_offset)
+        else:
+            if enemy:
+                surface.blit(enemy.surface, points[0] + enemy.sprite_offset)
+
 
         super().editor_draw(elapsed, surface, start_time, end_time, x_offset)
-
-
 
 class LevelData:
     def __init__(self, filename):
@@ -450,7 +547,7 @@ class LevelData:
         #editor_mode state
         self._editor = False 
 
-        if filename != "":
+        if filename != None:
             self.load()
 
     def add_to_level(self, level):
@@ -499,16 +596,17 @@ class LevelData:
 
     def save_temp(self):
         if self.filename == "":
-            print("Please Enter A Valid Filename")
-            return 
+            filename = Path("No_Name.json")
+        else:
+            filename = self.filename
 
-        path = self.base_path / "tmp" / self.filename
-        print("Save to Temporary Filename:", self.filename)
+        path = self.base_path / "tmp" / filename
+        print("Save to Temporary Filename:", filename)
         data = self.get_save_data()
         with open(path, "w") as f:
             json.dump(data, f, indent=2)
 
-        return Path("tmp") / self.filename
+        return Path("tmp") / filename
 
     def save(self):
         if self.filename == "":
@@ -524,6 +622,14 @@ class LevelData:
 
     def load(self):
         path = self.base_path / self.filename
+
+        if not path.exists():
+            import sys
+            print("[ERROR] Level File Not Found") 
+            print(path)
+            sys.exit()
+
+
         with open(path, "r") as f:
             data = json.load(f)
         
@@ -548,8 +654,13 @@ class LevelData:
             raise Exception("Entity already added")
         if self._editor:
             entity.editor_mode()
+
+
         self.level_entities.append(entity)
+        self.level_entities.sort(key=lambda e: e.time )
         self.level_entities_by_type[entity.type].append(entity)
+        self.level_entities_by_type[entity.type].sort(key=lambda e: e.time )
+
 
     def delete(self, entity):
         self.level_entities = [e for e in self.level_entities if e != entity]

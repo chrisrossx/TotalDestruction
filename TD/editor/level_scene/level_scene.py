@@ -1,3 +1,4 @@
+import os 
 from pygame import Vector2
 import pygame
 from TD import editor
@@ -20,6 +21,7 @@ from .level_boss import GUILevelBossDetails
 from .level_control import GUILevelControlDetails
 from .level_markers import GUILevelMarker
 from .level_chain_library import GUILevelChainLibrary
+from .level_gun_library import GUILevelGunLibrary
 from TD.editor.globals import current_level
 from TD.levels.data import LevelData, LevelEntityType
 
@@ -32,6 +34,12 @@ class SceneLevel(Scene):
         self.level = LevelData(filename)  # Level Data
         current_level.__wrapped__ = self.level 
         self.level.editor_mode()
+
+        if "td_editor_hide_sky" in os.environ and os.environ["td_editor_hide_sky"] == "True":
+            self.hide_sky = True
+        else:
+            self.hide_sky = False 
+        self.hide_badge = False 
 
         # self.level_renderer = LevelRenderer(self.level)
 
@@ -48,6 +56,8 @@ class SceneLevel(Scene):
             100, 100, SCREEN_RECT.w, SCREEN_RECT.h
         )  # Players Game Screen Window
 
+        self.pressed_duration = 0
+
         self.gui_groups["level_size"] = GUILevelSizeTimeCursor(self)
         self.gui_groups["level_chain"] = GUILevelChainDetails(self)
         self.gui_groups["level_file"] = GUILevelFile(self)
@@ -58,8 +68,10 @@ class SceneLevel(Scene):
         self.gui_groups["level_control"] = GUILevelControlDetails(self)
         self.gui_groups["level_marker"] = GUILevelMarker(self)
         self.gui_groups["level_chain_library"] = GUILevelChainLibrary(self)
+        self.gui_groups["level_gun_library"] = GUILevelGunLibrary(self)
 
-        # self.select_level_entity(self.level.level_entities[0])
+
+        self.select_level_entity(self.level.level_entities_by_type[LevelEntityType.ENEMY_CHAIN][0])
 
     def select_level_entity(self, entity):
         if self.selected_level_entity != None:
@@ -80,10 +92,40 @@ class SceneLevel(Scene):
             self.selected_level_entity = entity
 
 
+    def pressed(self, pressed, elapsed):
+        if self.gui_layer == 0:
+            if pressed[pygame.K_RIGHT] or pressed[pygame.K_LEFT]:
+                self.pressed_duration += elapsed 
+                kmods = pygame.key.get_mods()
+                if kmods & pygame.KMOD_CTRL:
+                    rate = 8
+                else:
+                    if self.pressed_duration >= 400:
+                        rate = 4
+                    else:
+                        rate = 1
+                d = -1 if pressed[pygame.K_LEFT] else 1
+                self.time += elapsed * rate * d
+                self.gui_level_size.update_time_curosr_elements()
+                self.gui_level_size.set_time_slider_value(self.time)
+
+        return super().pressed(pressed, elapsed)
+
 
     def on_event(self, event, elapsed):
         self.level.editor_on_event(event, elapsed)
         super().on_event(event, elapsed)
+
+        if self.gui_layer == 0:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_F5:
+                self.gui_level_file.on_btn_play_start(None)
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_F6:
+                self.gui_level_file.on_btn_play_at_cursor(None)
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                self.pressed_duration = 0
+
 
     @property
     def pixel_offset_with_time(self):
@@ -136,7 +178,8 @@ class SceneLevel(Scene):
         pygame.draw.line(self.surface, grey, (0, 700), (EDITOR_SCREEN_SIZE.x, 700))
 
         pygame.draw.rect(self.surface, (255, 255, 255), self.window_rect, 1)
-        # self.sky.draw(elapsed, self.surface, self.time)
+        if not self.hide_sky:
+            self.sky.draw(elapsed, self.surface, self.time)
         self.gui_level_chain.draw(elapsed, self.surface)
         self.gui_level_file.draw(elapsed, self.surface)
         self.gui_level_marker.draw(elapsed, self.surface)

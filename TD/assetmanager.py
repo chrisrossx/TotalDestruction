@@ -172,6 +172,9 @@ class AssetManager:
         self.sprites["Bullet 002"] = load_sprite_from_file(Path("TD/assets/Bullet 002/Bullet 002.png"))
 
         self.sprites["Bullet 003"] = load_sprite_from_files(Path("TD/assets/Bullet 003/TD_Bullet_003.png"), ["-{}".format(i+1) for i in range(4)])
+        self.sprites["Bullet 004"] = load_sprite_from_files(Path("TD/assets/Bullet 004/TD_Bullet_004.png"), ["-{}".format(i+1) for i in range(4)])
+        self.sprites["Bullet 004"] = rotate_sprites(self.sprites["Bullet 004"], -90)
+        self.sprites["Bullet 005"] = load_sprite_from_files(Path("TD/assets/Bullet 005/TD_Bullet_005.png"), ["-{}".format(i+1) for i in range(4)])
 
         self.sprites["Missile 001"] = load_sprite_from_files(Path("TD/assets/Missile 001/TD_Missile_001.png"), ["-{}".format(i+1) for i in range(6)])
         self.sprites["Missile 001"] = rotate_sprites(self.sprites["Missile 001"], -90)

@@ -1,0 +1,239 @@
+{
+  "total_time": 200000,
+  "chains": [
+    {
+      "name": "Swoop Bravo",
+      "time": 6153.35,
+      "count": 5,
+      "spacing": 866,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        0
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "Swoop Alpha Top",
+      "gun": null
+    },
+    {
+      "name": "Swoop Bravo",
+      "time": 11355.0,
+      "count": 5,
+      "spacing": 866,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        2
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "Swoop Alpha Bottom",
+      "gun": null
+    },
+    {
+      "name": "Tank 1",
+      "time": 19589.39,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyD2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 200",
+      "gun": "GunD2Level1"
+    },
+    {
+      "name": "Side to Back Alpha",
+      "time": 25031.06,
+      "count": 5,
+      "spacing": 646,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "Side to Back Alpha Bottom",
+      "gun": null
+    },
+    {
+      "name": "Tank 2",
+      "time": 33962.12,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyD2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 200",
+      "gun": "GunD2Level1"
+    },
+    {
+      "name": "Swoop Bravo",
+      "time": 34654.31,
+      "count": 5,
+      "spacing": 866,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        2
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "Swoop Alpha Bottom",
+      "gun": null
+    },
+    {
+      "name": "Swoop Bravo",
+      "time": 41896.36,
+      "count": 5,
+      "spacing": 866,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        2
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "Side and Back T",
+      "gun": null
+    },
+    {
+      "name": "Swoop Bravo",
+      "time": 52800.23,
+      "count": 5,
+      "spacing": 866,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        2
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "Swoop Alpha Bottom",
+      "gun": null
+    },
+    {
+      "name": "Tank 2",
+      "time": 54387.41,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyD2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 200",
+      "gun": "GunD2Level1"
+    }
+  ],
+  "boss": [],
+  "controls": []
+}

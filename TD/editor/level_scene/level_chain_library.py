@@ -88,9 +88,13 @@ class LibraryPanel(gui.Panel):
         self.txt_spacing.editable = False
         self.em.add(self.txt_spacing)
 
-        self.txt_guns = gui.TextBox("", self.grid_pos(8, 3), self.grid_size(),  "Guns:    ")
+        self.txt_guns = gui.TextBox("", self.grid_pos(8, 4), self.grid_size(),  "Guns:    ")
         self.txt_guns.editable = False
         self.em.add(self.txt_guns)
+
+        self.txt_gun = gui.TextBox("", self.grid_pos(8, 5), self.grid_size(),  "Gun:    ")
+        self.txt_gun.editable = False
+        self.em.add(self.txt_gun)
 
         self.txt_upgrades = gui.TextBox("", self.grid_pos(14, 3), self.grid_size(),  "Upgrades: ")
         self.txt_upgrades.editable = False
@@ -100,7 +104,7 @@ class LibraryPanel(gui.Panel):
         self.txt_coins.editable = False
         self.em.add(self.txt_coins)
 
-        self.txt_hearts = gui.TextBox("", self.grid_pos(8, 4), self.grid_size(), "Hearts:  ")
+        self.txt_hearts = gui.TextBox("", self.grid_pos(8, 3), self.grid_size(), "Hearts:  ")
         self.txt_hearts.editable = False
         self.em.add(self.txt_hearts)
 
@@ -153,9 +157,9 @@ class LibraryPanel(gui.Panel):
             selected.load(data)
             selected.time = time 
             current_scene.gui_level_chain.update()
-            current_scene.em.delete(panel)
-        def cancel(btn):
-            current_scene.em.delete(panel)
+        #     current_scene.em.delete(panel)
+        # def cancel(btn):
+        #     current_scene.em.delete(panel)
        
         panel = gui.ConfirmPanel("Confirm Override Selected Level Chain Data?", confirm, cancel)
         # panel.set_gui_level(current_scene.gui_layer + 1)
@@ -194,6 +198,7 @@ class LibraryPanel(gui.Panel):
             self.txt_name.text = ""
             self.txt_coins.text = ""
             self.txt_guns.text = ""
+            self.txt_gun.text = ""
             self.txt_upgrades.text = ""
             self.txt_hearts.text = ""
             self.txt_enemy.text = ""
@@ -237,6 +242,7 @@ class LibraryPanel(gui.Panel):
         self.txt_upgrades.text = "[{}]".format(upgrades)
         self.txt_hearts.text = "[{}]".format(hearts)
         self.txt_count.text = str(chain.count)
+        self.txt_gun.text = str(chain.gun)
         self.txt_spacing.text = str(chain.spacing)
         self.txt_path_index.text = str(chain.path_index)
         self.txt_enemy.text = str(chain.enemy)

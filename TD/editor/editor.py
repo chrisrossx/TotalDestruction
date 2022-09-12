@@ -5,10 +5,6 @@ import pygame
 from pygame import Vector2
 from TD.assetmanager import asset_manager
 from TD.config import SCREEN_SIZE
-from TD.scenes.levels.level_000 import Level_000
-from TD.scenes.levels.level_001 import Level_001
-from TD.mixer import Mixer
-from TD.savedata import SaveData
 
 from TD.editor.level_scene import SceneLevel
 
@@ -29,9 +25,9 @@ class App:
         argv = sys.argv[1:]
         opts, args = getopt.getopt(argv, "")
         if len(args) != 1:
-            print("Please Provide 1 Filename")
-            sys.exit()
-        self.arg_filename = args[0]
+            self.arg_filename = None
+        else:
+            self.arg_filename = args[0]
 
         pygame.init()
         self.screen = pygame.display.set_mode(self.size)
@@ -84,7 +80,7 @@ class App:
         self.running = True
 
         while 1:
-            elapsed = self.clock.tick()
+            elapsed = self.clock.tick(60)
 
             self.frame_count_elapsed += elapsed
             self.frame_count += 1

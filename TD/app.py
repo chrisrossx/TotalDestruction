@@ -8,7 +8,7 @@ from .scenes.main_menu.main_menu import MainMenu
 from .config import SCREEN_SIZE
 # from .scenes.levels.level_000 import Level_000
 # from .scenes.levels.level_001 import Level_001
-from .scenes.levels.level import Level 
+from .scenes.level.level import Level 
 from .mixer import Mixer
 from .savedata import SaveData
 

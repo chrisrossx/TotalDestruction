@@ -7,7 +7,7 @@ from TD.bullets import Bullet001, Missile
 from TD.entity import Entity, EntityType
 from TD.config import SCREEN_SIZE
 from .pickups import PickupType
-from TD.scenes.levels.level_state import LevelState
+from TD.scenes.level.level_state import LevelState
 from TD.assetmanager import asset_manager
 from TD import current_scene, current_app
 from TD.particles.spoofs import SpoofHitFollow
@@ -155,7 +155,6 @@ class PlayerShip(Entity):
         current_app.mixer.play("player gun")
 
     def pressed(self, pressed, elapsed):
-
         if self.input_enabled:
 
             if pressed[pygame.K_SPACE] or pressed[pygame.K_LCTRL]:

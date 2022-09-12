@@ -1,6 +1,7 @@
 from email.policy import default
 import os 
 import click 
+import dotenv
 
 
 
@@ -11,7 +12,6 @@ def app(file, start):
     """
     Total Destruction by Christopher Ross
     """
-    import dotenv
     dotenv.load_dotenv()
     os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
     # os.environ['SDL_VIDEO_WINDOW_POS'] = '%i,%i' % (75, 175)

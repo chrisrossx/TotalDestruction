@@ -132,3 +132,8 @@ class AimingGun(GenericGun):
 
     def bullet_factory(self, angle):
         return Bullet002(self.parent.pos + self.parent.gun_points[0], angle)
+
+# guns = {
+#     GenericGun.__name__: GenericGun,
+#     AimingGun.__name__: AimingGun, 
+# }

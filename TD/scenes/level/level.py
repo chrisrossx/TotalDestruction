@@ -8,7 +8,7 @@ from TD.entity import Entity, EntityManager, EntityType, EntityVectorMovement
 from TD.gui import GUIPanel, GUILabel, Sprite
 from TD.assetmanager import asset_manager
 from TD.config import SCREEN_RECT, SCREEN_SIZE
-from TD.scenes.levels.pause_menu import PauseMenu
+from TD.scenes.level.pause_menu import PauseMenu
 from TD.player import PlayerShip
 from TD.debuging import game_debugger
 from TD.particles.explosions import ExplosionMedium

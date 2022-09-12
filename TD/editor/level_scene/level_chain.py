@@ -1,3 +1,4 @@
+import enum
 from multiprocessing import Value
 from tracemalloc import start
 from pygame import Vector2
@@ -7,6 +8,7 @@ from TD.config import SKY_VELOCITY, SCREEN_RECT
 from TD.editor.config import EDITOR_SCREEN_RECT, EDITOR_SCREEN_SIZE
 
 from TD.editor.scene import Scene, GUIGroup
+from TD.enemies import BT1, CX5B, D2, HX7, T8
 from TD.entity import EntityType
 from .sky import Sky
 from TD.editor import gui
@@ -15,51 +17,48 @@ from TD.assetmanager import asset_manager
 from TD.editor.globals import current_scene, current_level
 from TD.editor.editorassets import editor_assets
 from TD.editor.level_scene.level_paths import SelectPathPanel
+from TD.levels.data import LevelEntityType
 
 
 
 class SelectEnemyPanel(gui.Panel):
     def __init__(self, on_selected, current_value=None):
         panel_rows = 12
-        panel_cols = 6
+        panel_cols = 6 * 6
         size = self.get_panel_size_by_grid(panel_cols, panel_rows)
         pos = Vector2(EDITOR_SCREEN_RECT.w / 2 - size.x/2, EDITOR_SCREEN_RECT.h / 2 - size.y / 2)
         super().__init__(pos, size, "Choose Chain Enemny")
 
         self.on_selected = on_selected
 
-        btn = gui.ButtonGraphic(editor_assets.sprites["icon T8"], "T8", self.grid_pos(0,0), self.grid_size(6, 2))
-        if current_value == "T8":
-            btn.toggled = True
-        btn.on_button_1.append(lambda btn: self.on_btn("T8"))
-        self.em.add(btn)
+        #Find Enemies
+        # import sys
 
-        btn = gui.ButtonGraphic(editor_assets.sprites["icon CX5B"], "CX5B", self.grid_pos(0,2), self.grid_size(6, 2))
-        if current_value == "CX5B":
-            btn.toggled = True
-        btn.on_button_1.append(lambda btn: self.on_btn("CX5B"))
-        self.em.add(btn)
+        enemy_types = [
+            # [module, "class name beings with", "icon name"]
+            [CX5B, "EnemyCX5B", "icon CX5B"],
+            [T8, "EnemyT8", "icon T8"],
+            [HX7, "EnemyHX7", "icon HX7"],
+            [D2, "EnemyD2", "icon D2"],
+            [BT1, "EnemyBT1", "icon BT1"],
+        ]
+        
+        for c, line in enumerate(enemy_types):
+            mod, starts_with, icon_name = line
+            classnames = []
+            
+            for item in dir(mod):
+                if item.startswith(starts_with):
+                    classnames.append(item)
+            
+            for i, name in enumerate(classnames):
+                btn = gui.ButtonGraphic(editor_assets.sprites[icon_name], name[5:], self.grid_pos((c*6), (i*2)), self.grid_size(6, 2))
+                if current_value == name:
+                    btn.toggled = True
+                btn.on_button_1.append(lambda btn, name=name: self.on_btn(name))
+                self.em.add(btn)
 
-        btn = gui.ButtonGraphic(editor_assets.sprites["icon HX7"], "HX7", self.grid_pos(0,4), self.grid_size(6, 2))
-        if current_value == "HX7":
-            btn.toggled = True
-        btn.on_button_1.append(lambda btn: self.on_btn("HX7"))
-        self.em.add(btn)
-
-        btn = gui.ButtonGraphic(editor_assets.sprites["icon D2"], "D2", self.grid_pos(0,6), self.grid_size(6, 2))
-        if current_value == "D2":
-            btn.toggled = True
-        btn.on_button_1.append(lambda btn: self.on_btn("D2"))
-        self.em.add(btn)
-
-        btn = gui.ButtonGraphic(editor_assets.sprites["icon BT1"], "BT1", self.grid_pos(0,8), self.grid_size(6, 2))
-        if current_value == "BT1":
-            btn.toggled = True
-        btn.on_button_1.append(lambda btn: self.on_btn("BT1"))
-        self.em.add(btn)
-
-
-        btn = gui.Button("None", self.grid_pos(0,10), self.grid_size(6, 2))
+        btn = gui.Button("None", self.grid_pos(5*6,0), self.grid_size(6, 2))
         if current_value == None:
             btn.toggled = True
         btn.on_button_1.append(lambda btn: self.on_btn(None))
@@ -107,9 +106,10 @@ class GUILevelChainDetails(GUIGroup):
         self.sld_count.on_value_changed.append(self.on_sld_count)
         self.em.add(self.sld_count)
 
-        self.txt_spacing = gui.TextBoxFloat(1000.0, self.grid_pos(start_col+6, 3), self.grid_size(6, 1), label="Spacing: ")
-        self.txt_spacing.on_value_changed.append(self.on_txt_spacing)
-        self.em.add(self.txt_spacing)
+        self.sld_spacing = gui.SlideValueInt(0, 5000, self.grid_pos(start_col+6, 3), self.grid_size(6, 1), label="Spacing: ")
+        self.sld_spacing.on_value_changing.append(self.on_sld_spacing)
+        self.sld_spacing.on_value_changed.append(self.on_sld_spacing)
+        self.em.add(self.sld_spacing)
 
         self.btn_path = gui.Button("Path: ", self.grid_pos(start_col+6, 4), self.grid_size())
         self.btn_path.on_button_1.append(self.on_btn_path)
@@ -121,25 +121,31 @@ class GUILevelChainDetails(GUIGroup):
         self.rbr_move.on_value_changed.append(self.on_rbr_finished)
         self.em.add(self.rbr_move)
 
-        self.btn_chain_library = gui.Button("Library", self.grid_pos(start_col+14+6, 4), self.grid_size(4, 1))
+        self.btn_gun_select = gui.Button("None", self.grid_pos(start_col+14, 4), self.grid_size(6, 1))
+        self.btn_gun_select.on_button_1.append(self.on_btn_gun_select)
+        self.em.add(self.btn_gun_select)
+
+        self.btn_chain_library = gui.Button("Chain Library", self.grid_pos(start_col+14+6, 4), self.grid_size(4, 1))
         self.btn_chain_library.on_button_1.append(self.on_btn_chain_library)
         self.em.add(self.btn_chain_library)
 
-        self.lbl_guns = gui.Label("Guns:", self.grid_pos(start_col+12, 0), self.grid_size(2, 1))
+        self.lbl_coins = gui.Label("Coins:", self.grid_pos(start_col+12, 0), self.grid_size(2, 1))
         self.lbl_upgrades = gui.Label("Upgrades:", self.grid_pos(start_col+12, 1), self.grid_size(2, 1))
         self.lbl_hearts = gui.Label("Hearts:", self.grid_pos(start_col+12, 2), self.grid_size(2, 1))
-        self.lbl_coins = gui.Label("Coins:", self.grid_pos(start_col+12, 3), self.grid_size(2, 1))
+        self.lbl_guns = gui.Label("Guns:", self.grid_pos(start_col+12, 3), self.grid_size(2, 1))
+        self.lbl_gun = gui.Label("Gun:", self.grid_pos(start_col+12, 4), self.grid_size(2, 1))
         self.em.add(self.lbl_guns)
         self.em.add(self.lbl_upgrades)
         self.em.add(self.lbl_hearts)
         self.em.add(self.lbl_coins)
+        self.em.add(self.lbl_gun)
 
         self.btns_gun = []
         self.btns_upgrade = []
         self.btns_heart = []
         self.btns_coin = []
         for i in range(10):
-            btn_gun = gui.Button(str(i), self.grid_pos(start_col+14+i, 0), self.grid_size(1,1))
+            btn_gun = gui.Button(str(i), self.grid_pos(start_col+14+i, 3), self.grid_size(1,1))
             btn_gun.align = "center"
             btn_gun.on_button_1.append(lambda btn, index=i: self.on_btn_gun(index))
             self.em.add(btn_gun)
@@ -157,7 +163,7 @@ class GUILevelChainDetails(GUIGroup):
             self.em.add(btn_heart)
             self.btns_heart.append(btn_heart)
 
-            btn_coin = gui.Button(str(i), self.grid_pos(start_col+14+i, 3), self.grid_size(1,1))
+            btn_coin = gui.Button(str(i), self.grid_pos(start_col+14+i, 0), self.grid_size(1,1))
             btn_coin.align = "center"
             btn_coin.on_button_1.append(lambda btn, index=i: self.on_btn_coin(index))
             self.em.add(btn_coin)
@@ -170,17 +176,21 @@ class GUILevelChainDetails(GUIGroup):
             self.btn_chain_enemy, 
             self.btn_move_time_to_cursor,
             self.btn_undo_time_move,
-            self.txt_spacing,
+            self.sld_spacing,
             self.sld_count,
             self.btn_path,
             self.rbr_move,
             self.btn_chain_library, 
+            self.btn_gun_select,
         ]
 
         # self.no_chain_selected()
         self.hide_chain_properities()
 
         self.rbr_time_value = None
+
+    def on_btn_gun_select(self, btn):
+        current_scene.gui_level_gun_library.show()
 
     def on_btn_chain_library(self, btn):
         current_scene.gui_level_chain_library.show()
@@ -196,8 +206,8 @@ class GUILevelChainDetails(GUIGroup):
     def on_rbr_start(self, rbr):
         self.rbr_time_value = self.txt_chain_time.value
 
-    def on_txt_spacing(self, txt):
-        self.selected_chain.spacing = txt.value
+    def on_sld_spacing(self, sld):
+        self.selected_chain.spacing = sld.value
         self.update()
 
     def on_btn_path(self, btn):
@@ -205,8 +215,12 @@ class GUILevelChainDetails(GUIGroup):
             self.selected_chain.path_index = path_index
             panel.close()
             self.em.delete(panel)
+            for chain in current_level.level_entities_by_type[LevelEntityType.ENEMY_CHAIN]:
+                chain.path.set_new_path(chain.path_index)            
             self.update()
         def on_cancel(panel):
+            for chain in current_level.level_entities_by_type[LevelEntityType.ENEMY_CHAIN]:
+                chain.path.set_new_path(chain.path_index)            
             self.em.delete(panel)
         panel = SelectPathPanel(on_select_path=on_select_path)
         panel.on_cancel.append(on_cancel)
@@ -276,7 +290,9 @@ class GUILevelChainDetails(GUIGroup):
         self.txt_chain_name.text = self.selected_chain.name 
         self.txt_chain_time.text = self.selected_chain.time
         self.sld_count.value = self.selected_chain.count
-        self.txt_spacing.text = self.selected_chain.spacing
+        # self.sld_spacing.text = self.selected_chain.spacing
+        self.sld_spacing.value = int(self.selected_chain.spacing)
+        self.btn_gun_select.text = self.selected_chain.gun[3:] if self.selected_chain.gun != None else "None"
         self.btn_path.text = "Path: {}".format(self.selected_chain.path_index)
         if len(self.selected_chain.previous_times) > 0:
             self.btn_undo_time_move.disabled = False
@@ -286,10 +302,22 @@ class GUILevelChainDetails(GUIGroup):
             self.btn_chain_enemy.align="center"
             self.btn_chain_enemy.text = "Select Enemy"
             self.btn_chain_enemy.image = None
-        if self.selected_chain.enemy in ["T8", "CX5B", "HX7", "D2", "BT1"]:
+        else:
             self.btn_chain_enemy.align="left"
-            self.btn_chain_enemy.text = self.selected_chain.enemy
-            self.btn_chain_enemy.image = editor_assets.sprites["icon {}".format(self.selected_chain.enemy)]
+            self.btn_chain_enemy.text = self.selected_chain.enemy[5:]
+            if "CX5B" in self.selected_chain.enemy:
+                icon_name = "icon CX5B"
+            elif "T8" in self.selected_chain.enemy:
+                icon_name = "icon T8"
+            elif "HX7" in self.selected_chain.enemy:
+                icon_name = "icon HX7"
+            elif "D2" in self.selected_chain.enemy:
+                icon_name = "icon D2"
+            elif "BT1" in self.selected_chain.enemy:
+                icon_name = "icon BT1"
+            else:
+                icon_name = None
+            self.btn_chain_enemy.image = editor_assets.sprites[icon_name]
 
         for i, e in enumerate(self.btns_gun):
             e.disabled = False if i < self.selected_chain.count else True 
@@ -357,6 +385,7 @@ class GUILevelChainDetails(GUIGroup):
         self.lbl_guns.enabled = value
         self.lbl_hearts.enabled = value 
         self.lbl_upgrades.enabled = value 
+        self.lbl_gun.enabled = value
 
     def draw(self, elapsed, surface):
         grey = (80, 80, 80)

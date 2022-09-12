@@ -122,7 +122,6 @@ class Panel(Entity):
         for entity in self.em.entities:
             entity.gui_layer = level 
 
-
     def _cancel_button(self, btn):
         for cb in self.on_cancel:
             cb(self)
@@ -151,7 +150,8 @@ class Panel(Entity):
         self.set_gui_level(current_scene.gui_layer)
 
     def draw(self, elapsed, surface):
-        surface.blit(self.mask, (0,0))
+        if self.mask:
+            surface.blit(self.mask, (0,0))
         super().draw(elapsed, surface)
         self.em.draw(elapsed, surface, EntityType.GUI)
 
@@ -253,8 +253,9 @@ class GuiEntity(Entity):
 
     @disabled.setter
     def disabled(self, value):
-        self._disabled = value
-        self.render()
+        if self._disabled != value:
+            self._disabled = value
+            self.render()
 
     @property
     def rect(self):
@@ -685,8 +686,9 @@ class TextBox(GuiEntity):
 
     @text.setter
     def text(self, value):
-        self.value = value
-        self.render()
+        if self.value != value:
+            self.value = value
+            self.render()
 
     @property
     def label(self):
@@ -694,8 +696,9 @@ class TextBox(GuiEntity):
 
     @label.setter
     def label(self, value):
-        self._label = value
-        self.render()
+        if self._label != value:
+            self._label = value
+            self.render()
 
     def validate_text(self, text):
         return True

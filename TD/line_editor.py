@@ -497,7 +497,13 @@ class LineEditor:
                 if len(waypoints) > 1:
                     pygame.draw.lines(self.surface, color, False, waypoints)
                 for i in range(len(waypoints)):
-                    pygame.draw.circle(self.surface, color, waypoints[i], 3)
+                    if i == 0:
+                        x = waypoints[0][0] -4
+                        y = waypoints[0][1] -4
+                        r = pygame.Rect(x, y, 8, 8)
+                        pygame.draw.rect(self.surface, color, r,0)
+                    else:
+                        pygame.draw.circle(self.surface, color, waypoints[i], 3)
 
         for i, rect in enumerate(self.edit_rects):
             if i == self.edit_index:

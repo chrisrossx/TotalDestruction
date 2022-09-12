@@ -1,3 +1,4 @@
+import random 
 from pygame import Vector2
 
 from TD.enemies.enemy import EnemyPathFollower
@@ -8,6 +9,7 @@ class EnemyHX7(EnemyPathFollower):
     def __init__(self, path_index):
         super().__init__(path_index)
         self.frames = asset_manager.sprites["HX7"]
+        self.frame_index = random.randrange(0, len(self.frames))
         self.frame_duration = 30    
         self.velocity = 0.15
         #TODO
