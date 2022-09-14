@@ -101,9 +101,13 @@ class GUILevelSizeTimeCursor(GUIGroup):
         self.btn_cursor_to_selected.on_button_1.append(self.on_btn_cursor_to_selected)
         self.em.add(self.btn_cursor_to_selected)
 
-        self.btn_insert_time = gui.Button("Insert Time at Selected", self.grid_pos(start_col+6, 2), self.grid_size(6,1))
+        self.btn_insert_time = gui.Button("I", self.grid_pos(start_col+6+5, 2), self.grid_size(1,1), "center")
         self.btn_insert_time.on_button_1.append(self.on_btn_insert_time)
         self.em.add(self.btn_insert_time)
+
+        self.sld_insert_time = gui.RubberBand(self.grid_pos(start_col+6, 2), self.grid_size(5, 1), "Adjust Time at Cursor")
+        self.sld_insert_time.on_value_changing.append(self.on_sld_insert_time)
+        self.em.add(self.sld_insert_time)
 
 
         self.time_slider = gui.TimelineSlider(
@@ -168,6 +172,32 @@ class GUILevelSizeTimeCursor(GUIGroup):
             current_scene.play_time = False 
             btn.toggled = False
 
+    def on_sld_insert_time(self, elapsed, value):
+        start_time = self.time_cursor
+        value = round(elapsed * 5 * value, 2)
+        print(value)
+        if value < 0:
+            current_level.delete_time(start_time, -value)
+
+            # markers = sorted(self.marker_time)
+            # for entity in current_level.level_entities:
+            #     if entity.time >= markers[0] and entity.time <= markers[1]:
+            #         current_level.delete(entity)
+            # current_level.delete_time(markers[0], markers[1] - markers[0])
+            # self.em.delete(panel)
+
+            # self.marker_time[1] = None 
+            # self.marker_time[0] = markers[0]
+            # current_scene.gui_level_size.update_after_duration_change()
+
+        if value > 0:
+            current_level.insert_time(start_time, value)
+        self.update_after_duration_change()
+        for i in range(2):
+            if current_scene.gui_level_marker.marker_time[i] and current_scene.gui_level_marker.marker_time[i] >= start_time:
+                current_scene.gui_level_marker.marker_time[i] += value
+        current_scene.gui_level_marker.update()
+
     def on_btn_insert_time(self, btn):
         def on_insert(panel, value):
             panel.close()
@@ -177,7 +207,7 @@ class GUILevelSizeTimeCursor(GUIGroup):
             self.update_after_duration_change()
             #Update Markers and Push out if in the gap
             for i in range(2):
-                if current_scene.gui_level_marker.marker_time[i] >= start_time:
+                if current_scene.gui_level_marker.marker_time[i] and current_scene.gui_level_marker.marker_time[i] >= start_time:
                     current_scene.gui_level_marker.marker_time[i] += value
             current_scene.gui_level_marker.update()
 
@@ -283,6 +313,12 @@ class GUILevelSizeTimeCursor(GUIGroup):
         self.time_cursor_position = value
         self.sld_level_cursor_position.value = value
         self.update_time_curosr_elements()
+
+    def update(self):
+        # self.set_time_cursor_position(0)
+        self.update_after_duration_change()
+        self.update_time_curosr_elements()
+        pass
 
     def draw_time_cursor(self, surface):
         d, yellow = 8, (255, 255, 0)

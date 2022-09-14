@@ -62,8 +62,15 @@ class DrawMode(PanelGUIGroup):
         if current_scene.gui_layer <= self.parent.line_window.gui_layer:
             if self.path_edit_mode == PathEditMode.DRAW:
                 if event.type == pygame.MOUSEBUTTONDOWN and self.parent.line_window.rect.collidepoint(event.pos):
-                    pos = event.pos - self.parent.line_window.pos - Vector2(100, 100)
+                    # pos = event.pos - self.parent.line_window.pos - Vector2(100, 100)
+                    pos = self.parent.line_window.cursor
                     self.add_point(pos)
             if self.path_edit_mode == PathEditMode.DRAW:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_BACKSPACE:
                     self.on_btn_delete_last_point(None)
+
+            if self.path_edit_mode == PathEditMode.DRAW:
+                if event.type == pygame.KEYDOWN and (event.key == pygame.K_RETURN):
+                    # self.on_btn_delete_last_point(None)
+                    self.parent.gui_groups["select_mode"].clear_mode()
+

@@ -666,7 +666,7 @@ class TextBox(GuiEntity):
         self.on_value_changed = []
         self._old_value = ""
         self._edit_text = ""
-        self.max_length = 42
+        self.max_length = 255
         self.editable = True
         self.render()
 
@@ -847,6 +847,12 @@ class TextBox(GuiEntity):
                     # Stop Editing
                     self.input_finished()
                     pass
+                elif event.key == pygame.K_HOME:
+                    self.cursor_index = 0
+                    self.render()
+                elif event.key == pygame.K_END:
+                    self.cursor_index = len(self._edit_text)
+                    self.render()
                 elif event.key == pygame.K_LEFT:
                     self.cursor_index -= 1
                     if self.cursor_index < 0:
@@ -1027,6 +1033,7 @@ class Button(GuiEntity):
         self.render()
 
         self.on_button_1 = []
+        self.on_ctrl_button_1 = []
 
     @property
     def align(self):
@@ -1112,12 +1119,23 @@ class Button(GuiEntity):
                 and self.rect.collidepoint(event.pos)
             ):
                 if not self.disabled:
-                    for cb in self.on_button_1:
-                        cb(self)
+                    if pygame.key.get_mods() & pygame.KMOD_CTRL:
+                        for cb in self.on_ctrl_button_1:
+                            cb(self)
+                    else:
+                        for cb in self.on_button_1:
+                            cb(self)
 
 class ButtonGraphic(Button):
     def __init__(self, image, text, pos, size, align="left"):
-        self._image = image 
+        if type(image) == list or type(image) == tuple:
+            self._image = image[0] 
+            self._image_hover = image[1]
+            self._image_disabled = image[2]
+        else:
+            self._image = image 
+            self._image_hover = image
+            self._image_disabled = image
         super().__init__(text, pos, size, align=align)
 
 
@@ -1175,8 +1193,16 @@ class ButtonGraphic(Button):
         
         lbl_x = image_rect.right + 5
 
-        if self._image:
-            self.surface.blit(self._image, image_rect)
+        if self._image != None:
+            if self.disabled:
+                self.surface.blit(self._image_disabled, image_rect)
+            elif self._hovered:
+                if self._toggled:
+                    self.surface.blit(self._image_disabled, image_rect)
+                else:
+                    self.surface.blit(self._image_hover, image_rect)
+            else:   
+                self.surface.blit(self._image, image_rect)
         pygame.draw.rect(self.surface, c_brd, self.get_rect(), 1, br)
         self.surface.blit(lbl, (lbl_x, lbl_y))
 
@@ -1187,6 +1213,8 @@ class ButtonGraphic(Button):
     @image.setter
     def image(self, value):
         self._image = value 
+        self._image_hover = value 
+        self._image_disabled = value
         self.render()
 
 class ButtonTimeCursor(Button):
@@ -1417,11 +1445,13 @@ class TimelineSlider(GuiEntity):
         super().draw(elapsed, surface)
         surface.blit(self.handle, self.handle_rect)
 
+
 class ShowButton(ButtonGraphic):
     def __init__(self, pos, size, align="left"):
         text = ""
         image = editor_assets.sprites["icon show white"]
         super().__init__(image, text, pos, size, align)
+        self._image_disabled = editor_assets.sprites["icon show black"]
 
     @property
     def toggled(self):

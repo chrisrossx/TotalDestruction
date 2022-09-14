@@ -1,9 +1,9 @@
 from pygame import Vector2
-
 from TD.editor import gui
 from TD.editor.level_scene.level_paths.select_mode import PathEditMode 
 from TD.paths import path_data
 from .gui_group import PanelGUIGroup
+from TD.editor.editorassets import editor_assets
 
 class XYGrid(PanelGUIGroup):
     def __init__(self, parent):
@@ -31,7 +31,8 @@ class XYGrid(PanelGUIGroup):
         for row in range(self.row_count):
             point_txt = gui.TextBox("1000, 1000", self.grid_pos(start_col, start_row + 1 + row), self.grid_size(4, 1), "{}: ".format(row))
             point_txt.on_value_changed.append(lambda txt, index=row: self.on_txt_point(txt, index))
-            btn_delete = gui.Button("X", self.grid_pos(start_col +5, start_row + 1 + row), self.grid_size(1, 1), align="center")
+            btn_delete = gui.ButtonGraphic(editor_assets.sprites["btn icon trash"], "", self.grid_pos(start_col +5, start_row + 1 + row), self.grid_size(1, 1), align="center")
+            # btn_delete = gui.Button("X", self.grid_pos(start_col +5, start_row + 1 + row), self.grid_size(1, 1), align="center")
             btn_delete.on_button_1.append(lambda btn, index=row: self.on_btn_delete(index))
             btn_select = gui.Button("S", self.grid_pos(start_col +4, start_row + 1 + row), self.grid_size(1, 1), align="center")
             btn_select.on_button_1.append(lambda btn, index=row: self.on_btn_select(index))

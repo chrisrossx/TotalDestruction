@@ -6,7 +6,7 @@ import pygame
 from TD import editor
 from TD.config import SKY_VELOCITY, SCREEN_RECT
 from TD.editor.config import EDITOR_SCREEN_RECT, EDITOR_SCREEN_SIZE
-
+from TD.paths import path_data
 from TD.editor.scene import Scene, GUIGroup
 from TD.enemies import BT1, CX5B, D2, HX7, T8
 from TD.entity import EntityType
@@ -224,6 +224,8 @@ class GUILevelChainDetails(GUIGroup):
             self.em.delete(panel)
         panel = SelectPathPanel(on_select_path=on_select_path)
         panel.on_cancel.append(on_cancel)
+        self.parent.level.save_backup("path_editor_open")
+        path_data.save_backup("open_editor")
         panel.show()
         self.em.add(panel)
 

@@ -3,7 +3,7 @@
   "chains": [
     {
       "name": "",
-      "time": 4860.69,
+      "time": 5120.0,
       "count": 1,
       "spacing": 1234.5,
       "enemy": "EnemyD2",
@@ -55,17 +55,5 @@
     }
   ],
   "boss": [],
-  "controls": [
-    {
-      "name": "",
-      "time": -1.0,
-      "control_type": 0,
-      "arguments": [
-        "level 001",
-        "",
-        "",
-        ""
-      ]
-    }
-  ]
+  "controls": []
 }

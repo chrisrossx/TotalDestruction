@@ -1,7 +1,8 @@
 import json
 import math
+from pathlib import Path 
+import datetime 
 
-import blinker
 import pygame
 
 from TD.config import PATHS_FILENAME
@@ -80,7 +81,7 @@ class PathData:
 # ]
 
     def __init__(self):
-        self._file = PATHS_FILENAME
+        self._file = Path("TD/levels") / PATHS_FILENAME
         self._items = []
         for i in range(256):
             self._items.append(PathItem())
@@ -104,8 +105,26 @@ class PathData:
         for i, item in enumerate(self._items):
             item_data = item.get_data()
             data.append(item_data)
+        
         with open(self._file, "w") as f:
             json.dump(data, f, indent=2)
+
+    def save_backup(self, backup_type = ""):
+        #compile to json data
+        data = []
+        for i, item in enumerate(self._items):
+            item_data = item.get_data()
+            data.append(item_data)
+        
+        step = datetime.datetime.now().strftime(".%Y%m%d.%H%M%S")
+        if backup_type != "":
+            step = step + ".{}".format(backup_type)        
+        filename = self._file.parent / "backups" / Path(self._file.stem + step + self._file.suffix)
+        print("Save Pahs to Backup Filename:", filename)
+
+        with open(filename, "w") as f:
+            json.dump(data, f, indent=2)
+        
 
     def load(self):
         if not self._file.exists():

@@ -91,6 +91,7 @@ class SelectPathPanel(gui.Panel):
         self.update()
 
     def on_btn_close_no_save(self, btn):
+        path_data.save_backup("close_without_save")
         self._cancel_button(btn)
 
     def show(self):
@@ -118,6 +119,7 @@ class SelectPathPanel(gui.Panel):
             self.on_select_path(path_name)
 
     def on_btn_reload_paths(self, btn):
+        path_data.save_backup("before_reload")
         path_data.load()
         self.update()
 

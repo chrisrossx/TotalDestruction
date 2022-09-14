@@ -3,6 +3,7 @@ import os
 import sys
 from pathlib import Path 
 import traceback
+import math 
 
 from pygame import Vector2
 import pygame
@@ -16,9 +17,141 @@ from .sky import Sky
 from TD.editor import gui
 from TD.editor.config import EDITOR_SCREEN_SIZE
 from TD.assetmanager import asset_manager
-from TD.editor.globals import current_level, current_scene
+from TD.editor.globals import current_level, current_scene, current_app
 from TD.paths import path_data
 from TD.levels.data import LevelEntityType
+
+
+
+class LoadPanel(gui.Panel):
+    def __init__(self):
+        panel_rows = 18
+        panel_cols = 36
+        size = self.get_panel_size_by_grid(panel_cols, panel_rows)
+        pos = Vector2(EDITOR_SCREEN_RECT.w / 2 - size.x/2, EDITOR_SCREEN_RECT.h / 2 - size.y / 2)
+        super().__init__(pos, size, "Load File")
+
+        self.file_offset = 0
+        self.current_path = Path("TD/levels/").resolve()
+
+        self.txt_path = gui.TextBox("", self.grid_pos(0,0), self.grid_size(15, 1), label="Path: ")
+        self.txt_path.editable = False 
+        self.em.add(self.txt_path)
+
+        self.btn_refresh = gui.Button("Refresh", self.grid_pos(15, 0), self.grid_size(3, 1))
+        self.btn_refresh.on_button_1.append(lambda btn: self.update())
+        self.em.add(self.btn_refresh)
+
+        self.btn_chain_pgup = gui.Button("PgUp", self.grid_pos(18, 0), self.grid_size(3, 1), "center")
+        self.btn_chain_pgup.on_button_1.append(self.on_btn_pgup)
+        self.em.add(self.btn_chain_pgup)
+
+        self.btn_chain_pgdn = gui.Button("PgDn", self.grid_pos(21, 0), self.grid_size(3, 1), "center")
+        self.btn_chain_pgdn.on_button_1.append(self.on_btn_pgdn)
+        self.em.add(self.btn_chain_pgdn)
+
+        self.sld_page = gui.SlideValueInt(0,255, self.grid_pos(24, 0), self.grid_size(12, 1))
+        self.sld_page.on_value_changing.append(self.on_sld_changing)
+        self.em.add(self.sld_page)
+
+        self.file_btns = []
+                
+        self.rows = 17
+        for col in range(3):
+            for row in range(self.rows):
+                btn = gui.Button("File {}".format(row + (col*self.rows)), self.grid_pos(col * 12, row + 1), self.grid_size(12, 1))
+                btn.on_button_1.append(lambda btn, index=(row + (col*self.rows)): self.on_file_btn(index))
+                self.em.add(btn)
+                self.file_btns.append(btn)
+
+        # self.filenames = [p for p in base_path.iterdir() if p.suffix == ".json"]
+
+        self.folders = ["004", "003", "002", "001", "backups"]
+
+        self.update()
+
+    def on_event(self, event, elapsed):
+        super().on_event(event, elapsed)
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 5:
+            self.on_btn_pgdn(None)
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 4:
+            self.on_btn_pgup(None)
+            print(event)
+
+    def on_sld_changing(self, sld):
+        self.file_offset = sld.value * (self.rows * 3)
+        self.update()
+
+    @property
+    def filenames(self):
+        if self.current_path.is_dir():
+            filenames = [p for p in self.current_path.iterdir() if p.suffix == ".json"]
+        else:
+            filenames = []
+        if self.current_path == Path("TD/levels").resolve():
+            for f in self.folders:
+                filenames.insert(0, "[{}]".format(f))
+        else:
+            filenames.insert(0, "[..]")
+        return filenames
+
+    def on_btn_pgup(self, btn):
+        if self.file_offset > 0:
+            self.file_offset -= self.rows * 3
+            self.sld_page.value = self.file_offset / (self.rows * 3)
+
+            self.update()
+
+    def on_btn_pgdn(self, btn):
+        files = self.filenames
+        count = len(files)
+        last = (self.rows * 3) + (self.file_offset)
+
+        if count > last:
+            self.file_offset += self.rows * 3
+            self.sld_page.value = self.file_offset / (self.rows * 3)
+            self.update()
+
+
+    def on_file_btn(self, btn_index):
+        file_index = self.file_offset + btn_index
+        filename = self.filenames[file_index]
+        if filename == "[..]":
+            self.current_path = self.current_path.parent 
+            self.file_offset = 0
+            self.update()
+        elif type(filename) == str and filename.startswith("["):
+            folder = filename[1:-1]
+            self.current_path = self.current_path / folder
+            self.file_offset = 0
+            self.update()
+        else:
+            if self.current_path == Path("TD/levels").resolve():
+                name = filename.name
+            else:
+                name = "{}/{}".format(self.current_path.name, filename.name)
+            current_scene.load_level(name)
+            self.close()
+
+
+    def update(self):
+        self.txt_path.text = str(self.current_path.resolve())
+        files = self.filenames 
+        count = len(files)
+        max_pages = math.ceil(count / (self.rows * 3))
+        self.sld_page.max_value = max_pages - 1
+        for i, file_btn in enumerate(self.file_btns):
+            file_index = self.file_offset + i
+            if file_index < len(files):
+                filename = files[file_index]
+                if type(filename) == str:
+                    file_btn.text = filename
+                else:
+                    file_btn.text = filename.name 
+                file_btn.disabled = False
+            else:
+                file_btn.text = "" 
+                file_btn.disabled = True 
 
 
 class SavePanel(gui.Panel):
@@ -116,32 +249,52 @@ class SavePanel(gui.Panel):
 class GUILevelFile(GUIGroup):
     def __init__(self, parent):
         super().__init__(parent)
+        self.proc = None 
 
         self.txt_filename = gui.TextBox(current_level.filename, self.grid_pos(0,0), self.grid_size())
         self.txt_filename.editable = False
         self.txt_filename.on_value_changed.append(self.on_txt_filename)
         self.em.add(self.txt_filename)
         
-        self.btn_save_file = gui.Button("Save", self.grid_pos(0,1), self.grid_size(3, 1))
+        self.btn_save_file = gui.Button("Save", self.grid_pos(0,1), self.grid_size(2, 1))
         self.btn_save_file.on_button_1.append(self.on_btn_save)
+        self.btn_save_file.on_ctrl_button_1.append(self.on_ctrl_btn_save)
         self.em.add(self.btn_save_file)
     
-        self.btn_play_start = gui.Button("Play Start", self.grid_pos(3, 1), self.grid_size(3, 1))
+        self.btn_backup_file = gui.Button("B", self.grid_pos(2,1), self.grid_size(1, 1), "center")
+        self.btn_backup_file.on_button_1.append(self.on_btn_backup)
+        self.em.add(self.btn_backup_file)
+    
+        self.btn_play_start = gui.Button("Play Start F5", self.grid_pos(3, 1), self.grid_size(3, 1))
         self.btn_play_start.on_button_1.append(self.on_btn_play_start)
         self.em.add(self.btn_play_start)
 
-        self.btn_play_at_cursor = gui.Button("Play @win", self.grid_pos(3, 2), self.grid_size(3, 1))
+        self.btn_play_at_cursor = gui.Button("Play @win F6", self.grid_pos(3, 2), self.grid_size(3, 1))
         self.btn_play_at_cursor.on_button_1.append(self.on_btn_play_at_cursor)
         self.em.add(self.btn_play_at_cursor)
 
-        self.proc = None 
 
-        self.btn_reload_paths = gui.Button("Reload Code", self.grid_pos(0,2), self.grid_size(3, 1))
+        self.btn_reload_paths = gui.Button("Reload Code", self.grid_pos(0,4), self.grid_size(3, 1))
         self.btn_reload_paths.on_button_1.append(self.on_btn_reload_paths)
         self.em.add(self.btn_reload_paths)
-       
+
+        self.btn_load_file = gui.Button("Load File", self.grid_pos(0,2), self.grid_size(3, 1))
+        self.btn_load_file.on_button_1.append(self.on_btn_load)
+        self.em.add(self.btn_load_file)
+
+        self.btn_new_file = gui.Button("New File", self.grid_pos(0,3), self.grid_size(3, 1))
+        self.btn_new_file.on_button_1.append(self.on_btn_new)
+        self.em.add(self.btn_new_file)
+
+    def on_btn_new(self, btn):
+        def on_confirm(self, panel):
+            current_scene.load_level(None, no_backup=True)
+        panel = gui.ConfirmPanel("Create New File?", on_confirm)
+        self.em.add(panel)
+        panel.show()
 
     def on_btn_reload_paths(self, btn):
+        self.parent.level.save_backup("reload_code")
         import importlib 
 
         def reload_enemies():
@@ -204,6 +357,7 @@ class GUILevelFile(GUIGroup):
         self.txt_filename.text = current_level.filename
 
     def _start_level(self, start_time):
+        self.parent.level.save_backup("start_level")
         if self.proc:
             if self.proc.poll() == None:
                 self.proc.kill()
@@ -225,14 +379,22 @@ class GUILevelFile(GUIGroup):
     def on_txt_filename(self, txt):
         current_level.filename = txt.text
 
-    def on_btn_save(self, btn):
-        def on_cancel(panel):
-            self.em.delete(panel)
+    def on_btn_backup(self, btn):
+        self.parent.level.save_backup("backup")
 
+    def on_btn_save(self, btn):
         panel = SavePanel()
         self.em.add(panel)
         panel.show()
-        # current_level.save()
+
+    def on_ctrl_btn_save(self, btn):
+        current_level.save()
+        current_scene.gui_level_file.update()
+
+    def on_btn_load(self, btn):
+        panel = LoadPanel()
+        self.em.add(panel)
+        panel.show()
 
     def draw(self, elapsed, surface):
         grey = (80, 80, 80)

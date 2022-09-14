@@ -128,6 +128,20 @@ class GUILevelControlDetails(GUIGroup):
                 panel.on_choice.append(on_choice)
                 self.em.add(panel)
                 panel.show()
+        if self.selected_control.control_type == LevelEntityControlType.MUSIC:
+            if index == 0:
+                def on_choice(key, value):
+                    self.selected_control.arguments[0] = value
+                    self.update()
+                
+                items = {
+                }
+                for k in asset_manager.music.keys():
+                    items[k] = k
+                panel = gui.ChooseListPanel("Music:", items, self.selected_control.arguments[1])
+                panel.on_choice.append(on_choice)
+                self.em.add(panel)
+                panel.show()
 
 
         self.update()
@@ -209,8 +223,8 @@ class GUILevelControlDetails(GUIGroup):
             btns = ["Character", "Dialog", None, None]
             txts = [None, None, None, None]
         elif  self.selected_control.control_type == LevelEntityControlType.MUSIC:
-            btns = [None, None, None, None]
-            txts = ["Music Key: ", None, None, None]
+            btns = ["Music Key", None, None, None]
+            txts = [None, None, None, None]
         else:
             txts = [None, None, None, None]
             btns = [None, None, None, None]

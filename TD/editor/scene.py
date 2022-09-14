@@ -9,6 +9,7 @@ from TD.editor.gui import grid_pos, grid_size
 
 class Scene:
     def __init__(self):
+
         self.em = EntityManager()
         self.surface = pygame.Surface(EDITOR_SCREEN_SIZE)
         self.active_text_box = None

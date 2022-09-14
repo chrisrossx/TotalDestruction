@@ -2,7 +2,7 @@ from pathlib import Path
 import pygame 
 from pygame import Vector2
 
-from TD.assetmanager import asset_manager, load_sprite_from_file
+from TD.assetmanager import asset_manager, load_sprite_from_file, load_sprite_from_files
 
 def render_entity_badge(letter, color, color_active, color_selected, font_color=(0,0,0)):
     surfaces = []
@@ -37,6 +37,11 @@ class EditorAssets():
         self.sprites["badge chain"] = render_entity_badge("C", (127, 127, 127), (255, 60, 60), (60, 60, 255))
         self.sprites["icon show white"] = load_sprite_from_file(Path("TD/editor/assets/eye_white.png"))[0]
         self.sprites["icon show black"] = load_sprite_from_file(Path("TD/editor/assets/eye_black.png"))[0]
+        self.sprites["btn icon trash"] = load_sprite_from_files(Path("TD/editor/assets/Trash_Icon.png"), ["-1", "-2", "-3"])
+        self.sprites["btn icon copy"] = load_sprite_from_files(Path("TD/editor/assets/Copy_Icon.png"), ["-1", "-2", "-3"])
+        self.sprites["btn icon paste"] = load_sprite_from_files(Path("TD/editor/assets/Paste_Icon.png"), ["-1", "-2", "-3"])
+
+
 
 
 

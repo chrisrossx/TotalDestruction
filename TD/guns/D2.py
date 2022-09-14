@@ -1,5 +1,5 @@
 from .guns import AimingGun
-from TD.bullets import Bullet003
+from TD.bullets import Bullet003, Bullet004
 
 class GunD2Level1(AimingGun):
     def __init__(self):
@@ -9,13 +9,6 @@ class GunD2Level1(AimingGun):
 
     def bullet_factory(self, angle):
         #Generic spot copies from gun_point[0] always
-        b = Bullet003(self.parent.pos + self.parent.gun_points[0], angle)
-        b.velocity = .5
+        b = Bullet004(self.parent.pos + self.parent.gun_points[0], angle)
+        b.velocity = .45
         return b
-
-class GunD2Level2(AimingGun):
-    pass
-
-# class GunD2Level2BXXX(AimingGun):
-#     pass
-

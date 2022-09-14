@@ -12,7 +12,8 @@ from TD.editor.config import EDITOR_SCREEN_SIZE
 from TD.assetmanager import asset_manager
 from TD.levels.data import EnemyChain, Boss, Control, LevelEntityControlType
 from TD.editor.globals import current_level, current_scene
-
+from TD.editor.editorassets import editor_assets
+   
 
 class NewPanel(gui.Panel):
     def __init__(self, on_new):
@@ -116,19 +117,19 @@ class GUILevelNew(GUIGroup):
         super().__init__(parent)
 
         # -------------------------
-        self.btn_new = gui.Button("New Entity", self.grid_pos(0, 4), self.grid_size(3, 1))
+        self.btn_new = gui.Button("New Ent.", self.grid_pos(3, 4), self.grid_size(2, 1))
         self.btn_new.on_button_1.append(self.on_btn_new)
         self.em.add(self.btn_new)
 
-        self.btn_copy = gui.Button("Copy Entity", self.grid_pos(0, 3), self.grid_size(3, 1))
+        self.btn_copy = gui.ButtonGraphic(editor_assets.sprites["btn icon copy"], "Copy", self.grid_pos(3, 3), self.grid_size(2, 1), "center")
         self.btn_copy.on_button_1.append(self.on_btn_copy)
         self.em.add(self.btn_copy)
 
-        self.btn_paste = gui.Button("Paste Entity", self.grid_pos(3, 3), self.grid_size(3, 1))
+        self.btn_paste = gui.ButtonGraphic(editor_assets.sprites["btn icon paste"], "", self.grid_pos(5, 3), self.grid_size(1, 1), "center")
         self.btn_paste.on_button_1.append(self.on_btn_paste)
         self.em.add(self.btn_paste)
 
-        self.btn_delete = gui.Button("Delete Entity", self.grid_pos(3, 4), self.grid_size(3, 1))
+        self.btn_delete = gui.ButtonGraphic(editor_assets.sprites["btn icon trash"],"", self.grid_pos(5, 4), self.grid_size(1, 1), "center")
         self.btn_delete.on_button_1.append(self.on_btn_delete)
         self.em.add(self.btn_delete)
 
@@ -180,6 +181,13 @@ class GUILevelNew(GUIGroup):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_DELETE:
                 self.on_btn_delete(None)
         
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_c and event.mod & pygame.KMOD_CTRL:
+                self.on_btn_copy(None)
+        
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_v and event.mod & pygame.KMOD_CTRL:
+                self.on_btn_paste(None)
+
+
 
     def on_btn_new(self, btn):
         panel = NewPanel(self.on_new)

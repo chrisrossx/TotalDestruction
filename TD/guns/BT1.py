@@ -1,7 +1,7 @@
 from .guns import AimingGun
 from TD.bullets import Bullet004, Bullet005
 
-class GunBT1Level1(AimingGun):
+class GunBT1Level1Bullet004(AimingGun):
     def __init__(self):
         super().__init__()
         x = 500
@@ -16,7 +16,7 @@ class GunBT1Level1(AimingGun):
 from .guns import AimingGun
 from TD.bullets import Bullet003
 
-class GunBT1Level2(AimingGun):
+class GunBT1Level2Bullet005(AimingGun):
     def __init__(self):
         super().__init__()
         x = 500

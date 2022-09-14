@@ -52,7 +52,7 @@ class GenericGun():
         self.pattern_count = 0 # How many times has the pattern repeated so far
 
         self.pattern_repeat = -1 # Set by user, stop repeating pattern after this many times
-        # [0] = Initial, only ran once! Does not Fire
+        # [0] = Initial, only ran once! Does not Fire. If step [0] is negative then subtract from Step 1
         # [1-X] = Step through Pattern, Fire after step pause
         # at X: Go back to 1, Repeate for Pattern repeat counts
         # [1000, 500, 500, 500] Pause 1000 do nothing, Fire every 500ms
@@ -89,8 +89,12 @@ class GenericGun():
 
     def tick_pattern(self, elapsed):
         if self.enabled:
-            self.elapsed += elapsed 
+            self.elapsed += elapsed
             d = self.pattern_rate[self.step]
+            if self.step == 0 and d < 0:
+                self.step += 1
+                self.elapsed = -d
+                d = self.pattern_rate[self.step]
             if self.elapsed >= d:
                 self.elapsed = 0
                 # Dont Fire on First Step of Pattern

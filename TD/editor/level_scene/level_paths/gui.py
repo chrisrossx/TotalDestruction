@@ -92,6 +92,18 @@ class LineWindow(gui.GuiEntity):
     def draw(self, elapsed, surface):
         selected_color=(255,255,255)
         self.surface.fill((0,0,0))
+        
+        # if current_scene.hide_sky:
+        c = (80,60,60)
+        for y in range(100+150, 700, 150):
+            p0 = Vector2(100, y)
+            p1 = Vector2(1124, y)
+            pygame.draw.line(self.surface, c, p0, p1, 1)
+        for x in range(100+150, 1124, 150):
+            p0 = Vector2(x, 100)
+            p1 = Vector2(x, 700)
+            pygame.draw.line(self.surface, c, p0, p1, 1)
+        
         pygame.draw.rect(self.surface, (255,255,255), (100,100,1024,600), 1)
         for i in range(8):
             index = i + (self.page * 8)

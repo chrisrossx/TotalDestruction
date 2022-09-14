@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from enum import IntEnum
-import importlib 
+import datetime 
 
 from pygame import Vector2
 import pygame
@@ -598,15 +598,15 @@ class LevelData:
         if self.filename == "":
             filename = Path("No_Name.json")
         else:
-            filename = self.filename
+            filename = Path(self.filename)
 
-        path = self.base_path / "tmp" / filename
+        path = self.base_path / "tmp" / filename.name
         print("Save to Temporary Filename:", filename)
         data = self.get_save_data()
         with open(path, "w") as f:
             json.dump(data, f, indent=2)
 
-        return Path("tmp") / filename
+        return Path("tmp") / filename.name
 
     def save(self):
         if self.filename == "":
@@ -617,6 +617,23 @@ class LevelData:
 
         data = self.get_save_data()
 
+        with open(path, "w") as f:
+            json.dump(data, f, indent=2)
+
+    def save_backup(self, backup_type=""):
+        if self.filename == "":
+            filename = Path("No_Name.json")
+        else:
+            filename = Path(self.filename)
+
+        step = datetime.datetime.now().strftime(".%Y%m%d.%H%M%S")
+        if backup_type != "":
+            step = step + ".{}".format(backup_type)
+        filename = filename.parent / Path(filename.stem + step + filename.suffix)
+
+        path = self.base_path / "backups" / filename.name
+        print("Save Level to Backup Filename:", filename)
+        data = self.get_save_data()
         with open(path, "w") as f:
             json.dump(data, f, indent=2)
 
@@ -647,7 +664,8 @@ class LevelData:
         for entity_data in data["controls"]:
             e = Control()
             e.load(entity_data)
-            self.add(e)            
+            self.add(e)
+        
 
     def add(self, entity):
         if entity in self.level_entities:

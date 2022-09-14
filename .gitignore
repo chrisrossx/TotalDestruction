@@ -2,6 +2,7 @@
 launch.json
 .goproject.py
 TD/levels/tmp/
+TD/levels/backups/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

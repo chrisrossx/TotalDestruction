@@ -24,16 +24,19 @@ from .level_chain_library import GUILevelChainLibrary
 from .level_gun_library import GUILevelGunLibrary
 from TD.editor.globals import current_level
 from TD.levels.data import LevelData, LevelEntityType
+from TD.paths import path_data
 
 
 class SceneLevel(Scene):
     def __init__(self, filename):
         super().__init__()
-
+        self.on_load_filename = filename
         # self.level = load("level_001.json")  # Level Data
-        self.level = LevelData(filename)  # Level Data
+        self.level = LevelData(None)  # Level Data
         current_level.__wrapped__ = self.level 
         self.level.editor_mode()
+        self.save_backup_elapsed = 0
+        path_data.save_backup("on_load")
 
         if "td_editor_hide_sky" in os.environ and os.environ["td_editor_hide_sky"] == "True":
             self.hide_sky = True
@@ -71,7 +74,28 @@ class SceneLevel(Scene):
         self.gui_groups["level_gun_library"] = GUILevelGunLibrary(self)
 
 
-        self.select_level_entity(self.level.level_entities_by_type[LevelEntityType.ENEMY_CHAIN][0])
+    def on_start(self):
+        if self.on_load_filename:
+            self.load_level(self.on_load_filename, no_backup=True)
+
+        # if self.len()
+        # self.select_level_entity(self.level.level_entities_by_type[LevelEntityType.ENEMY_CHAIN][0])
+
+    def load_level(self, filename, no_backup=False):
+        self.time = 0
+        self.gui_level_size.set_time_slider_value(self.time)
+        self.select_level_entity(None)
+        if not no_backup:
+            self.level.save_backup("loading_other_file")
+        current_level.__wrapped__ = {}
+        del self.level
+        self.level = LevelData(filename)  # Level Data
+        current_level.__wrapped__ = self.level
+        self.level.save_backup("on_loaded")
+        self.level.editor_mode()
+        for g in self.gui_groups.values():
+            if hasattr(g, "update"):
+                g.update()
 
     def select_level_entity(self, entity):
         if self.selected_level_entity != None:
@@ -126,6 +150,9 @@ class SceneLevel(Scene):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
                 self.pressed_duration = 0
 
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                self.pressed_duration = 0
+
 
     @property
     def pixel_offset_with_time(self):
@@ -134,13 +161,6 @@ class SceneLevel(Scene):
     @property
     def time(self):
         return self._time
-
-    def __getattr__(self, name):
-        if name.startswith("gui_"):
-            name = name[4:]
-        if name in self.gui_groups:
-            return self.gui_groups[name]
-        raise AttributeError
 
     @time.setter
     def time(self, value):
@@ -151,6 +171,13 @@ class SceneLevel(Scene):
         value = round(value, 2)
         self._time = value
         self.gui_level_size.update_time_curosr_elements()
+
+    def __getattr__(self, name):
+        if name.startswith("gui_"):
+            name = name[4:]
+        if name in self.gui_groups:
+            return self.gui_groups[name]
+        raise AttributeError
 
     @property
     def max_editor_playable_time(self):
@@ -169,6 +196,13 @@ class SceneLevel(Scene):
         # end_time = self.time + (SCREEN_RECT.w / SKY_VELOCITY) * 1
         self.level.editor_tick(elapsed, start_time, end_time, self.pixel_offset_with_time)
 
+        # --------------------
+        # Save Backup
+        self.save_backup_elapsed += elapsed 
+        if self.save_backup_elapsed >= 5 * 60000:
+            self.save_backup_elapsed = 0 
+            self.level.save_backup("auto")
+
     def draw(self, elapsed):
         self.surface.fill((0, 0, 0))
 
@@ -178,8 +212,8 @@ class SceneLevel(Scene):
         pygame.draw.line(self.surface, grey, (0, 700), (EDITOR_SCREEN_SIZE.x, 700))
 
         pygame.draw.rect(self.surface, (255, 255, 255), self.window_rect, 1)
-        if not self.hide_sky:
-            self.sky.draw(elapsed, self.surface, self.time)
+        # if not self.hide_sky:
+        self.sky.draw(elapsed, self.surface, self.time)
         self.gui_level_chain.draw(elapsed, self.surface)
         self.gui_level_file.draw(elapsed, self.surface)
         self.gui_level_marker.draw(elapsed, self.surface)

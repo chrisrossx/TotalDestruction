@@ -9,7 +9,7 @@ from TD.config import SCREEN_SIZE
 from TD.editor.level_scene import SceneLevel
 
 # from TD.globals import current_app, current_scene
-from TD.editor.globals import current_app, current_scene, scene_level
+from TD.editor.globals import current_app, current_scene, scene_level, current_level
 from TD.editor.config import EDITOR_SCREEN_SIZE
 from TD.editor.editorassets import editor_assets
 
@@ -45,7 +45,6 @@ class App:
         self.frame_count_elapsed = 0
         self.frame_count_surface = asset_manager.fonts["xs"].render("---", True, (255,255,0))
 
-
     def exit(self):
         """
         Stop the main game loop
@@ -71,6 +70,17 @@ class App:
         self.scene.on_start()
 
     def run(self):
+        try:
+            self._run()
+        except Exception as e:
+            try:
+                current_level.save_backup("crashed_editor")
+            except:
+                print("Failed to save level backup")
+                
+            raise e
+
+    def _run(self):
 
         self._set_scene(SceneLevel(self.arg_filename))
         # self._set_scene(MainMenu())
@@ -93,6 +103,8 @@ class App:
             # Event Handling 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    if hasattr(self.scene, "level"):
+                        self.scene.level.save_backup("closed_editor")
                     self.running = False
                     break
                 self.scene.on_event(event, elapsed)
