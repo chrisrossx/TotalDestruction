@@ -291,7 +291,7 @@ class GUILevelFile(GUIGroup):
             current_scene.load_level(None, no_backup=True)
         panel = gui.ConfirmPanel("Create New File?", on_confirm)
         self.em.add(panel)
-        panel.show()
+        panel.show(     )
 
     def on_btn_reload_paths(self, btn):
         self.parent.level.save_backup("reload_code")
