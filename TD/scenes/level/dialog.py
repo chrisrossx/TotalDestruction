@@ -5,6 +5,7 @@ from TD.assetmanager import asset_manager
 from TD.config import SCREEN_RECT
 from TD.characters import MaiAnh, Christopher, Sawyer, Elle
 from TD.gui import GUILabel
+from TD.globals import current_app
 
 
 class EnemyDialog(Entity):
@@ -46,6 +47,7 @@ class EnemyDialog(Entity):
         else:
             self.line_2 = None
 
+        
 
     def tick_slidein(self, elapsed):
         slidein_duration = self.slide_duraiton
@@ -78,14 +80,13 @@ class EnemyDialog(Entity):
         if self.slideout_frame_elapsed >= slideout_frame_duration and self.frame_index < 7:
             self.slideout_frame_elapsed = 0
             self.frame_index += 1
-        
-            
 
     def tick_fadein(self, elapsed):
         fadein_duration = self.fade_duration
         d = self.step_elapsed / fadein_duration
         if d >= 1.0:
             d = 1.0
+            self.character.play_sound()
             self.next_step()
         if self.line_1:
             self.line_1.surface.set_alpha(d * 255)
@@ -112,7 +113,7 @@ class EnemyDialog(Entity):
         self.step_elapsed += elapsed
         
 
-        step_1_duration = 1000
+        step_2_duration = 1200
 
 
         if self.step == 0:
@@ -123,7 +124,7 @@ class EnemyDialog(Entity):
             self.tick_fadein(elapsed)
 
         if self.step == 2:
-            if self.step_elapsed >= step_1_duration:
+            if self.step_elapsed >= step_2_duration:
                 self.next_step()
 
         if self.step == 3:

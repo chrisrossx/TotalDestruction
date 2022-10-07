@@ -1,19 +1,18 @@
 {
   "protected": [
     2,
-    0
+    0,
+    1
   ],
   "chains": [
     {
-      "name": "Swoop Bravo",
-      "time": 34654.31,
+      "name": "Level 2",
+      "time": 5120.0,
       "count": 5,
-      "spacing": 866,
+      "spacing": 475,
       "enemy": "EnemyCX5B_SLOW",
       "guns": [],
-      "upgrades": [
-        2
-      ],
+      "upgrades": [],
       "hearts": [],
       "coins": [
         0,
@@ -27,35 +26,21 @@
         8,
         9
       ],
-      "path_index": "Swoop Alpha Bottom",
+      "path_index": "slant top 3",
       "gun": null
     },
     {
-      "name": "Blob 1",
-      "time": 28206.07,
-      "count": 5,
-      "spacing": 500.0,
-      "enemy": "HX7",
+      "name": "Level 2 T8",
+      "time": 30097.89,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8",
       "guns": [
-        0,
-        1,
-        2,
-        3,
-        4
+        0
       ],
-      "upgrades": [
-        0,
-        1,
-        2,
-        3,
-        4
-      ],
+      "upgrades": [],
       "hearts": [
-        0,
-        1,
-        2,
-        3,
-        4
+        0
       ],
       "coins": [
         0,
@@ -69,8 +54,8 @@
         8,
         9
       ],
-      "path_index": "T8 Delta",
-      "gun": null
+      "path_index": "straight 500",
+      "gun": "GunT8Level1"
     },
     {
       "name": "Blob 1",

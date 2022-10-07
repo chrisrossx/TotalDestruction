@@ -1,6 +1,6 @@
 {
-  "sounds_mute": false,
-  "music_mute": false,
+  "sounds_mute": true,
+  "music_mute": true,
   "slots": [
     {
       "name": "christopher",
@@ -10,27 +10,51 @@
           "finished": true,
           "medalHeart": true,
           "enemies": 1.0,
-          "coins": 1.0
+          "coins": 0.9763313609467456
         },
         "1": {
           "finished": true,
-          "medalHeart": true,
-          "enemies": 0.1935483870967742,
-          "coins": 1.0
+          "medalHeart": false,
+          "enemies": 0.9397590361445783,
+          "coins": 0.9185185185185185
+        },
+        "2": {
+          "finished": false,
+          "medalHeart": false,
+          "enemies": 0.0,
+          "coins": 0.0
+        },
+        "3": {
+          "finished": false,
+          "medalHeart": false,
+          "enemies": 0.14285714285714285,
+          "coins": 0
         }
       }
     },
     {
-      "name": "Pi",
+      "name": "samsung",
       "coins": 0,
       "level_state": {
         "0": {
           "finished": true,
           "medalHeart": true,
           "enemies": 1.0,
-          "coins": 1.0
+          "coins": 0.968421052631579
         },
         "1": {
+          "finished": false,
+          "medalHeart": false,
+          "enemies": 0.0,
+          "coins": 0
+        },
+        "2": {
+          "finished": false,
+          "medalHeart": false,
+          "enemies": 0.0,
+          "coins": 0.0
+        },
+        "3": {
           "finished": false,
           "medalHeart": false,
           "enemies": 0.0,
@@ -39,16 +63,28 @@
       }
     },
     {
-      "name": "aLPHABET",
+      "name": "mai-anh",
       "coins": 0,
       "level_state": {
         "0": {
           "finished": false,
           "medalHeart": false,
+          "enemies": 0.9741379310344828,
+          "coins": 0.9912280701754386
+        },
+        "1": {
+          "finished": false,
+          "medalHeart": false,
           "enemies": 0.0,
           "coins": 0.0
         },
-        "1": {
+        "2": {
+          "finished": false,
+          "medalHeart": false,
+          "enemies": 0.0,
+          "coins": 0.0
+        },
+        "3": {
           "finished": false,
           "medalHeart": false,
           "enemies": 0.0,

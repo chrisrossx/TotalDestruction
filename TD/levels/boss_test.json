@@ -1,0 +1,24 @@
+{
+  "total_time": 52698.61000000012,
+  "chains": [],
+  "boss": [
+    {
+      "name": "",
+      "time": 688.45,
+      "boss": "Boss 004"
+    }
+  ],
+  "controls": [
+    {
+      "name": "",
+      "time": 100.39,
+      "control_type": 2,
+      "arguments": [
+        "Christopher",
+        "TAUNT_1",
+        "",
+        ""
+      ]
+    }
+  ]
+}

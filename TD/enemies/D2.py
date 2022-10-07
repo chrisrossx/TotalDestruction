@@ -15,7 +15,7 @@ class EnemyD2(EnemyPathFollower):
         self.frame_duration = 30    
         self.velocity = 0.08
         self.sprite_offset = Vector2(-59, -32)
-        self.health = 5
+        self.health = 7
 
         self.add_hitbox((0, 0, 70, 32), Vector2(-35, -24))
         self.add_hitbox((0, 0, 40, 15), Vector2(-20, 10))

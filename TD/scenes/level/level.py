@@ -248,7 +248,7 @@ class Level(Scene):
     """
     """
 
-    def __init__(self, level, filename, debug_start):
+    def __init__(self, level, filename, debug_start=0):
         super().__init__()
 
         self.level = level

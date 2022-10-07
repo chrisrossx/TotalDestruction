@@ -1,0 +1,992 @@
+{
+  "total_time": 149778.30999999854,
+  "chains": [
+    {
+      "name": "",
+      "time": 5120.0,
+      "count": 5,
+      "spacing": 475,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        0
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "slant top 3",
+      "gun": null
+    },
+    {
+      "name": "",
+      "time": 6471.11,
+      "count": 5,
+      "spacing": 475,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        2
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "slant top 2",
+      "gun": null
+    },
+    {
+      "name": "Level 2",
+      "time": 14977.19,
+      "count": 5,
+      "spacing": 475,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        3
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "slant bottom 3",
+      "gun": null
+    },
+    {
+      "name": "Level 2",
+      "time": 16357.06,
+      "count": 5,
+      "spacing": 475,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        1
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "slant bottom 2",
+      "gun": null
+    },
+    {
+      "name": "",
+      "time": 22665.83,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 100",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 23267.58,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 300",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 23850.91,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 500",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 28912.81,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 100",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 29514.56,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 300",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 30097.89,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [
+        0
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 500",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 35390.85,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 100",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 35992.6,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [
+        0
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 300",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 36575.93,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 500",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "Level 2",
+      "time": 47076.64,
+      "count": 5,
+      "spacing": 475,
+      "enemy": "EnemyCX5B",
+      "guns": [],
+      "upgrades": [
+        2
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Right_Loop_1",
+      "gun": null
+    },
+    {
+      "name": "",
+      "time": 52200.26,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyBT1_Level_2_Wall",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [
+        0
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Top_Straight_40",
+      "gun": "GunBT1Level2Bullet005_Wall_Down"
+    },
+    {
+      "name": "Level 2",
+      "time": 60252.94,
+      "count": 5,
+      "spacing": 475,
+      "enemy": "EnemyCX5B",
+      "guns": [],
+      "upgrades": [
+        2
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Left_Loop_1",
+      "gun": null
+    },
+    {
+      "name": "",
+      "time": 65376.56,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyBT1_Level_2_Wall",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [
+        0
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Top_Straight_560",
+      "gun": "GunBT1Level2Bullet005_Wall_Up"
+    },
+    {
+      "name": "",
+      "time": 73338.2,
+      "count": 3,
+      "spacing": 1234.5,
+      "enemy": "EnemyHX7",
+      "guns": [
+        0,
+        1,
+        2
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "slant top 1",
+      "gun": "GunHX7Level1Missle001"
+    },
+    {
+      "name": "",
+      "time": 76963.8,
+      "count": 3,
+      "spacing": 1234.5,
+      "enemy": "EnemyHX7",
+      "guns": [
+        0,
+        1,
+        2
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "slant bottom 1",
+      "gun": "GunHX7Level1Missle001"
+    },
+    {
+      "name": "Level 2",
+      "time": 84673.55,
+      "count": 5,
+      "spacing": 475,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        1
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Top_Left_Swoop_1",
+      "gun": null
+    },
+    {
+      "name": "Level 2",
+      "time": 85786.23,
+      "count": 6,
+      "spacing": 475,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        2
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Top_Left_Swoop_2",
+      "gun": null
+    },
+    {
+      "name": "",
+      "time": 93117.21,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 100",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 93718.96,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 300",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 94302.29,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 500",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 99364.19,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 200",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 99965.94,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 400",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 105295.95,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 100",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 105897.7,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [
+        0
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 300",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "",
+      "time": 106655.46,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyT8_L2",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [
+        0
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 500",
+      "gun": "GunT8Level1"
+    },
+    {
+      "name": "Level 2",
+      "time": 112892.23,
+      "count": 5,
+      "spacing": 475,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        4
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Top_Right_Swoop_1",
+      "gun": null
+    },
+    {
+      "name": "Level 2",
+      "time": 114004.91,
+      "count": 6,
+      "spacing": 475,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        1
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Top_Right_Swoop_2",
+      "gun": null
+    },
+    {
+      "name": "",
+      "time": 123326.21,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyHX7",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [
+        0
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 200",
+      "gun": "GunHX7Level2Missle001"
+    },
+    {
+      "name": "",
+      "time": 123969.74,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyHX7",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 300",
+      "gun": "GunHX7Level2Missle001"
+    },
+    {
+      "name": "",
+      "time": 124720.53,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyHX7",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [
+        0
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 400",
+      "gun": "GunHX7Level2Missle001"
+    },
+    {
+      "name": "",
+      "time": 127982.68,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyBT1_Level_2_Wall",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Top_Straight_40",
+      "gun": "GunBT1Level2Bullet005_Wall_Down"
+    },
+    {
+      "name": "",
+      "time": 130337.68,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyBT1_Level_2_Wall",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Top_Straight_560",
+      "gun": "GunBT1Level2Bullet005_Wall_Up"
+    }
+  ],
+  "boss": [
+    {
+      "name": "",
+      "time": 144791.78,
+      "boss": "Boss 002"
+    }
+  ],
+  "controls": [
+    {
+      "name": "",
+      "time": -1.0,
+      "control_type": 0,
+      "arguments": [
+        "level 002",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "name": "",
+      "time": 2409.41,
+      "control_type": 2,
+      "arguments": [
+        "Sawyer",
+        "TAUNT_1",
+        "",
+        ""
+      ]
+    }
+  ]
+}

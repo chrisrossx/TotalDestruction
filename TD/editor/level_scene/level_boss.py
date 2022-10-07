@@ -34,6 +34,25 @@ class SelectBossPanel(gui.Panel):
         btn.on_button_1.append(lambda btn: self.on_btn("Boss 001"))
         self.em.add(btn)
 
+        btn = gui.ButtonGraphic(editor_assets.sprites["icon Boss 002"], "Boss 002", self.grid_pos(0,2), self.grid_size(6, 2))
+        if current_value == "Boss 002":
+            btn.toggled = True        
+        btn.on_button_1.append(lambda btn: self.on_btn("Boss 002"))
+        self.em.add(btn)
+
+        btn = gui.ButtonGraphic(editor_assets.sprites["icon Boss 003"], "Boss 003", self.grid_pos(0,4), self.grid_size(6, 2))
+        if current_value == "Boss 003":
+            btn.toggled = True        
+        btn.on_button_1.append(lambda btn: self.on_btn("Boss 003"))
+        self.em.add(btn)
+
+        btn = gui.ButtonGraphic(editor_assets.sprites["icon Boss 004"], "Boss 004", self.grid_pos(0,6), self.grid_size(6, 2))
+        if current_value == "Boss 004":
+            btn.toggled = True        
+        btn.on_button_1.append(lambda btn: self.on_btn("Boss 004"))
+        self.em.add(btn)
+
+
         # btn = gui.ButtonGraphic(editor_assets.sprites["icon CX5B"], "CX5B", self.grid_pos(0,2), self.grid_size(6, 2))
         # btn.on_button_1.append(lambda btn: self.on_btn("CX5B"))
         # self.em.add(btn)
@@ -117,7 +136,7 @@ class GUILevelBossDetails(GUIGroup):
         self.rbr_time_value = None
 
     def on_rbr_changing(self, elapsed, value):
-        self.selected_boss._time += elapsed * value * 4
+        self.selected_boss._time = round((self.selected_boss._time + (elapsed * value * 4)), 2)
         self.update()
 
     def on_rbr_finished(self, rbr):
@@ -153,7 +172,7 @@ class GUILevelBossDetails(GUIGroup):
             self.btn_select_boss.align="center"
             self.btn_select_boss.text = "Select Boss"
             self.btn_select_boss.image = None
-        if self.selected_boss.boss in ["Boss 001", ]:
+        if self.selected_boss.boss in ["Boss 001", "Boss 002", "Boss 003", "Boss 004"]:
             self.btn_select_boss.align="left"
             self.btn_select_boss.text = self.selected_boss.boss
             self.btn_select_boss.image = editor_assets.sprites["icon {}".format(self.selected_boss.boss)]

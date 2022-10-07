@@ -265,13 +265,17 @@ class GUILevelFile(GUIGroup):
         self.btn_backup_file.on_button_1.append(self.on_btn_backup)
         self.em.add(self.btn_backup_file)
     
-        self.btn_play_start = gui.Button("Play Start F5", self.grid_pos(3, 1), self.grid_size(3, 1))
+        self.btn_play_start = gui.Button("► Start", self.grid_pos(3, 1), self.grid_size(2, 1))
         self.btn_play_start.on_button_1.append(self.on_btn_play_start)
         self.em.add(self.btn_play_start)
 
-        self.btn_play_at_cursor = gui.Button("Play @win F6", self.grid_pos(3, 2), self.grid_size(3, 1))
-        self.btn_play_at_cursor.on_button_1.append(self.on_btn_play_at_cursor)
+        self.btn_play_at_cursor = gui.Button("► Win", self.grid_pos(3, 2), self.grid_size(2, 1))
+        self.btn_play_at_cursor.on_button_1.append(self.on_btn_play_at_win)
         self.em.add(self.btn_play_at_cursor)
+
+        self.btn_play_at_marker_1 = gui.Button("►\nMk1", self.grid_pos(5, 1), self.grid_size(1, 2), "center")
+        self.btn_play_at_marker_1.on_button_1.append(self.on_btn_play_at_marker)
+        self.em.add(self.btn_play_at_marker_1)
 
 
         self.btn_reload_paths = gui.Button("Reload Code", self.grid_pos(0,4), self.grid_size(3, 1))
@@ -287,7 +291,7 @@ class GUILevelFile(GUIGroup):
         self.em.add(self.btn_new_file)
 
     def on_btn_new(self, btn):
-        def on_confirm(self, panel):
+        def on_confirm(self):
             current_scene.load_level(None, no_backup=True)
         panel = gui.ConfirmPanel("Create New File?", on_confirm)
         self.em.add(panel)
@@ -372,9 +376,16 @@ class GUILevelFile(GUIGroup):
     def on_btn_play_start(self, btn):
         self._start_level(1)
 
-    def on_btn_play_at_cursor(self, btn):
+    def on_btn_play_at_win(self, btn):
         # self._start_level(int(current_scene.gui_level_size.time_cursor))
         self._start_level(int(current_scene.time))
+
+    def on_btn_play_at_marker(self, btn):
+        # self._start_level(int(current_scene.gui_level_size.time_cursor))
+        time = current_scene.gui_level_marker.marker_time[0]
+        if time != None:
+            self._start_level(int(time))
+
 
     def on_txt_filename(self, txt):
         current_level.filename = txt.text

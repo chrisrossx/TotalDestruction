@@ -4,6 +4,7 @@ from TD.entity import Entity, EntityPathFollower, EntityType, EntityVectorMoveme
 from TD.assetmanager import asset_manager
 
 from pygame import Vector2, Rect
+from TD.globals import current_app
 
 
 class Dialog(Enum):
@@ -63,29 +64,76 @@ class Elle(Entity):
 
     def play_sound(self):
         if self.dialog == Dialog.TAUNT_1:
-            pass
+            current_app.mixer.play("elle taunt_1")
         if self.dialog == Dialog.THREAT:
-            pass
+            current_app.mixer.play("elle threat")
         if self.dialog == Dialog.PAIN:
-            pass
+            current_app.mixer.play("elle pain")
         if self.dialog == Dialog.DYING:
-            pass
+            current_app.mixer.play("elle dying")
 
 
 class MaiAnh(Entity):
-    def __init__(self):
+    def __init__(self, dialog):
         super().__init__()
         self.type = EntityType.GUI
         self.frames = asset_manager.sprites["Mai-Anh"]
         self.sprite_offset = Vector2(-33, -33)
 
+        self.dialog = dialog
+
+    def get_text(self):
+        if self.dialog == Dialog.TAUNT_1:
+            return ("You have not been Calm!", "You will regret this!")
+        if self.dialog == Dialog.THREAT:
+            return ("You!!!!", "Leave My Room")
+        if self.dialog == Dialog.PAIN:
+            return ("Ouchhhhhh!", None)
+        if self.dialog == Dialog.DYING:
+            return ("I am going to bed", "Leave me alone!")
+
+    def play_sound(self):
+        if self.dialog == Dialog.TAUNT_1:
+            current_app.mixer.play("elle taunt_1")
+        if self.dialog == Dialog.THREAT:
+            current_app.mixer.play("elle threat")
+        if self.dialog == Dialog.PAIN:
+            current_app.mixer.play("elle pain")
+        if self.dialog == Dialog.DYING:
+            current_app.mixer.play("elle dying")
+
+
 
 class Christopher(Entity):
-    def __init__(self):
+    def __init__(self, dialog):
         super().__init__()
         self.type = EntityType.GUI
         self.frames = asset_manager.sprites["Christopher"]
         self.sprite_offset = Vector2(-33, -33)
+
+        self.dialog = dialog
+
+
+    def get_text(self):
+        if self.dialog == Dialog.TAUNT_1:
+            return ("Get out of Here!", None)
+        if self.dialog == Dialog.THREAT:
+            return ("Grrrrr Get out!", None)
+        if self.dialog == Dialog.PAIN:
+            return ("Ouch!", None)
+        if self.dialog == Dialog.DYING:
+              return ("How could you do this", "to me. You Win!")
+
+    def play_sound(self):
+        if self.dialog == Dialog.TAUNT_1:
+            current_app.mixer.play("christopher taunt_1")
+        if self.dialog == Dialog.THREAT:
+            current_app.mixer.play("christopher threat")
+        if self.dialog == Dialog.PAIN:
+            current_app.mixer.play("christopher pain")
+        if self.dialog == Dialog.DYING:
+            current_app.mixer.play("christopher dying")
+
 
 
 class SawyerPathFollower(EntityPathFollower):

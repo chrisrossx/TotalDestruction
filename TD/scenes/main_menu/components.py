@@ -68,17 +68,36 @@ class LevelBadgeCursor(gui.GUIEntity):
     def __init__(self):
         super().__init__()
         self.frames = asset_manager.sprites["Menu Level Select Cursor"]
-        for i, a in enumerate([60,60,60,60,45,30,15,0]):
+        self.frames = self.frames[:-1]
+        for i, a in enumerate([60,60,60,60,50,35,25]):
             a = a / 100
             a *= 255
             self.frames[i].set_alpha(a)
-        self.frames.append(self.frames[7])
-        self.frames.append(self.frames[7])
+
+        # self.frames.append(self.frames[7])
+        # self.frames.append(self.frames[6])
+        # self.frames.append(self.frames[5])
+        # self.frames.append(self.frames[4])
+        # self.frames.append(self.frames[3])
+        # self.frames.append(self.frames[2])
+        # self.frames.append(self.fra/mes[1])
+
+        # for f in self.frames:
+            # f.set_alpha(150)
+        # print(self.frames)
+        
 
         self.center_sprite_offset()
         self.sprite_offset.x -= 3
         self.sprite_offset.y -= 3
-        self.frame_duration = 1000 / 8
+        self.frame_duration = 1000 /8 #15
+
+    def draw(self, elapsed, surface):
+
+        
+        super().draw(elapsed, surface)
+        # print("what the fuck")
+        # surface.blit(self.frames[6], self.pos + self.sprite_offset)
 
 
 class LevelBadge(gui.GUIEntity):

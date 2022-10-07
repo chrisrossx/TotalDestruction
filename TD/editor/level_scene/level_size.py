@@ -175,24 +175,17 @@ class GUILevelSizeTimeCursor(GUIGroup):
     def on_sld_insert_time(self, elapsed, value):
         start_time = self.time_cursor
         value = round(elapsed * 5 * value, 2)
-        print(value)
+        # print(value)
+        old_time = self.parent.time 
         if value < 0:
             current_level.delete_time(start_time, -value)
-
-            # markers = sorted(self.marker_time)
-            # for entity in current_level.level_entities:
-            #     if entity.time >= markers[0] and entity.time <= markers[1]:
-            #         current_level.delete(entity)
-            # current_level.delete_time(markers[0], markers[1] - markers[0])
-            # self.em.delete(panel)
-
-            # self.marker_time[1] = None 
-            # self.marker_time[0] = markers[0]
-            # current_scene.gui_level_size.update_after_duration_change()
-
         if value > 0:
             current_level.insert_time(start_time, value)
         self.update_after_duration_change()
+        self.time = old_time 
+        self.update_time_curosr_elements()
+        self.set_time_slider_value(self.time)
+
         for i in range(2):
             if current_scene.gui_level_marker.marker_time[i] and current_scene.gui_level_marker.marker_time[i] >= start_time:
                 current_scene.gui_level_marker.marker_time[i] += value

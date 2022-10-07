@@ -31,6 +31,8 @@ class SelectEnemyPanel(gui.Panel):
 
         self.on_selected = on_selected
 
+        
+
         #Find Enemies
         # import sys
 
@@ -77,6 +79,7 @@ class GUILevelChainDetails(GUIGroup):
         self.selected_chain = None
 
         start_col = 30
+
 
         self.lbl_chain_properties = gui.Label("Chain Properties:", self.grid_pos(start_col, 0), self.grid_size())
         self.em.add(self.lbl_chain_properties)
@@ -187,6 +190,7 @@ class GUILevelChainDetails(GUIGroup):
         # self.no_chain_selected()
         self.hide_chain_properities()
 
+        self.paths_page = 0
         self.rbr_time_value = None
 
     def on_btn_gun_select(self, btn):
@@ -212,6 +216,7 @@ class GUILevelChainDetails(GUIGroup):
 
     def on_btn_path(self, btn):
         def on_select_path(path_index):
+            self.paths_page = panel.page
             self.selected_chain.path_index = path_index
             panel.close()
             self.em.delete(panel)
@@ -219,10 +224,12 @@ class GUILevelChainDetails(GUIGroup):
                 chain.path.set_new_path(chain.path_index)            
             self.update()
         def on_cancel(panel):
+            self.paths_page = panel.page
             for chain in current_level.level_entities_by_type[LevelEntityType.ENEMY_CHAIN]:
                 chain.path.set_new_path(chain.path_index)            
             self.em.delete(panel)
-        panel = SelectPathPanel(on_select_path=on_select_path)
+        panel = SelectPathPanel(on_select_path=on_select_path, page=self.paths_page)
+        # panel.page = self.paths_page
         panel.on_cancel.append(on_cancel)
         self.parent.level.save_backup("path_editor_open")
         path_data.save_backup("open_editor")

@@ -147,6 +147,9 @@ class SceneLevel(Scene):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_F6:
                 self.gui_level_file.on_btn_play_at_cursor(None)
 
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_F7:
+                self.gui_level_file.on_btn_play_at_marker(None)
+
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
                 self.pressed_duration = 0
 

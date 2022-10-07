@@ -291,6 +291,12 @@ class GameDebugger:
             if self.show_panel == 1 or self.show_panel == 2:
                 if self.frame_count_surface:
                     self.surface.blit(self.frame_count_surface, (10, 10))
+                for i in range(1):
+                    line = self.lines[i]
+                    if line:
+                        # TODO Could optomize this by cacheing rendered text, only update when set
+                        surface = self.font.render(line, True, (255, 255, 0))
+                        self.surface.blit(surface, (10, (i * 17) + 25))
             if self.show_panel == 1:
                 for i in range(len(self.lines)):
                     line = self.lines[i]

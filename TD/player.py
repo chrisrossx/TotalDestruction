@@ -13,31 +13,48 @@ from TD import current_scene, current_app
 from TD.particles.spoofs import SpoofHitFollow
 from TD.particles.explosions import ExplosionSmallFollow
 
+
 class PlayerShip(Entity):
+
+    weapons_step = [
+        {"rate": 550, "side": None},
+        {"rate": 500, "side": None},
+        {"rate": 450, "side": None},
+        {"rate": 400, "side": None},
+        {"rate": 350, "side": None},
+        {"rate": 350, "side": 4},
+        {"rate": 350, "side": 3},
+        {"rate": 350, "side": 2},
+        {"rate": 350, "side": 1},
+        {"rate": 350, "side": 0},
+        {"rate": 300, "side": 0},
+    ]
+
     def __init__(self):
         super().__init__()
         self.type = EntityType.PLAYER
         self.screen_size = SCREEN_SIZE
-        surface = pygame.Surface((40,40), pygame.SRCALPHA, 32)
-        surface.convert_alpha()
-        self.render_simple_ship(surface)
-        self.frames.append(surface)
-        self.sprite_offset = pygame.Vector2(-20, -20)
+        # surface = pygame.Surface((40,40), pygame.SRCALPHA, 32)
+        # surface.convert_alpha()
+        # self.render_simple_ship(surface)
+        # self.frames.append(surface)
+        self.frames = asset_manager.sprites["XD15"]
+        self.frame_duration = 120
+        self.sprite_offset = pygame.Vector2(self.get_rect().w / 2, self.get_rect().h / 2) * -1
+        # self.sprite_offset = pygame.Vector2(-20, -20)
 
         self.pos = Vector2(-40, 320)
-        # self.x = -40
-        # self.y = 300
 
         self.input_enabled = False
         self.paused = False
 
-        self.velocity = 0.25
+        self.velocity = 0.225
         self.heading = Vector2(0, 0)
 
         self.add_hitbox((0, 0, 30, 20), pygame.Vector2(-20, -10))
         self.add_hitbox((0, 0, 40, 8), pygame.Vector2(-20, -4))
 
-        rect = surface.get_rect()
+        rect = self.surface.get_rect()
         left = rect.w / 2
         right = self.screen_size[0] - left
         top = rect.h / 2
@@ -47,11 +64,14 @@ class PlayerShip(Entity):
         self.firing = False
         self.firing_elapsed = 1000 # start high so fire right away
         self.firing_rate = 550
+        self.firing_side = None
+        self.firing_side_count = 0
+        self.weapons_level = 0
+        self.weapons_upgrade()
 
         self.health = 3
         self.been_hit = False
         self.coins = 0
-        self.weapons_level = 1
 
     def get_pos(self):
         return self.pos.copy()
@@ -134,22 +154,32 @@ class PlayerShip(Entity):
         pygame.draw.polygon(surface, (60,60,60), points)
 
     def weapons_upgrade(self):
-        self.weapons_level += 1
-        if self.weapons_level == 2:
-            self.firing_rate = 350
 
+        self.weapons_level += 1
+        if self.weapons_level >= len(self.weapons_step):
+            self.weapons_level = len(self.weapons_step) -1
+        self.firing_rate = self.weapons_step[self.weapons_level]["rate"]
+        self.firing_elapsed = 0
+        self.firing_side = self.weapons_step[self.weapons_level]["side"]
+        self.firing_side_count = 0
 
     def fire(self):
         x, y = self.pos
-        x += 20
+        x += 30
+        y += 5
 
-        if self.weapons_level >= 3:
-            bullet = Bullet001([x, y], -15)
-            current_scene.em.add(bullet)
-            bullet = Bullet001([x, y], 15)
-            current_scene.em.add(bullet)
-    
-        #Default Bullet
+        # Side Cannons
+        if self.firing_side != None:
+            self.firing_side_count += 1
+            if self.firing_side_count > self.firing_side:
+                self.firing_side_count = 0
+                a = 15
+                bullet = Bullet001([x, y], -a)
+                current_scene.em.add(bullet)
+                bullet = Bullet001([x, y], a)
+                current_scene.em.add(bullet)
+
+        #Main Cannon
         bullet = Bullet001([x, y], 0)
         current_scene.em.add(bullet)
         current_app.mixer.play("player gun")

@@ -20,7 +20,7 @@ from .move_mode import MoveMode
 from .edit_mode import EditMode
 
 class SelectPathPanel(gui.Panel):
-    def __init__(self, on_select_path):
+    def __init__(self, on_select_path, page=0):
         panel_rows = 28
         panel_cols = 41 + 12
         size = self.get_panel_size_by_grid(panel_cols, panel_rows)
@@ -33,10 +33,11 @@ class SelectPathPanel(gui.Panel):
         self.mask.set_alpha(255)
         self.on_select_path = on_select_path
 
-        self._page = 0
+        self._page = page
         self.selected_line_index = None
 
         self.line_window = LineWindow(self.grid_pos(0,0), self)
+        self.line_window.page = self._page
         self.em.add(self.line_window)
 
         btn_pgup = gui.Button("PgUp", self.grid_pos(35,0), self.grid_size(3, 1), "center")

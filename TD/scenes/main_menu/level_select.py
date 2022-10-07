@@ -44,6 +44,12 @@ class LevelSelectScreen(MenuScreen):
         b2 = self.badges[1]
         b2.update()
 
+        b3 = self.badges[2]
+        b3.update()
+
+        b4 = self.badges[3]
+        b4.update()
+
         # for i in range(2, 4):
         #     b = self.badges[i]
         #     b.disabled()
@@ -112,7 +118,7 @@ class LevelSelectScreen(MenuScreen):
                 current_app.mixer.play("menu click")
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                if self.cursor_index < 2:
+                if self.cursor_index < 4:
                     current_scene.start_transition(screen_name="start_level", direction="right", data={"level": self.cursor_index})
                     current_app.mixer.play("menu click")
                 else:

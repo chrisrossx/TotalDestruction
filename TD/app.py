@@ -5,9 +5,7 @@ from TD.scenes.test_scene import TestScene
 from .assetmanager import asset_manager
 from .debuging import game_debugger
 from .scenes.main_menu.main_menu import MainMenu
-from .config import SCREEN_SIZE
-# from .scenes.levels.level_000 import Level_000
-# from .scenes.levels.level_001 import Level_001
+from .config import SCREEN_SIZE, LEVEL_001_FILENAME, LEVEL_002_FILENAME, LEVEL_003_FILENAME, LEVEL_004_FILENAME
 from .scenes.level.level import Level 
 from .mixer import Mixer
 from .savedata import SaveData
@@ -51,10 +49,21 @@ class App:
         self.scene.on_delete()
         del self.scene
         if data["scene"] == "play":
-            if data["level"] == 0:
-                self._set_scene(Level_000())
-            if data["level"] == 1:
-                self._set_scene(Level_001())
+            filenames = [
+                LEVEL_001_FILENAME,
+                LEVEL_002_FILENAME,
+                LEVEL_003_FILENAME,
+                LEVEL_004_FILENAME,
+            ]
+            self._set_scene(Level(data["level"], filenames[data["level"]]))
+            # if data["level"] == 0:
+                # self._set_scene(Level(0, LEVEL_001_FILENAME))
+            # if data["level"] == 1:
+                # self._set_scene(Level(1, LEVEL_002_FILENAME))
+            # if data["level"] == 3:
+                # self._set_scene(Level(2, LEVEL_003_FILENAME))
+            # if data["level"] == 4:
+                # self._set_scene(Level(3, LEVEL_004_FILENAME))
             self.scene.background.offset = data["sky_offset"]
         if data["scene"] == "main_menu":
             if "return_from_level" in data:

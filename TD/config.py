@@ -10,4 +10,9 @@ SKY_VELOCITY = 0.1
 SAVE_FILENAME = Path("TD/save.json")
 
 
-NUMBER_OF_LEVELS = 2
+NUMBER_OF_LEVELS = 4
+
+LEVEL_001_FILENAME = Path("001/Level_001sf.005.json")
+LEVEL_002_FILENAME = Path("002/Level_002.001.json")
+LEVEL_003_FILENAME = Path("gun_test.json")
+LEVEL_004_FILENAME = Path("gun_test.json")

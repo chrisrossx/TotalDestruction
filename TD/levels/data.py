@@ -13,7 +13,10 @@ from TD.editor.globals import current_scene, current_level
 from TD.editor import gui 
 from TD.assetmanager import asset_manager
 from TD.editor.editorassets import editor_assets
-from TD.enemies.boss import Boss001
+from TD.enemies.boss_001 import Boss001
+from TD.enemies.boss_002 import Boss002
+from TD.enemies.boss_003 import Boss003
+from TD.enemies.boss_004 import Boss004
 from TD.characters import Christopher, Dialog, Elle, MaiAnh, Sawyer
 from TD.scenes.level.dialog import EnemyDialog
 from TD.scenes.level.music import Music
@@ -192,6 +195,15 @@ class Boss(LevelEntity):
         if self.boss == "Boss 001":
             entity = Boss001()
 
+        if self.boss == "Boss 002":
+            entity = Boss002()
+
+        if self.boss == "Boss 003":
+            entity = Boss003()
+
+        if self.boss == "Boss 004":
+            entity = Boss004()
+
         time = self.time
         level.add_level_entity(time, entity)
    
@@ -222,6 +234,24 @@ class Boss(LevelEntity):
             pos = points[0] - Vector2(64,64)
             surface.blit(asset_manager.sprites["Boss 001"][1], pos)
             surface.blit(asset_manager.sprites["Boss 001 laser"][0], pos)
+
+        if self.boss == "Boss 002":
+            pos = points[0] - Vector2(64,64)
+            surface.blit(asset_manager.sprites["Boss 002"][1], pos)
+            surface.blit(asset_manager.sprites["Boss 002 launchers"][0], pos)
+
+        if self.boss == "Boss 003":
+            pos = points[0] - (Vector2(71, 69) / 2)
+            surface.blit(asset_manager.sprites["Boss 003"][0], pos)
+            surface.blit(asset_manager.sprites["Boss 003 laser pod"][0], pos + Vector2(19, 65))
+            surface.blit(asset_manager.sprites["Boss 003 rail gun"][0], pos + Vector2(25, 44))
+
+        if self.boss == "Boss 004":
+            pos = points[0] - (Vector2(71, 69) / 2)
+            surface.blit(asset_manager.sprites["Boss 004 top"][0], pos)
+            surface.blit(asset_manager.sprites["Boss 004 bottom"][0], pos + Vector2(0, 0))
+            surface.blit(asset_manager.sprites["Boss 004 missiles"][0], pos + Vector2(0, 0))
+
 
         super().editor_draw(elapsed, surface, start_time, end_time, x_offset)
 
@@ -333,7 +363,7 @@ class EnemyChain(LevelEntity):
             #Guns
             if i in self.guns:
                 gun_class = self.get_gun_class()
-                gun = gun_class()
+                gun = gun_class(entity)
                 entity.set_gun(gun)
 
             time = self.time + (i * self.spacing)
@@ -491,7 +521,8 @@ class EnemyChain(LevelEntity):
                     enemy.path.tick(0)
                     pos = enemy.path.pos + Vector2(100, 100)
                     if enemy.path.on_path == True:
-                        self.editor_enemy_points.append(pos.copy())
+                        entity_index = i 
+                        self.editor_enemy_points.append((entity_index, pos.copy()))
                         # still_on_path = True
 
         super().editor_tick(elapsed, start_time, end_time, x_offset, freeze_badge_at_start=freeze_badge_at_start)
@@ -523,7 +554,10 @@ class EnemyChain(LevelEntity):
             points = [self.btn_editor.pos, ]
 
         if self.has_started:
-            for point in self.editor_enemy_points:
+            for i, editor_enemy_point in enumerate(self.editor_enemy_points):
+                enemy_index, point = editor_enemy_point
+                if enemy_index in self.upgrades and enemy.glow_surface:
+                    surface.blit(enemy.glow_surface, point + enemy.glow_offset + enemy.sprite_offset)
                 surface.blit(enemy.surface, point + enemy.sprite_offset)
         else:
             if enemy:

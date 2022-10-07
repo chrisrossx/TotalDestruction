@@ -20,18 +20,22 @@ class PickupType(Enum):
 class PickupEntity(EntityVectorMovement):
     _screen_rect = pygame.Rect(-40 ,-40, SCREEN_SIZE.x+80, SCREEN_SIZE.y+80) # Delete Sprite if it goes off screen
 
-    def __init__(self, pos):
+    def __init__(self, pos, big_explosion=False):
         super().__init__()
         self.type = EntityType.PICKUP
         self.pickup_type = None 
         self.velocity = 0.1
         self.pos = pos.copy()
         self.heading = Vector2(-1, 0)
+        self.big_explosion=big_explosion
         
         # self.delta_heading = delta 
         self.drop_heading = Vector2(random.uniform(-1, 1.0),random.uniform(-1, 1.0))
         self.drop_heading.normalize_ip()
-        self.drop_velocity = random.uniform(0.2, 0.7)
+        if self.big_explosion:
+            self.drop_velocity = random.uniform(0.5, 1.4)
+        else:
+            self.drop_velocity = random.uniform(0.2, 0.7)
         self.delta_elapsed = 0
 
         self.magnet_velocity = 0
@@ -47,6 +51,7 @@ class PickupEntity(EntityVectorMovement):
         self.delta_elapsed += elapsed
         
         drop_duration = 200
+
         if self.drop_heading and self.delta_elapsed < drop_duration:
             v = self.drop_velocity - ((self.drop_velocity - 0.1) * (self.delta_elapsed/drop_duration))
             self.pos += self.drop_heading * v * elapsed
@@ -74,8 +79,8 @@ class PickupHeart(PickupEntity):
 
 class PickupCoin(PickupEntity):
 
-    def __init__(self, pos):
-        super().__init__(pos)
+    def __init__(self, pos, big_explosion=False):
+        super().__init__(pos, big_explosion=big_explosion)
         self.pickup_type = PickupType.COIN
         self.frames = asset_manager.sprites["Pickup Coin"]
         self.frame_duration = 150

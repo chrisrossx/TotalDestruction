@@ -3,14 +3,20 @@
   "chains": [
     {
       "name": "",
-      "time": 4860.69,
-      "count": 1,
+      "time": 14591.12,
+      "count": 4,
       "spacing": 1234.5,
-      "enemy": "EnemyD2",
+      "enemy": "EnemyT8",
       "guns": [
-        0
+        0,
+        2
       ],
-      "upgrades": [],
+      "upgrades": [
+        0,
+        1,
+        2,
+        3
+      ],
       "hearts": [],
       "coins": [
         0,
@@ -25,18 +31,22 @@
         9
       ],
       "path_index": "T8 AlphaX",
-      "gun": "GunBT1Level1Bullet004"
+      "gun": "GunHX7Level1Missle001"
     },
     {
       "name": "",
-      "time": 7098.97,
-      "count": 1,
+      "time": 14600.54,
+      "count": 3,
       "spacing": 1234.5,
-      "enemy": "EnemyBT1",
+      "enemy": "EnemyCX5B",
       "guns": [
-        0
+        0,
+        1,
+        2
       ],
-      "upgrades": [],
+      "upgrades": [
+        1
+      ],
       "hearts": [],
       "coins": [
         0,
@@ -50,8 +60,8 @@
         8,
         9
       ],
-      "path_index": "T8 AlphaX",
-      "gun": "GunBT1Level2Bullet005"
+      "path_index": "T8 Bravo",
+      "gun": "GunD2Level1"
     }
   ],
   "boss": [],
@@ -63,6 +73,50 @@
       "arguments": [
         "level 001",
         "",
+        "",
+        ""
+      ]
+    },
+    {
+      "name": "",
+      "time": 5120.0,
+      "control_type": 2,
+      "arguments": [
+        "Elle",
+        "TAUNT_1",
+        "",
+        ""
+      ]
+    },
+    {
+      "name": "",
+      "time": 8790.59,
+      "control_type": 2,
+      "arguments": [
+        "Elle",
+        "THREAT",
+        "",
+        ""
+      ]
+    },
+    {
+      "name": "",
+      "time": 12459.47,
+      "control_type": 2,
+      "arguments": [
+        "Elle",
+        "PAIN",
+        "",
+        ""
+      ]
+    },
+    {
+      "name": "",
+      "time": 15850.99,
+      "control_type": 2,
+      "arguments": [
+        "Elle",
+        "DYING",
         "",
         ""
       ]

@@ -11,10 +11,10 @@ class EnemyHX7(EnemyPathFollower):
         self.frames = asset_manager.sprites["HX7"]
         self.frame_index = random.randrange(0, len(self.frames))
         self.frame_duration = 30    
-        self.velocity = 0.15
+        self.velocity = 0.15 
         #TODO
         self.sprite_offset = Vector2(-22, -42)
+        self.health = 5
 
-        self.add_hitbox((0, 0, 70, 32), Vector2(-35, -28))
-        self.add_hitbox((0, 0, 40, 15), Vector2(-20, 4))
-        self.gun_points = [Vector2(-16, 20), Vector2(16, 20),]
+        self.add_hitbox((0, 0, 55, 20), Vector2(-20, -10))
+        self.gun_points = [Vector2(-16, 10),]

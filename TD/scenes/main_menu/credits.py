@@ -5,7 +5,7 @@ from TD.paths import path_data
 from TD.config import SCREEN_RECT
 from TD import gui
 from .screen import MenuScreen
-from TD.entity import Entity, EntityType
+from TD.entity import Entity, EntityType, EntityPathFollower
 from TD.particles.particles import ParticleEntityFollower
 from TD.assetmanager import asset_manager
 from TD.globals import current_app, current_scene
@@ -16,6 +16,96 @@ from TD.enemies.D2 import EnemyD2
 from TD.enemies.T8 import EnemyT8
 from TD.enemies.HX7 import EnemyHX7
 from TD.characters import SawyerPathFollower, EllePathFollower, MaiAnhPathFollower, ChristopherPathFollower
+
+
+class XD15(EntityPathFollower):
+    def __init__(self, path_index):
+        super().__init__(path_index)
+        self.type = EntityType.ENEMY
+        self.add_hitbox(pygame.Rect(0,0,40,40), Vector2(-20, -20))
+        pos = Vector2(0, 0)
+        for frame in asset_manager.sprites["XD15"]:
+            surface = pygame.transform.flip(frame, True, False)
+            self.frames.append(surface)
+            
+        self.sprite_offset = pygame.Vector2(self.get_rect().w / 2, self.get_rect().h / 2) * -1
+        self.frame_duration = 120
+
+
+class B4(EntityPathFollower):
+    def __init__(self, path_index):
+        super().__init__(path_index)
+        self.type = EntityType.ENEMY
+        self.add_hitbox(pygame.Rect(0,0,40,40), Vector2(-20, -20))
+        pos = Vector2(0, 0)
+
+        for i in range(3):
+            surface = pygame.Surface((128, 128), pygame.SRCALPHA)
+            surface.blit(asset_manager.sprites["Boss 004 top"][0], pos)
+            surface.blit(asset_manager.sprites["Boss 004 bottom"][i], pos)
+            surface.blit(asset_manager.sprites["Boss 004 missiles"][0], pos)
+            self.frames.append(surface)
+        self.sprite_offset = Vector2(-64, -64)
+        self.frame_duration = 120
+
+
+class B3(EntityPathFollower):
+    def __init__(self, path_index):
+        super().__init__(path_index)
+        self.type = EntityType.ENEMY
+        self.add_hitbox(pygame.Rect(0,0,40,40), Vector2(-20, -20))
+        pos = Vector2(0, 0)
+
+        a = 0
+        b = 4
+        c = 8
+        for i in range(11):
+            surface = pygame.Surface((71, 100), pygame.SRCALPHA)
+            surface.blit(asset_manager.sprites["Boss 003"][0], pos)
+            surface.blit(asset_manager.sprites["Boss 003 laser pod"][0], pos + Vector2(19, 65))
+            surface.blit(asset_manager.sprites["Boss 003 rail gun"][0], pos + Vector2(24, 44))
+            a = a + 1 if a < 10 else 0
+            surface.blit(asset_manager.sprites["Boss 003 laser dot"][a], pos + Vector2(19, 71))
+            b = b + 1 if b < 10 else 0
+            surface.blit(asset_manager.sprites["Boss 003 laser dot"][b], pos + Vector2(19, 71))
+            c = c + 1 if c < 10 else 0
+            surface.blit(asset_manager.sprites["Boss 003 laser dot"][c], pos + Vector2(19, 71))
+            self.frames.append(surface)
+        
+        self.frame_duration = 120
+        self.center_sprite_offset()
+
+class B2(EntityPathFollower):
+    def __init__(self, path_index):
+        super().__init__(path_index)
+        self.type = EntityType.ENEMY
+        self.add_hitbox(pygame.Rect(0,0,40,40), Vector2(-20, -20))
+        pos = Vector2(0, 0)
+
+        for i in range(4):
+            surface = pygame.Surface((128, 128), pygame.SRCALPHA)
+            surface.blit(asset_manager.sprites["Boss 002"][i], pos)
+            surface.blit(asset_manager.sprites["Boss 002 launchers"][0], pos)
+            self.frames.append(surface)
+        self.sprite_offset = Vector2(-64, -64)
+        self.frame_duration = 120
+
+class B1(EntityPathFollower):
+    def __init__(self, path_index):
+        super().__init__(path_index)
+        self.type = EntityType.ENEMY
+        self.add_hitbox(pygame.Rect(0,0,40,40), Vector2(-20, -20))
+        pos = Vector2(0, 0)
+
+        for i in range(3):
+            surface = pygame.Surface((128, 128), pygame.SRCALPHA)
+            surface.blit(asset_manager.sprites["Boss 001"][i], pos)
+            surface.blit(asset_manager.sprites["Boss 001 laser"][0], pos)
+            self.frames.append(surface)
+        self.sprite_offset = Vector2(-64, -64)
+        self.frame_duration = 120
+
+
 
 class Balloons(ParticleEntityFollower):
     def __init__(self, follow_entity, follow_offset):
@@ -83,9 +173,14 @@ class CreditScreen(MenuScreen):
 
         enemies = [
             (ChristopherPathFollower, "Christopher"),
+            (B4, "Boss 4"),
             (MaiAnhPathFollower, "Mai-Anh"),
-            (EllePathFollower, "Elle"),
+            (B3, "Boss 3"),
             (SawyerPathFollower, "Sawyer"), 
+            (B2, "Boss 2"),
+            (EllePathFollower, "Elle"),
+            (B1, "Boss 1"),
+            (XD15, "XD15"),
             (EnemyD2, "D2"), 
             (EnemyBT1, "BT1"), 
             (EnemyHX7, "HX7"), 

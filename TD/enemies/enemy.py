@@ -5,7 +5,7 @@ from pygame import Vector2
 
 from TD.entity import EntityPathFollower, EntityType, EntityVectorMovement
 from TD.particles.explosions import ExplosionMedium
-from TD.pickups import PickupCoin
+from TD.pickups import PickupCoin, PickupUpgrade
 from TD.debuging import game_debugger
 from TD.assetmanager import asset_manager
 from TD import current_app, current_scene
@@ -19,6 +19,9 @@ class Enemy:
         self.gun_points = [Vector2(0, 0),]
         self.chain = None 
         self.health = 1
+
+        self.glow_surface = None
+        self.glow_offset = Vector2(0, 0)
 
     def killed(self):
         current_scene.em.add(ExplosionMedium(self.pos))
@@ -73,7 +76,14 @@ class Enemy:
             line = asset_manager.fonts["xxs"].render("[  H={} ]".format(self.health), True, (255,0,0))
             pos = self.pos + self.sprite_offset
             pos.y -= line.get_rect().h
+            if pos.y < 0:
+                #Draw below caharacter if its to high up on the screen! 
+                pos.y = self.pos.y# + self.get_rect().h
             surface.blit(line, pos)
+    
+    def _enemy_draw_glow(self, elapsed, surface):
+        if PickupUpgrade in self.drops and self.glow_surface:
+            surface.blit(self.glow_surface, self.pos + self.sprite_offset + self.glow_offset)
 
 
 class EnemyPathFollower(EntityPathFollower, Enemy):
@@ -90,6 +100,7 @@ class EnemyPathFollower(EntityPathFollower, Enemy):
         self._enemy_tick(elapsed)
 
     def draw(self, elapsed, surface):
+        self._enemy_draw_glow(elapsed, surface)
         super().draw(elapsed, surface)
         self._enemy_draw(elapsed, surface)
 
@@ -110,5 +121,6 @@ class EnemyVectorMovement(Enemy, EntityVectorMovement):
         self.enemy_missed()
 
     def draw(self, elapsed, surface):
+        self._enemy_draw_glow(elapsed, surface)
         super().draw(elapsed, surface)
         self._enemy_draw(elapsed, surface)
