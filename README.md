@@ -5,6 +5,16 @@ Author: Christopher Ross
 
 Published: 2022
 
+# Screen Shots
+
+# Develop and Level Editor
+
+This project just started out as a fun project to spend some of my down time on. But after getting started on it, I couldn't stop programming. This isn't my finest example of clean source code or best practices, escpially in commenting my code... Also, while developing the game engine code, I changed startegies and code concepts several times, so some secitons of code follow old patterns. 
+
+One of the last things I did was work on a Level Editor, complete with customer pygame GUI!. 
+
+![Jog Tab](/screenshot_level_editor.png)
+
 # How to play
 1) Install `Python3`
 2) Setup with `pip install -r requirements.txt`
