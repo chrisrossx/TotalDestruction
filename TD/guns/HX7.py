@@ -31,3 +31,19 @@ class GunHX7Level2Missle001(GenericGun):
         b = Missile(self.parent.pos + self.parent.gun_points[0], angle)
         b.velocity = .25
         return b
+
+
+class GunHX7Level4Missle001(GenericGun):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.pattern_rate = [-1000, 1800]
+        self.pattern_repeat = 2
+        self.sound = "enemy missile"
+
+    def bullet_factory(self, angle):
+        #Generic spot copies from gun_point[0] always
+        # b = Bullet004(self.parent.pos + self.parent.gun_points[0], angle)
+        b = Missile(self.parent.pos + self.parent.gun_points[0], angle)
+        b.velocity = .35
+        return b
+

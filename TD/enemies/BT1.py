@@ -41,3 +41,42 @@ class EnemyBT1_Level_2_Wall(EnemyPathFollower):
         super().draw(elapsed, surface)
 
 
+
+class EnemyBT1_Level_3_Blast(EnemyPathFollower):
+    def __init__(self, path_index):
+        super().__init__(path_index)
+        self.frames = asset_manager.sprites["BT1"]
+        self.frame_index = random.randrange(0, len(self.frames))
+        self.frame_duration = 80    
+        self.velocity = SKY_VELOCITY
+        self.sprite_offset = Vector2(-32, -32)
+
+        self.add_hitbox((0, 0, 32, 32), Vector2(-16, -24))
+        self.add_hitbox((0, 0, 20, 15), Vector2(-10, 8))
+        self.gun_points = [Vector2(0, 20),]
+        self.health = 10
+
+    def draw(self, elapsed, surface):
+        super().draw(elapsed, surface)
+
+
+
+class EnemyBT1_Level_4_Diag(EnemyPathFollower):
+    def __init__(self, path_index):
+        super().__init__(path_index)
+        self.frames = asset_manager.sprites["BT1"]
+        self.frame_index = random.randrange(0, len(self.frames))
+        self.frame_duration = 80    
+        self.velocity = SKY_VELOCITY
+        self.sprite_offset = Vector2(-32, -32)
+
+        self.add_hitbox((0, 0, 32, 32), Vector2(-16, -24))
+        self.add_hitbox((0, 0, 20, 15), Vector2(-10, 8))
+        self.gun_points = [Vector2(0, 20),]
+        self.health = 5
+
+    def draw(self, elapsed, surface):
+        super().draw(elapsed, surface)
+
+
+

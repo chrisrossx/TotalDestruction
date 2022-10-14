@@ -25,23 +25,24 @@ class Sawyer(Entity):
 
     def get_text(self):
         if self.dialog == Dialog.TAUNT_1:
-            return ("You will be no challenge to me!", "hahaha")
+            return ("You will be no challenge", "to me! hahaha")
         if self.dialog == Dialog.THREAT:
-            return ("I will defeat you!", None)
+            return ("Do Not come Here", "I will defeat you!")
         if self.dialog == Dialog.PAIN:
             return ("Ouch!", None)
         if self.dialog == Dialog.DYING:
-            return ("I was supposed to win!", "meow!")
+            return ("So Long Suckers!", None)
 
     def play_sound(self):
         if self.dialog == Dialog.TAUNT_1:
-            pass
+            current_app.mixer.play("sawyer taunt_1")
         if self.dialog == Dialog.THREAT:
-            pass
+            current_app.mixer.play("sawyer threat")
         if self.dialog == Dialog.PAIN:
-            pass
+            current_app.mixer.play("sawyer pain")
         if self.dialog == Dialog.DYING:
-            pass
+            current_app.mixer.play("sawyer dying")
+
 
 class Elle(Entity):
     def __init__(self, dialog):
@@ -94,13 +95,13 @@ class MaiAnh(Entity):
 
     def play_sound(self):
         if self.dialog == Dialog.TAUNT_1:
-            current_app.mixer.play("elle taunt_1")
+            current_app.mixer.play("mai-anh taunt_1")
         if self.dialog == Dialog.THREAT:
-            current_app.mixer.play("elle threat")
+            current_app.mixer.play("mai-anh threat")
         if self.dialog == Dialog.PAIN:
-            current_app.mixer.play("elle pain")
+            current_app.mixer.play("mai-anh pain")
         if self.dialog == Dialog.DYING:
-            current_app.mixer.play("elle dying")
+            current_app.mixer.play("mai-anh dying")
 
 
 

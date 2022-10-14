@@ -361,6 +361,9 @@ class GUILevelFile(GUIGroup):
         self.txt_filename.text = current_level.filename
 
     def _start_level(self, start_time):
+        import os 
+        os.environ["td_debugger_sky"] = str(not self.parent.hide_sky)
+
         self.parent.level.save_backup("start_level")
         if self.proc:
             if self.proc.poll() == None:

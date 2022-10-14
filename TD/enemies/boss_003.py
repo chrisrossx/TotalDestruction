@@ -8,10 +8,11 @@ from pygame import Vector2
 
 from TD.assetmanager import asset_manager
 from TD import current_app, current_scene
-from TD.guns.boss_001 import GunBoss001Level1Missle001Left, GunBoss001Level1Missle001Right, GunBoss001Level1Laser001Left, GunBoss001Level1Laser002Center, GunBoss001Level1Laser003Right
+# from TD.guns.boss_001 import GunBoss001Level1Missle001Left, GunBoss001Level1Missle001Right, GunBoss001Level1Laser001Left, GunBoss001Level1Laser002Center, GunBoss001Level1Laser003Right
 from TD.characters import Dialog, MaiAnh
 from TD.scenes.level.dialog import EnemyDialog
 from TD.enemies.boss import BossState, Boss, BossLayeredSprite
+from TD.guns.boss_003 import GunBoss003LaserPod, GunBoss003LargeLaser
 
 
 SPRITE_OFFSET = Vector2(-36, -60) 
@@ -152,14 +153,15 @@ class BossState_LASERS_FIRING(BossState):
             self.state = Boss003State.LASERS_ONE
         super().__init__(parent)
         self.laser_count = laser_count 
+        self.gun = GunBoss003LaserPod(self.parent)
 
     def start(self):
         super().start()
         if self.laser_count == 6:
-            self.parent.start_path("boss 001 lasers")
+            self.parent.start_path("boss 003 pod")
             self.parent.start_path()
 
-        self.health = self.parent.health_by_state[self.state]
+        # self.health = self.parent.health_by_state[self.state]
 
     def end(self):
         super().end()
@@ -245,11 +247,12 @@ class BossState_RAILGUN_FIRING(BossState):
     state = Boss003State.RAILGUN_FIRING
     def __init__(self, parent):
         super().__init__(parent)
+        self.gun = GunBoss003LargeLaser(self.parent)
 
     def start(self):
         super().start()
         self.parent.rail_gun_sprite.set_sprite(10, 11)
-        self.parent.start_path("boss 001 launchers")
+        self.parent.start_path("boss 003 rail")
         # self.parent.hitboxes.pop()
         # self.parent.hitbox_offsets.pop()
 
@@ -436,18 +439,19 @@ class Boss003(Boss):
             Boss003State.DEAD: BossState_DEAD(self),
         }
 
+        laser_health = 3
         self.health_by_state = {
             Boss003State.STARTING: -1,
             Boss003State.LASERS_STARTING: -1,
-            Boss003State.LASERS_SIX: 1,
-            Boss003State.LASERS_FIVE: 1,
-            Boss003State.LASERS_FOUR: 1,
-            Boss003State.LASERS_THREE: 1,
-            Boss003State.LASERS_TWO: 1,
-            Boss003State.LASERS_ONE: 1,
+            Boss003State.LASERS_SIX: laser_health,
+            Boss003State.LASERS_FIVE: laser_health,
+            Boss003State.LASERS_FOUR: laser_health,
+            Boss003State.LASERS_THREE: laser_health,
+            Boss003State.LASERS_TWO: laser_health,
+            Boss003State.LASERS_ONE: laser_health,
             Boss003State.LASERS_DEAD: -1,
             Boss003State.RAILGUN_LOADING: -1,
-            Boss003State.RAILGUN_FIRING: 1,
+            Boss003State.RAILGUN_FIRING: 10,
             Boss003State.RAILGUN_DEAD: -1,
             Boss003State.BALLOONS_EIGHT: 1,
             Boss003State.BALLOONS_SEVEN: 1,

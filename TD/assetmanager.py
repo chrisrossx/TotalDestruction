@@ -131,17 +131,23 @@ class AssetManager:
         self.sounds["christopher pain"] = Sound(Path("TD/assets/Christopher Sounds/ouch.wav"), MixerChannels.VOICE)
         self.sounds["christopher dying"] = Sound(Path("TD/assets/Christopher Sounds/you win.wav"), MixerChannels.VOICE)
         
-        # self.sounds["menu error"].set_volume(0.3)
-        
+        self.sounds["mai-anh taunt_1"] = Sound(Path("TD/assets/mai-anh sounds/calm.wav"), MixerChannels.VOICE)
+        self.sounds["mai-anh threat"] = Sound(Path("TD/assets/mai-anh sounds/leave.wav"), MixerChannels.VOICE)
+        self.sounds["mai-anh pain"] = Sound(Path("TD/assets/mai-anh sounds/ouch.wav"), MixerChannels.VOICE)
+        self.sounds["mai-anh dying"] = Sound(Path("TD/assets/mai-anh sounds/bed.wav"), MixerChannels.VOICE)
 
+        self.sounds["sawyer taunt_1"] = Sound(Path("TD/assets/sawyer sounds/no challenge.wav"), MixerChannels.VOICE)
+        self.sounds["sawyer threat"] = Sound(Path("TD/assets/sawyer sounds/do not.wav"), MixerChannels.VOICE)
+        self.sounds["sawyer pain"] = Sound(Path("TD/assets/sawyer sounds/ouch.wav"), MixerChannels.VOICE)
+        self.sounds["sawyer dying"] = Sound(Path("TD/assets/sawyer sounds/so long.wav"), MixerChannels.VOICE)
 
-        self.music["menu"] = {"filename": str(Path("TD/assets/sabotage_loop.flac")), "volume": 1}
+        self.music["menu"] = {"filename": str(Path("TD/assets/sabotage_loop.mp3")), "volume": 1}
         self.music["the net"] = {"filename": str(Path("TD/assets/the net.mp3")), "volume": 1}
 
         self.music["level 001"] = {"filename": str(Path("TD/assets/lootedvillage_orc_vox.mp3")), "volume": 0.2}
         self.music["level 002"] = {"filename": str(Path("TD/assets/battle_zero_2022_remaster_update.mp3")), "volume": 0.2}
-
-
+        self.music["level 003"] = {"filename": str(Path("TD/assets/her_hidden_smile_loop.mp3")), "volume": 0.75}
+        self.music["level 004"] = {"filename": str(Path("TD/assets/darkness_of_space.mp3")), "volume": 0.75}
 
         self.sprites["sky layered"] = pygame.image.load(str(Path("TD/assets/layered.jpg")))
         self.sprites["sky layered"] = self.sprites["sky layered"].convert()

@@ -1,0 +1,385 @@
+{
+  "total_time": 120000,
+  "chains": [
+    {
+      "name": "",
+      "time": 5120.0,
+      "count": 5,
+      "spacing": 1111,
+      "enemy": "EnemyHX7_L4_FAST",
+      "guns": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "upgrades": [
+        1,
+        3
+      ],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L4_L_H7_Fast",
+      "gun": "GunHX7Level4Missle001"
+    },
+    {
+      "name": "",
+      "time": 16115.95,
+      "count": 5,
+      "spacing": 474,
+      "enemy": "EnemyCX5B",
+      "guns": [],
+      "upgrades": [
+        0,
+        2,
+        4
+      ],
+      "hearts": [
+        2
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L3_L_S_Curve_2",
+      "gun": null
+    },
+    {
+      "name": "",
+      "time": 17016.83,
+      "count": 5,
+      "spacing": 474,
+      "enemy": "EnemyCX5B",
+      "guns": [],
+      "upgrades": [
+        4
+      ],
+      "hearts": [
+        2
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L3_L_S_Curve_1",
+      "gun": null
+    },
+    {
+      "name": "",
+      "time": 24692.25,
+      "count": 6,
+      "spacing": 499,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        4,
+        5
+      ],
+      "hearts": [
+        1
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L4_R_Bottom_Up",
+      "gun": null
+    },
+    {
+      "name": "",
+      "time": 29089.01,
+      "count": 6,
+      "spacing": 499,
+      "enemy": "EnemyCX5B_SLOW",
+      "guns": [],
+      "upgrades": [
+        0,
+        3
+      ],
+      "hearts": [
+        2
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L4_R_Bottom_Up",
+      "gun": null
+    },
+    {
+      "name": "",
+      "time": 37498.45,
+      "count": 2,
+      "spacing": 3832,
+      "enemy": "EnemyD2",
+      "guns": [
+        1,
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Left_Loop_1",
+      "gun": "GunD2Level1"
+    },
+    {
+      "name": "",
+      "time": 56851.65,
+      "count": 5,
+      "spacing": 621,
+      "enemy": "EnemyCX5B",
+      "guns": [],
+      "upgrades": [
+        0,
+        2,
+        4
+      ],
+      "hearts": [
+        1,
+        3
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Top_Left_Swoop_1",
+      "gun": null
+    },
+    {
+      "name": "",
+      "time": 61402.68,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyBT1_Level_4_Diag",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Top_Straight_40",
+      "gun": "GunBT1Level4Bullet005_DiagDown"
+    },
+    {
+      "name": "",
+      "time": 61402.68,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyBT1_Level_4_Diag",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L2_Top_Straight_560",
+      "gun": "GunBT1Level4Bullet005_DiagUp"
+    },
+    {
+      "name": "",
+      "time": 67773.21,
+      "count": 1,
+      "spacing": 1234.5,
+      "enemy": "EnemyBT1_Level_3_Blast",
+      "guns": [
+        0
+      ],
+      "upgrades": [],
+      "hearts": [],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "straight 300",
+      "gun": "GunBT1Level3Bullet005"
+    },
+    {
+      "name": "",
+      "time": 79111.57,
+      "count": 6,
+      "spacing": 425,
+      "enemy": "EnemyCX5B",
+      "guns": [],
+      "upgrades": [
+        4,
+        2,
+        0
+      ],
+      "hearts": [
+        1,
+        3,
+        5
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L1_L_FRONT_U_A",
+      "gun": null
+    },
+    {
+      "name": "",
+      "time": 83527.64,
+      "count": 6,
+      "spacing": 450,
+      "enemy": "EnemyCX5B",
+      "guns": [],
+      "upgrades": [
+        4,
+        2,
+        0
+      ],
+      "hearts": [
+        1,
+        3,
+        5
+      ],
+      "coins": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "path_index": "L1_R_FRONT_U_A",
+      "gun": null
+    }
+  ],
+  "boss": [
+    {
+      "name": "",
+      "time": 96206.09,
+      "boss": "Boss 004"
+    }
+  ],
+  "controls": [
+    {
+      "name": "MUSIC",
+      "time": -1.0,
+      "control_type": 0,
+      "arguments": [
+        "level 004",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "name": "",
+      "time": 3898.55,
+      "control_type": 2,
+      "arguments": [
+        "Christopher",
+        "TAUNT_1",
+        "",
+        ""
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
-  "sounds_mute": true,
-  "music_mute": true,
+  "sounds_mute": false,
+  "music_mute": false,
   "slots": [
     {
       "name": "christopher",
@@ -19,78 +19,28 @@
           "coins": 0.9185185185185185
         },
         "2": {
-          "finished": false,
-          "medalHeart": false,
-          "enemies": 0.0,
-          "coins": 0.0
-        },
-        "3": {
-          "finished": false,
-          "medalHeart": false,
-          "enemies": 0.14285714285714285,
-          "coins": 0
-        }
-      }
-    },
-    {
-      "name": "samsung",
-      "coins": 0,
-      "level_state": {
-        "0": {
           "finished": true,
-          "medalHeart": true,
-          "enemies": 1.0,
-          "coins": 0.968421052631579
-        },
-        "1": {
-          "finished": false,
           "medalHeart": false,
-          "enemies": 0.0,
-          "coins": 0
-        },
-        "2": {
-          "finished": false,
-          "medalHeart": false,
-          "enemies": 0.0,
-          "coins": 0.0
+          "enemies": 0.9491525423728814,
+          "coins": 0.9230769230769231
         },
         "3": {
-          "finished": false,
+          "finished": true,
           "medalHeart": false,
-          "enemies": 0.0,
-          "coins": 0.0
+          "enemies": 0.9,
+          "coins": 0.9888888888888889
         }
       }
     },
     {
-      "name": "mai-anh",
+      "name": null,
       "coins": 0,
-      "level_state": {
-        "0": {
-          "finished": false,
-          "medalHeart": false,
-          "enemies": 0.9741379310344828,
-          "coins": 0.9912280701754386
-        },
-        "1": {
-          "finished": false,
-          "medalHeart": false,
-          "enemies": 0.0,
-          "coins": 0.0
-        },
-        "2": {
-          "finished": false,
-          "medalHeart": false,
-          "enemies": 0.0,
-          "coins": 0.0
-        },
-        "3": {
-          "finished": false,
-          "medalHeart": false,
-          "enemies": 0.0,
-          "coins": 0.0
-        }
-      }
+      "level_state": {}
+    },
+    {
+      "name": null,
+      "coins": 0,
+      "level_state": {}
     },
     {
       "name": null,

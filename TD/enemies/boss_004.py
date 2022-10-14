@@ -8,10 +8,10 @@ from pygame import Vector2
 
 from TD.assetmanager import asset_manager
 from TD import current_app, current_scene
-from TD.guns.boss_001 import GunBoss001Level1Missle001Left, GunBoss001Level1Missle001Right, GunBoss001Level1Laser001Left, GunBoss001Level1Laser002Center, GunBoss001Level1Laser003Right
 from TD.characters import Dialog, MaiAnh, Christopher
 from TD.scenes.level.dialog import EnemyDialog
 from TD.enemies.boss import BossState, Boss, BossLayeredSprite
+from TD.guns.boss_004 import GunBoss004LargeLaser, GunBoss004Level1Missle001Left, GunBoss004Level1Missle001Right
 
 
 SPRITE_OFFSET = Vector2(-64, -64) 
@@ -150,6 +150,7 @@ class BossState_LASER_FIRING(BossState):
     state = Boss004State.LASER_FIRING
     def __init__(self, parent):
         super().__init__(parent)
+        self.gun = GunBoss004LargeLaser(self.parent)
 
     def start(self):
         super().start()
@@ -259,7 +260,7 @@ class BossState_LAUNCHERS_TWO(BossState):
     state = Boss004State.LAUNCHERS_TWO
     def __init__(self, parent):
         super().__init__(parent)
-        # self.gun = GunBoss001Level1Missle001Left(self.parent)
+        self.gun = GunBoss004Level1Missle001Left(self.parent)
 
     def start(self):
         super().start()
@@ -271,7 +272,7 @@ class BossState_LAUNCHERS_ONE(BossState):
     state = Boss004State.LAUNCHERS_ONE
     def __init__(self, parent):
         super().__init__(parent)
-        # self.gun = GunBoss001Level1Missle001Right(self.parent)
+        self.gun = GunBoss004Level1Missle001Right(self.parent)
 
     def start(self):
         super().start()
@@ -284,6 +285,7 @@ class BossState_LAUNCHERS_DEAD(BossState):
     state = Boss004State.LAUNCHERS_DEAD
     def __init__(self, parent):
         super().__init__(parent)
+
 
     def start(self):
         super().start()
@@ -421,15 +423,15 @@ class Boss004(Boss):
             Boss004State.STARTING: -1,
             Boss004State.OPENING_BODY: -1,
             Boss004State.LASER_STARTING: -1,
-            Boss004State.LASER_FIRING: 1,
+            Boss004State.LASER_FIRING: 35,
             Boss004State.LASER_DEAD: -1,
             Boss004State.CLOSING_BODY: -1,
             Boss004State.LAUNCHERS_LOADING: -1,
-            Boss004State.LAUNCHERS_TWO: 1,
-            Boss004State.LAUNCHERS_ONE: 1, 
+            Boss004State.LAUNCHERS_TWO: 15,
+            Boss004State.LAUNCHERS_ONE: 15, 
             Boss004State.LAUNCHERS_DEAD: -1,
-            Boss004State.THRUSTERS_TWO: 1,
-            Boss004State.THRUSTERS_ONE: 1,
+            Boss004State.THRUSTERS_TWO: 15,
+            Boss004State.THRUSTERS_ONE: 15,
             Boss004State.THRUSTERS_DEAD: -1,
             Boss004State.DEAD: -1,
         }
