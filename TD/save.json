@@ -14,9 +14,9 @@
         },
         "1": {
           "finished": true,
-          "medalHeart": false,
-          "enemies": 0.9397590361445783,
-          "coins": 0.9185185185185185
+          "medalHeart": true,
+          "enemies": 0.963855421686747,
+          "coins": 0.9850746268656716
         },
         "2": {
           "finished": true,

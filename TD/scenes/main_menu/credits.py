@@ -153,7 +153,7 @@ class CreditScreen(MenuScreen):
         dark_panel.pos.y = 150
         self.em.add(dark_panel)
 
-        lines = ["Created with Love for his family, Ma-ANh, Sawer and Elle.",
+        lines = ["Created with Love for his family, Mai-Anh, Sawer and Elle.",
                  "Developed by Christopher Ross in the summer of 2022.",
                  "Written in python using the pygame library.",
                  "Circuit Nerd Studios, chris.rossx@gmail.com"]

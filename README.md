@@ -14,6 +14,8 @@ Published: 2022
 
 This project just started out as a fun project to spend some of my down time on. But after getting started on it, I couldn't stop programming. This isn't my finest example of clean source code or best practices, escpially in commenting my code... Also, while developing the game engine code, I changed startegies and code concepts several times, so some secitons of code follow old patterns. 
 
+Building the game engine and game mechanics was a lot of fun, and the type of problem that I really enjoy. It was easy to spend most of my evenings deep in concentration working on a problem and new code. However, I did find it hard to stay motivated once I was building out the levels.
+
 One of the last things I did was work on a Level Editor, complete with customer pygame GUI!. 
 
 ![Level Editor](/screenshot_level_editor.png) 
