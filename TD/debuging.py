@@ -32,7 +32,7 @@ class GameDebugger:
         self.show_paths = not True
         self.show_bounds = not True
         self.print_app_timits = not True
-        self.god_mode = True
+        self.god_mode = False
         self.speed = 1.0
 
         self._disable_input = 0
@@ -175,7 +175,8 @@ class GameDebugger:
     def on_event(self, event, elapsed):
 
         if event.type == pygame.KEYDOWN and event.key == 96:
-            if "td_show_debugger" in os.environ and os.environ["td_show_debugger"] == "True":
+            # if "td_show_debugger" in os.environ and os.environ["td_show_debugger"] == "True":
+            if True:
                 if self.show_panel == None:
                     self.show_panel = 1
                 elif self.show_panel == 1:
