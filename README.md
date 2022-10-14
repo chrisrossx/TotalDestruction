@@ -10,7 +10,7 @@ Published: 2022
 ![Level Boss](/screenshot_boss.png)
 ![Level Select](/screenshot_level_select.png)
 
-# Develop and Level Editor
+# Development and Level Editor
 
 This project just started out as a fun project to spend some of my down time on. But after getting started on it, I couldn't stop programming. This isn't my finest example of clean source code or best practices, escpially in commenting my code... Also, while developing the game engine code, I changed startegies and code concepts several times, so some secitons of code follow old patterns. 
 
