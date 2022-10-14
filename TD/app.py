@@ -25,6 +25,7 @@ class App:
         self.debug_start = debug_start
 
         pygame.init()
+        pygame.display.set_caption("Total Destruction")
         self.screen = pygame.display.set_mode(self.size)
         self.clock = pygame.time.Clock()
 

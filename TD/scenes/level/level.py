@@ -168,16 +168,10 @@ class PlayingState(LevelStateMachine):
 
     def enemy_missed(self, enemy):
         self.enemies_missed += 1
-        print("enemy missed")
         if self.enemies_missed / self.total_enemies >= 0.3:
             self.hud["medal70"].invalid()
-            # TODO
-            # signal("scene.hud.medal.70").send(False)
         if self.enemies_missed / self.total_enemies > 0.0:
             self.hud["medal100"].invalid()
-            # TODO
-            pass
-            # signal("scene.hud.medal.100").send(False)
 
     def start(self):
         super().start()

@@ -1,4 +1,4 @@
-# Total Destruction
+![Total Destruction](/TD/assets/Title_Art_001.png)
 A Python pygame created by Christopher Ross with love for his children Sawyer and Elle!
 
 Author: Christopher Ross
@@ -6,6 +6,9 @@ Author: Christopher Ross
 Published: 2022
 
 # Screen Shots
+![Level Play](/screenshot_play.png)
+![Level Boss](/screenshot_boss.png)
+![Level Select](/screenshot_level_select.png)
 
 # Develop and Level Editor
 
@@ -13,7 +16,7 @@ This project just started out as a fun project to spend some of my down time on.
 
 One of the last things I did was work on a Level Editor, complete with customer pygame GUI!. 
 
-![Jog Tab](/screenshot_level_editor.png)
+![Level Editor](/screenshot_level_editor.png) 
 
 # How to play
 1) Install `Python3`

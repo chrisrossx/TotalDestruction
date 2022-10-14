@@ -72,6 +72,7 @@ class GameDebugger:
             print("[K_b: show_bounds]   ", self.show_bounds)
             print("[K_g: god_mode]      ", self.god_mode)
             print("[k_KP#: Speed]       ", self.speed)
+            print("[K_p: screenshot]")
 
     def clear_lines(self):
         self.lines = [None for i in range(20)]
@@ -181,6 +182,17 @@ class GameDebugger:
                     self.show_panel = 2
                 else:
                     self.show_panel = None
+
+        if self._disable_input == 0 and event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+            # print("Screen SHOT!")
+            rect = pygame.Rect(0, 0, 1024, 600)
+            sub = current_app.screen.subsurface(rect)
+            shot = pygame.Surface((1024, 600))
+            shot.blit(sub, (0, 0))
+            import uuid 
+            filename = "screenshot_{}.png".format(str(uuid.uuid4()))
+            print("Saved Screenshot: {}".format(filename))
+            pygame.image.save(shot, filename)
 
         if (
             self._disable_input == 0
